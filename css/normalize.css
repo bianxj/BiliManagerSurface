@@ -1,0 +1,55 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+/*可继承属性*/
+/*字体属性*/
+html {
+    font-family: sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    font-style: normal;
+    font-variant: normal;
+    font-stretch: semi-expanded;
+    font-size-adjust: none;
+}
+/*文本属性*/
+html {
+    text-indent: 0px;
+    text-align: left;
+    line-height: normal;
+    word-spacing: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    direction: ltr;
+    color: #ffffff;
+}
+/*杂项属性*/
+html {
+    visibility: visible;
+    quotes: none;
+    cursor: none;
+}
+/*表格属性*/
+html {
+    caption-side: top;
+    border-collapse: separate;
+    border-spacing: 0px;
+    empty-cells: show;
+    table-layout: auto;
+}
+/*列表属性*/
+html {
+    list-style-type: disc;
+    list-style-image: none;
+    list-style-position: outside;
+}
+
+a{
+    text-decoration: none;
+}
+/*打印属性
+html {
+  page-break-inside: ;
+}*/
