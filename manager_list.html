@@ -1,0 +1,300 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <link rel="stylesheet" href="font/iconfont.css">
+  <link rel="script" href="font/iconfont.js">
+</head>
+
+<body>
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+  <!-- Add your site or application content here -->
+  <p>Hello world! This is HTML5 Boilerplate.</p>
+<!--  <script src="js/vendor/modernizr-{{MODERNIZR_VERSION}}.min.js"></script>
+  <script src="https://code.jquery.com/jquery-{{JQUERY_VERSION}}.min.js" integrity="{{JQUERY_SRI_HASH}}" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-{{JQUERY_VERSION}}.min.js"><\/script>')</script>-->
+  <script src="js/vendor/jquery-3.3.1.js"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+  <style type="text/css">
+    body{
+      margin-top: 10px;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    .operate-container{
+      margin-top: 20px;
+      padding: 5px;
+      border-radius: 2px;
+      background-color: #F2F2F2;
+    }
+
+    .table-container{
+      width: 100%;
+      margin-top: 15px;
+    }
+  </style>
+
+  <style type="text/css">
+      .myui-btn{
+        font-size: 16px;
+        height: 42px;
+        line-height: 42px;
+        padding: 0px 20px;
+        border-radius: 3px;
+        border: none;
+        color: white;
+        outline: none;
+        display: inline-block;
+      }
+      .myui-btn:hover{
+        opacity: .8;
+      }
+      .myui-btn-green{
+        background-color: #009688;
+      }
+      .myui-btn-orange{
+        background-color: #FF5722;
+      }
+
+      .myui-input-frame{
+        font-size: 16px;
+        height: 40px;
+        width: 100px;
+        padding: 0px 10px;
+        border-style: solid;
+        border-width: 1px;
+        border-color: rgba(198,198,198,0.8);
+        border-radius: 3px;
+        outline: none;
+      }
+      .myui-input-frame:hover{
+        opacity: 1;
+        border-color: rgba(198,198,198,1);
+      }
+      .myui-input-frame:focus{
+        border-color: #009688;
+      }
+  </style>
+
+  <div class="search-container">
+    <input id="name" class="myui-input-frame" type="text" placeholder="用户名">
+    <input id="role" class="myui-input-frame" type="text" placeholder="角色">
+    <input id="begintime" class="myui-input-frame" type="text" placeholder="起始时间">
+    <input id="endtime" class="myui-input-frame" type="text" placeholder="截止时间">
+    <button id="search" class="myui-btn myui-btn-green">搜索</button>
+  </div>
+
+  <div class="operate-container">
+    <button id="add" class="myui-btn myui-btn-green">新增</button>
+    <button id="batch-add" class="myui-btn myui-btn-green">批量导入</button>
+    <button id="batch-del" class="myui-btn myui-btn-orange">批量删除</button>
+  </div>
+
+  <style type="text/css">
+    .myui-dialog-bg{
+      background-color: rgba(221,221,221,0.8);
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      bottom: 0px;
+      right: 0px;
+    }
+    .myui-dialog-content{
+      height: 80%;
+      width: 80%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+    }
+    .myui-dialog-content.myui-dialog-min{
+      height: 50px;
+      width: auto;
+      bottom: 0px;
+      left: 0px;
+      transform: none;
+    }
+    .myui-dialog-frame.myui-dialog-min{
+      display: none;
+    }
+    .myui-dialog-title{
+      height: 50px;
+      line-height: 50px;
+      padding: 0px 20px;
+      background-color: #F8F8F8;
+      color: black;
+      font-size: 16px;
+    }
+    .myui-dialog-title cite{
+      font-style: normal;
+    }
+    .myui-dialog-frame{
+      position: absolute;
+      left: 0px;
+      right: 0px;
+      top: 50px;
+      bottom: 0px;
+      background: #FFFFFF;
+    }
+    .myui-dialog-oprator{
+      display: inline-block;
+      position: absolute;
+      right: 20px;
+    }
+    .myui-dialog-oprator i{
+      cursor: pointer;
+      padding: 0px 5px;
+      margin-right: 5px;
+      height: 50px;
+      line-height: 50px;
+      display: inline-block;
+      font-size: 20px;
+    }
+  </style>
+
+  <div class="myui-dialog-bg">
+    <div class="myui-dialog-content myui-dialog-min">
+      <div class="myui-dialog-title">
+        <cite>标题</cite>
+        <div class="myui-dialog-oprator">
+          <i id="minimize" class="iconfont">&#xe600;</i>
+          <i id="maximize" class="iconfont">&#xe61b;</i>
+          <i id="resize" class="iconfont">&#xe602;</i>
+          <i id="close" class="iconfont">&#xe647;</i>
+        </div>
+      </div>
+      <div class="myui-dialog-frame myui-dialog-min">
+        <iframe frameborder="0" scrolling="yes"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script id="showDialog" type="text/javascript">
+    var obj = {
+        type:'',
+        url:'',
+        skin:'',
+        callback:function () {
+            
+        }
+    }
+    var showDialog = function (obj) {
+
+    };
+  </script>
+
+  //字段：ID 用户名 密码 角色 时间 描述
+  //功能：新增 修改 批量导入 模板下载 搜索
+  <style type="text/css">
+    .myui-checbox{
+      height: 20px;
+      width: 20px;
+      border: 1px solid #d2d2d2;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+    .myui-checbox:hover{
+      border-color: #5FB878;
+    }
+    .myui-checbox.checked{
+      background-color: #5FB878;
+      border-color: #5FB878;
+    }
+    .myui-table{
+      width: 100%;
+      border: 1px solid #dddddd;
+      border-collapse: collapse;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    .myui-table-th{
+      padding: 10px 20px;
+      background-color: #F2F2F2;
+    }
+    .myui-table-td{
+      padding: 15px 20px;
+      background-color: #FFFFFF;
+    }
+    .myui-table,.myui-table tr th,.myui-table tr td{
+      border: 1px solid #E6E6E6;
+    }
+    .myui-table cite{
+      font-style: initial;
+      font-weight: 400;
+      color: #666666;
+      font-size: 16px;
+    }
+  </style>
+
+  <div class="table-container">
+    <table class="myui-table">
+      <thead>
+        <tr>
+          <th class="myui-table-th"><div class="myui-checbox"></div></th>
+          <th class="myui-table-th"><cite>ID</cite></th>
+          <th class="myui-table-th"><cite>用户名</cite></th>
+          <th class="myui-table-th"><cite>角色</cite></th>
+          <th class="myui-table-th"><cite>时间</cite></th>
+          <th class="myui-table-th"><cite>描述</cite></th>
+          <th class="myui-table-th"><cite>操作</cite></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="myui-table-td"><div class="myui-checbox"></div></td>
+          <td class="myui-table-td"><cite>{$id}</cite></td>
+          <td class="myui-table-td"><cite>{$userName}</cite></td>
+          <td class="myui-table-td"><cite>{$role}</cite></td>
+          <td class="myui-table-td"><cite>{$createTime}</cite></td>
+          <td class="myui-table-td"><cite>{$describe}</cite></td>
+          <td class="myui-table-td"><div><i class="iconfont"></i><i class="iconfont"></i></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script id="row" type="text/x-jquery-tmpl">
+        <tr>
+          <td class="myui-table-td"><div class="myui-checbox"><i class="iconfont"></i></div></td>
+          <td class="myui-table-td"><cite>{$id}</cite></td>
+          <td class="myui-table-td"><cite>{$userName}</cite></td>
+          <td class="myui-table-td"><cite>{$role}</cite></td>
+          <td class="myui-table-td"><cite>{$createTime}</cite></td>
+          <td class="myui-table-td"><cite>{$describe}</cite></td>
+          <td class="myui-table-td"></td>
+        </tr>
+  </script>
+
+  <script type="text/javascript">
+
+  </script>
+  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+  <script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-XXXXX-Y', 'auto'); ga('send', 'pageview')
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+
+</html>

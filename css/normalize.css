@@ -6,7 +6,7 @@
 /*可继承属性*/
 /*字体属性*/
 html {
-    font-family: sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 400;
     font-size: 12px;
     font-style: normal;
@@ -29,7 +29,7 @@ html {
 html {
     visibility: visible;
     quotes: none;
-    cursor: none;
+    cursor: auto;
 }
 /*表格属性*/
 html {
@@ -48,6 +48,10 @@ html {
 
 a{
     text-decoration: none;
+}
+
+ul,ol{
+    list-style: none;
 }
 /*打印属性
 html {

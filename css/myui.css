@@ -1,0 +1,85 @@
+.myui-header, .myui-footer {
+    width: 100%;
+    height: 50px;
+    background-color: #222222;
+}
+
+.myui-header {
+    position: absolute;
+    top: 0px;
+}
+
+.myui-header a {
+    margin-left: 30px;
+    height: 100%;
+    text-align: center;
+    display: inline-block;
+    color: #ffffff;
+}
+
+.myui-header .iconfont {
+    font-size: 2.2em;
+    height: 50px;
+    line-height: 50px;
+    display: inline-block;
+}
+
+.myui-footer {
+    position: absolute;
+    bottom: 0px;
+}
+
+
+.myui-nav {
+    height: 100%;
+    width: 100%;
+    font-size: 18px;
+    type: none;
+}
+
+.myui-nav-item {
+    width: 100%;
+}
+
+.myui-nav-item a {
+    line-height: 50px;
+    height: 50px;
+    display: block;
+    position: relative;
+    cursor: pointer;
+}
+
+.myui-nav-item a .before{
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.myui-nav-item a cite{
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.myui-nav-child{
+    overflow: hidden;
+    display: none;
+    margin-left: 10px;
+}
+
+.myui-nav-child a {
+    overflow: hidden;
+}
+
+.myui-nav-child a .before{
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.myui-nav-item a .after{
+    font-size: 20px;
+    position: absolute;
+    right: 30px;
+}
+
+.myui-nav-item.myui-nav-item-open .myui-nav-child {
+    display: block;
+}

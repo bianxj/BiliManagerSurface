@@ -13,250 +13,12 @@
     <!-- Place favicon.ico in the root directory -->
 
     <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/main.css">
 
     <link rel="script" href="font/iconfont.js">
     <link rel="stylesheet" href="font/iconfont.css">
 
-    <style type="text/css">
-        * {
-            padding: 0px;
-            margin: 0px;
-        }
-
-        /*可继承属性*/
-        /*字体属性*/
-        html {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-weight: 400;
-            font-size: 12px;
-            font-style: normal;
-            font-variant: normal;
-            font-stretch: semi-expanded;
-            font-size-adjust: none;
-        }
-
-        /*文本属性*/
-        html {
-            text-indent: 0px;
-            text-align: left;
-            line-height: normal;
-            word-spacing: normal;
-            letter-spacing: normal;
-            text-transform: none;
-            direction: ltr;
-            color: #ffffff;
-        }
-
-        /*杂项属性*/
-        html {
-            visibility: visible;
-            quotes: none;
-            cursor: auto;
-        }
-
-        /*表格属性*/
-        html {
-            caption-side: top;
-            border-collapse: separate;
-            border-spacing: 0px;
-            empty-cells: show;
-            table-layout: auto;
-        }
-
-        /*列表属性*/
-        html {
-            list-style-type: disc;
-            list-style-image: none;
-            list-style-position: outside;
-        }
-
-        ul{
-            list-style: none;
-        }
-    </style>
-
-    <style type="text/css">
-        html, body {
-            width: 100%;
-        }
-
-        cite{
-            font-style: normal;
-        }
-
-        iframe{
-            border-style: inset;
-            border-color: initial;
-            border-image: initial;
-        }
-
-        .middle {
-            position: absolute;
-            top: 50px;
-            bottom: 50px;
-            width: 100%;
-        }
-
-        .nav {
-            height: 100%;
-            width: 220px;
-            border-right: 1px solid #dddddd;
-            overflow: auto;
-            background-color: #EEEEEE;
-        }
-
-        .nav a{
-            color: #333333;
-        }
-
-        .middle .content{
-            position: absolute;
-            top: 0px;
-            bottom: 0px;
-            left: 221px;
-            right: 0px;
-        }
-
-        .card-container{
-            height: 40px;
-            width: 100%;
-            background-color: #EEEEEE;
-        }
-
-        .card-container div{
-            display: inline-block;
-            height: 39px;
-            line-height: 39px;
-            cursor: pointer;
-        }
-
-        .card-container div.active{
-            background-color: white;
-            border-top: #dddddd solid 1px;
-            border-left: #dddddd solid 1px;
-            border-right: #dddddd solid 1px;
-        }
-
-        .card-container .card-item a{
-            display: block;
-            padding: 0px 10px 0px 10px;
-            font-size: 16px;
-            color: black;
-        }
-        .card-container .card-item a .before{
-            padding-right: 5px;
-        }
-        .card-container .card-item a .after{
-            padding-left: 10px;
-        }
-
-        .frame-container{
-            position: absolute;
-            top: 40px;
-            bottom: 0px;
-            left: 0px;
-            right: 0px;
-        }
-
-        .frame-container .frame-item{
-            height: 100%;
-            width: 100%;
-        }
-
-        .frame-container .frame-item iframe{
-            height: 100%;
-            width: 100%;
-        }
-    </style>
-
-    <style type="text/css">
-        .myui-nav {
-            height: 100%;
-            width: 100%;
-            font-size: 18px;
-            type: none;
-        }
-
-        .myui-nav-item {
-            width: 100%;
-        }
-
-        .myui-nav-item a {
-            line-height: 50px;
-            height: 50px;
-            display: block;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .myui-nav-item a .before{
-            display: inline-block;
-            margin-left: 20px;
-        }
-
-        .myui-nav-item a cite{
-            display: inline-block;
-            margin-left: 10px;
-        }
-
-        .myui-nav-child{
-            overflow: hidden;
-            display: none;
-        }
-
-        .myui-nav-child a {
-            overflow: hidden;
-        }
-
-        .myui-nav-child a .before{
-            display: inline-block;
-            margin-left: 30px;
-        }
-
-        .myui-nav-item a .after{
-            font-size: 20px;
-            position: absolute;
-            right: 30px;
-        }
-
-        .myui-nav-item.myui-nav-item-open .myui-nav-child {
-            display: block;
-        }
-    </style>
-
-    <style type="text/css">
-        .myui-header, .myui-footer {
-            width: 100%;
-            height: 50px;
-            background-color: #222222;
-        }
-
-        .myui-header {
-            position: absolute;
-            top: 0px;
-        }
-
-        .myui-header a {
-            margin-left: 30px;
-            height: 100%;
-            text-align: center;
-            display: inline-block;
-            color: #ffffff;
-        }
-
-        .myui-header .iconfont {
-            font-size: 2.2em;
-            height: 50px;
-            line-height: 50px;
-            display: inline-block;
-        }
-
-        .myui-footer {
-            position: absolute;
-            bottom: 0px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/myui.css">
+    <link rel="stylesheet" href="css/index.css">
 
 </head>
 
@@ -268,45 +30,11 @@
 
 <div class="middle">
     <div class="nav">
-        <ul class="myui-nav">
-            <li class="myui-nav-item myui-nav-item-open">
-                <a tag="home"><i class="iconfont before">&#xe6b8</i><cite>测试项</cite><i class="iconfont after">&#xe6a1;</i></a>
-            </li>
-
-            <li class="myui-nav-item">
-                <a><i class="iconfont before">&#xe6b8</i><cite>测试项</cite><i class="iconfont after">&#xe6a1;</i></a>
-                <ul class="myui-nav-child">
-                    <li><a myhref="http://www.baidu1.com"><i class="iconfont before">&#xe6b8</i><cite>测试1</cite><i class="iconfont after"></i></a></li>
-                    <li><a myhref="http://www.baidu2.com"><i class="iconfont before">&#xe6b8</i><cite>测试2</cite><i class="iconfont after"></i></a></li>
-                    <li><a myhref="http://www.baidu3.com"><i class="iconfont before">&#xe6b8</i><cite>测试3</cite><i class="iconfont after"></i></a></li>
-                    <li><a myhref="http://www.baidu4.com"><i class="iconfont before">&#xe6b8</i><cite>测试4</cite><i class="iconfont after"></i></a></li>
-                </ul>
-            </li>
-
-            <li class="myui-nav-item">
-                <a><i class="iconfont before">&#xe6b8</i><cite>测试项</cite><i class="iconfont after">&#xe6a1;</i></a>
-                <ul class="myui-nav-child">
-                    <li><a myhref=""><i class="iconfont before">&#xe6b8</i><cite>测试1</cite><i class="iconfont after"></i></a></li>
-                    <li><a myhref=""><i class="iconfont before">&#xe6b8</i><cite>测试2</cite><i class="iconfont after"></i></a></li>
-                    <li><a myhref=""><i class="iconfont before">&#xe6b8</i><cite>测试3</cite><i class="iconfont after"></i></a></li>
-                    <li><a myhref=""><i class="iconfont before">&#xe6b8</i><cite>测试4</cite><i class="iconfont after"></i></a></li>
-                </ul>
-            </li>
-
-            <li class="myui-nav-item">
-                <a><i class="iconfont before">&#xe6b8</i><cite>测试项</cite><i class="iconfont after">&#xe6a1;</i></a>
-                <ul class="myui-nav-child">
-                    <li><a myhref=""><i class="iconfont before">&#xe6b8</i><cite>测试1</cite><i class="iconfont after"></i></a></li>
-                    <li><a myhref=""><i class="iconfont before">&#xe6b8</i><cite>测试2</cite><i class="iconfont after"></i></a></li>
-                    <li><a myhref=""><i class="iconfont before">&#xe6b8</i><cite>测试3</cite><i class="iconfont after"></i></a></li>
-                    <li><a myhref=""><i class="iconfont before">&#xe6b8</i><cite>测试4</cite><i class="iconfont after"></i></a></li>
-                </ul>
-            </li>
-        </ul>
+        <ul class="myui-nav"></ul>
     </div>
     <div class="content">
         <div class="card-container">
-            <div tag="home" class="card-item active"><a myhref=""><i class="iconfont before">&#xe6b8;</i><cite>首页</cite><i class="iconfont after">&#xe6a1;</i></a></div>
+            <div tag="home" class="card-item active"><a myhref=""><i class="iconfont before">&#xe6b8;</i><cite>首页</cite></a></div>
         </div>
         <div class="frame-container">
             <div tag="home" class="frame-item active"><iframe src="http://www.baidu.com" frameborder="0" scrolling="yes"></iframe></div>
@@ -328,61 +56,171 @@
 <script src="https://code.jquery.com/jquery-{{JQUERY_VERSION}}.min.js" integrity="{{JQUERY_SRI_HASH}}"
         crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-{{JQUERY_VERSION}}.min.js"><\/script>')</script>-->
+
+<!--template start-->
+<script id="tmpl-card" type="text/x-jquery-tmpl">
+    <div tag=${tag} class="card-item"><a myhref=${href}><i class="iconfont before">${icBe4}</i><cite>${content}</cite><i class="iconfont after close">&#xe647;</i></a></div>
+</script>
+<script id="tmpl-frame" type="text/x-jquery-tmpl">
+    <div tag=${tag} class="frame-item"><iframe src=${href} frameborder="0" scrolling="yes"></iframe></div>
+</script>
+<!--template end-->
+
 <script src="js/vendor/jquery-3.3.1.js"></script>
+<script src="js/vendor/jquery.tmpl.js"></script>
 <script src="js/plugins.js"></script>
 <script src="js/main.js"></script>
 
 <script type="text/javascript">
+    var data = [
+        {tag:'home',content:'首页',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]
+        },
+        {tag:'template-manager',content:'模板管理',icBe4:'&#xe6b8;',href:'',children:[]
+        },
+        //字段：ID 用户名 密码 角色 时间 描述
+        //功能：新增 修改 批量导入 模板下载 搜索
+        {tag:'manager-list',content:'管理员列表',icBe4:'&#xe6b8;',href:'./account_list.html',children:[]
+        },
+        {tag:'permission-manager',content:'权限管理',icBe4:'&#xe6b8;',href:'',
+            children:[
+                {tag:'role-manager',content:'角色管理',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]}
+            ]
+        },
+        {tag:'anime-manager',content:'动漫管理',icBe4:'&#xe6b8;',href:'',
+            children:[
+                {tag:'anime-series-add',content:'录入系列',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
+                {tag:'anime-series-batch',content:'批量导入系列',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
+                {tag:'anime-series-edit',content:'修改系列',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
+                {tag:'anime-add',content:'录入动漫',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
+                {tag:'anime-batch',content:'批量导入动漫',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
+                {tag:'anime-edit',content:'修改动漫',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]}
+            ]
+        }
+    ];
+    var data2 = {};
+    var initNav = function () {
+        var html = '';
+        for (var i=0;i<data.length;i++){
+            html += createNavItem(data[i]);
+        }
+        $('.myui-nav').append(html);
+    }
+    var createNavItem = function (item) {
+        var temp = data2[item.tag] = {};
+        temp['tag'] = item.tag;
+        temp['href'] = item.href;
+        temp['icBe4'] = item.icBe4;
+        temp['icAft'] = item.icAft;
+        temp['content'] = item.content;
+
+        var html = '<li class="myui-nav-item">';
+        html+='<a tag="'+item.tag+'" myhref="'+item.href+'">';
+        if ( item.children && item.children.length > 0 ) {
+            html += '<i class="iconfont before">' + item.icBe4 + '</i><cite>' + item.content + '</cite><i class="iconfont after">&#xe610;</i>';
+        } else {
+            html += '<i class="iconfont before">' + item.icBe4 + '</i><cite>' + item.content + '</cite>';
+        }
+        html+='</a>';
+        if ( item.children && item.children.length > 0 ){
+            html+='<ul class="myui-nav-child">'
+            for(var i=0;i<item.children.length;i++){
+                html+=createNavItem(item.children[i]);
+            }
+            html+='</ul>';
+        }
+        html+='</li>';
+        return html
+    }
+
     $(document).ready(function () {
+        initNav();
+
+        $(".card-container").on('click','.close',closeCardClick);
+        $(".card-container").on('click','.card-item',cardItemClick);
         $(".nav a").on('click',navItemClick);
     });
+
+    var refreshEvent = function () {
+    }
 
     var navItemClick = function () {
         var child = $(this).siblings('.myui-nav-child');
         var childCount = child.length;
         if ( childCount > 0 ){
-            navCollapseToggle(child);
+            navCollapseToggle($(this),child);
         } else {
             navShowPage($(this));
         }
     };
 
-    var navCollapseToggle = function (child) {
-        child.toggle('normal');
+    var cardItemClick = function () {
+        var tag = $(this).attr('tag');
+        switchCard(tag);
+    }
+
+    var navCollapseToggle = function (link,child) {
+        child.toggle('normal',function () {
+            if ( child.is(":visible") ){
+                link.children(".iconfont.after").html('&#xe628;');
+            } else {
+                link.children(".iconfont.after").html('&#xe610;');
+            }
+        });
     };
     
     var navShowPage = function (child) {
-        //TODO alert(child.attr('myhref'));
         var tag = child.attr('tag');
         var cardItem = $(".card-item[tag='"+tag+"']");
         if ( cardItem.length == 0 ){
-            addCard(tag)
+            appendCard(tag)
         } else {
-            switchCard(cardItem);
+            switchCard(tag);
         }
     }
     
-    var addCard = function (tag) {
-        
+    var appendCard = function (tag) {
+        // var object = {tag:'test',target_url:'http://www.baidu.com',icon_before:'',content:'测试',icon_after:'&#xe6a1;'};
+        var object = data2[tag];
+        $('#tmpl-card').tmpl(object).appendTo('.card-container');
+        $('#tmpl-frame').tmpl(object).appendTo('.frame-container');
+        refreshEvent();
+        switchCard(tag);
+    }
+
+    var closeCardClick = function () {
+        var parent = $(this).parents("div[tag]");
+        var tag = parent.attr('tag');
+        var next = parent.next("div[tag]");
+        if ( next.length > 0 ){
+            switchCard(next.attr('tag'));
+        } else {
+            var prev = parent.prev("div[tag]");
+            switchCard(prev.attr('tag'));
+        }
+
+        $(".card-item[tag='"+tag+"']").remove();
+        $(".frame-item[tag='"+tag+"']").remove();
+        return false;
     }
     
     var switchCard = function (tag) {
-        activeCardItem(tag);
-        activeFrameItem(tag);
+        activeItem('.card-item',tag);
+        activeItem('.frame-item',tag);
     }
 
-    var activeCardItem = function (tag){
-        $('.card-item').each(function () {
+    var activeItem = function (selector,tag) {
+        $(selector).each(function () {
             if ( $(this).attr('tag') == tag ){
-
+                $(this).addClass('active');
+            } else {
+                $(this).removeClass('active');
             }
-        });
-
+        })
     }
 
-    var activeFrameItem = function (tag){
+</script>
+<script type="text/javascript">
 
-    }
 </script>
 
 <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->

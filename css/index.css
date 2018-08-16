@@ -1,0 +1,100 @@
+html, body {
+    width: 100%;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+cite{
+    font-style: normal;
+}
+
+iframe{
+    border-style: inset;
+    border-color: initial;
+    border-image: initial;
+}
+
+.middle {
+    position: absolute;
+    top: 50px;
+    bottom: 50px;
+    width: 100%;
+}
+
+.nav {
+    height: 100%;
+    width: 220px;
+    border-right: 1px solid #dddddd;
+    overflow: auto;
+    background-color: #EEEEEE;
+}
+
+.nav a{
+    color: #333333;
+}
+
+.middle .content{
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 221px;
+    right: 0px;
+}
+
+.card-container{
+    height: 40px;
+    width: 100%;
+    background-color: #EEEEEE;
+}
+
+.card-container div{
+    display: inline-block;
+    height: 39px;
+    line-height: 39px;
+    cursor: pointer;
+}
+
+.card-container div.active{
+    background-color: white;
+    border-top: #dddddd solid 1px;
+    border-left: #dddddd solid 1px;
+    border-right: #dddddd solid 1px;
+}
+
+.card-container .card-item a{
+    display: block;
+    padding: 0px 10px 0px 10px;
+    font-size: 16px;
+    color: black;
+}
+.card-container .card-item a .before{
+    padding-right: 5px;
+}
+.card-container .card-item a .after{
+    padding-left: 10px;
+}
+
+.frame-container{
+    position: absolute;
+    top: 40px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+.frame-container .frame-item{
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+
+.frame-container .frame-item.active{
+    display: block;
+}
+
+.frame-container .frame-item iframe{
+    height: 100%;
+    width: 100%;
+}
