@@ -17,6 +17,9 @@
 
   <link rel="stylesheet" href="font/iconfont.css">
   <link rel="script" href="font/iconfont.js">
+
+  <link rel="stylesheet" href="css/myui_dialog.css">
+
 </head>
 
 <body>
@@ -30,12 +33,12 @@
   <script src="https://code.jquery.com/jquery-{{JQUERY_VERSION}}.min.js" integrity="{{JQUERY_SRI_HASH}}" crossorigin="anonymous"></script>
   <script>window.jQuery || document.write('<script src="js/vendor/jquery-{{JQUERY_VERSION}}.min.js"><\/script>')</script>-->
   <script src="js/vendor/jquery-3.3.1.js"></script>
+  <script src="js/vendor/jquery.tmpl.js"></script>
   <script src="js/plugins.js"></script>
   <script src="js/main.js"></script>
 
   <style type="text/css">
-    body{
-      margin-top: 10px;
+    html,body{
       margin-left: 20px;
       margin-right: 20px;
     }
@@ -109,97 +112,28 @@
     <button id="batch-del" class="myui-btn myui-btn-orange">批量删除</button>
   </div>
 
-  <style type="text/css">
-    .myui-dialog-bg{
-      background-color: rgba(221,221,221,0.8);
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      bottom: 0px;
-      right: 0px;
-    }
-    .myui-dialog-content{
-      height: 80%;
-      width: 80%;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%,-50%);
-    }
-    .myui-dialog-content.myui-dialog-min{
-      height: 50px;
-      width: auto;
-      bottom: 0px;
-      left: 0px;
-      transform: none;
-    }
-    .myui-dialog-frame.myui-dialog-min{
-      display: none;
-    }
-    .myui-dialog-title{
-      height: 50px;
-      line-height: 50px;
-      padding: 0px 20px;
-      background-color: #F8F8F8;
-      color: black;
-      font-size: 16px;
-    }
-    .myui-dialog-title cite{
-      font-style: normal;
-    }
-    .myui-dialog-frame{
-      position: absolute;
-      left: 0px;
-      right: 0px;
-      top: 50px;
-      bottom: 0px;
-      background: #FFFFFF;
-    }
-    .myui-dialog-oprator{
-      display: inline-block;
-      position: absolute;
-      right: 20px;
-    }
-    .myui-dialog-oprator i{
-      cursor: pointer;
-      padding: 0px 5px;
-      margin-right: 5px;
-      height: 50px;
-      line-height: 50px;
-      display: inline-block;
-      font-size: 20px;
-    }
-  </style>
+  <link rel="import" href="template/tmpl_myui_dialog.html">
 
-  <div class="myui-dialog-bg">
-    <div class="myui-dialog-content myui-dialog-min">
-      <div class="myui-dialog-title">
-        <cite>标题</cite>
-        <div class="myui-dialog-oprator">
-          <i id="minimize" class="iconfont">&#xe600;</i>
-          <i id="maximize" class="iconfont">&#xe61b;</i>
-          <i id="resize" class="iconfont">&#xe602;</i>
-          <i id="close" class="iconfont">&#xe647;</i>
-        </div>
-      </div>
-      <div class="myui-dialog-frame myui-dialog-min">
-        <iframe frameborder="0" scrolling="yes"></iframe>
-      </div>
-    </div>
-  </div>
+  <script type="text/javascript">
+    $(document).ready(function () {
+        // $('#add').on('click',onAddClick);
+        freshTabOper(obj);
+    })
 
-  <script id="showDialog" type="text/javascript">
-    var obj = {
-        type:'',
-        url:'',
-        skin:'',
-        callback:function () {
-            
-        }
+    var onAddClick = function () {
+      // showDialog();
+        window.myui.dialog.showDialog({
+            type:'1',
+            title:'测试',
+            url:'http://www.baidu.com',
+            skin:'',
+            // area:{width:1200,height:600},
+            data:{},
+            callback:function () {
+
+            }
+        });
     }
-    var showDialog = function (obj) {
-
-    };
   </script>
 
   //字段：ID 用户名 密码 角色 时间 描述
@@ -245,6 +179,37 @@
       color: #666666;
       font-size: 16px;
     }
+    .myui-table-operator{
+      margin-top: 20px;
+      text-align: center;
+    }
+    .myui-table-operator .btn{
+      height: 50px;
+      min-width: 50px;
+      text-align: center;
+      line-height: 50px;
+      border: 1px solid #DDDDDD;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+      background-color: #FFFFFF;
+      color: #0C0C0C;
+      font-size: 18px;
+    }
+    .myui-table-operator .btn.selected{
+      background-color: #009688;
+      color: #FFFFFF;
+    }
+    .myui-table-operator .btn.ellipsis{
+      pointer-events: none;
+      content: '...';
+      background-color: transparent;
+      border: none;
+      color: #0C0C0C;
+    }
+    .myui-table-operator #middle{
+      display: inline-block;
+    }
   </style>
 
   <div class="table-container">
@@ -272,7 +237,84 @@
         </tr>
       </tbody>
     </table>
+    <div class="myui-table-operator">
+      <button id="prev" class="btn"><<</button>
+      <div id="middle">
+      </div>
+      <button id="next" class="btn">>></button>
+    </div>
   </div>
+
+  <script type="text/javascript">
+    var obj = {
+        cur:2,
+        size:9,
+        callback:function (page) {
+            alert(page);
+        }
+    };
+
+    var object;
+    var freshTabOper = function () {
+        var count = obj.size < 9?obj.size:9;
+        var middle = $('#middle');
+        var size = obj.size;
+        var cur = obj.cur;
+        object = obj;
+
+        middle.empty();
+        if ( count < 9 ){
+            for(var i=1;i<=count;i++)
+            middle.append(createTabOper(i,i==cur));
+        } else {
+            var contents = new Array(9);
+            contents[0] = 1;
+            contents[8] = size;
+            if ( cur < 6 ){
+              for(var i=0;i<7;i++){
+                  contents[i+1] = 2+i;
+              }
+            } else if ( (size-cur) < 6 ) {
+              for(var i=0;i<7;i++){
+                  contents[i+1] = size-1-i;
+              }
+            } else {
+              contents[1] = '...';
+              contents[7] = '...';
+              for(var i=0;i<5;i++){
+                  contents[2+i] = cur-2+i;
+              }
+            }
+            for(var content in contents){
+                middle.append(createTabOper(content,content==cur));
+            }
+        }
+
+        $('.myui-table-operator .btn').on('click',function () {
+            var btn = $(this).html();
+            if ( '<<' == btn ){
+                object.callback(object.size-1);
+            } else if ( '>>' == btn ){
+                object.callback(object.size+1);
+            } else {
+                object.callback(btn);
+            }
+        });
+    }
+
+    var createTabOper = function (content,selected) {
+        var html = '<button class="btn';
+        if ( '...' == content ){
+            html+=' ellipsis';
+        }
+        if ( selected ) {
+            html+=' selected';
+        }
+        html+='">'+content+'</button>';
+        return html;
+    }
+
+  </script>
 
   <script id="row" type="text/x-jquery-tmpl">
         <tr>
@@ -286,9 +328,6 @@
         </tr>
   </script>
 
-  <script type="text/javascript">
-
-  </script>
   <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
   <script>
     window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
