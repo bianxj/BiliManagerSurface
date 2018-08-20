@@ -144,5 +144,178 @@
         }
         return shared;
     })();
+  var tableHelper = (function (option) {
+        var opt = {pageSize:10};
+        if ( option ){
+            opt = option;
+        }
+
+        var obj;
+        var shared = {};
+        var operObj = {};
+        // var views = new Array();
+
+        shared.initTable = function (object,option) {
+            obj = object;
+            operObj.cur = obj.page;
+            operObj.size = Math.ceil(obj.lines/opt.pageSize);
+            operObj.callback = operCallback;
+            tableOper.initOper(operObj);
+            refreshTableTitle();
+            refreshTableItem(operObj.cur);
+        }
+
+        shared.getCurrentPage = function () {
+            return obj.page;
+        }
+
+        var operCallback = function (page) {
+            obj.page = page;
+            refreshTableItem(page);
+        }
+
+        var refreshTableTitle = function () {
+            var title = obj.getTitle();
+            $('.myui-table thead').append(title);
+        }
+
+        var refreshTableItem = function (page) {
+            $('.myui-table tbody').empty();
+            var index = 0;
+            for (var i=0;i<opt.pageSize;i++ ){
+                index = (page-1)*opt.pageSize+i;
+                if ( index < obj.lines  ) {
+                    var view = obj.getView(index);
+                    $('.myui-table tbody').append(view);
+                }
+            }
+        }
+
+        return shared;
+    })();
+  var tableOper = (function (option) {
+        var opt = {count:9,ellipsis:'...'};
+        if ( option ){
+            opt = option;
+        }
+        var obj;
+        var shared = {};
+        var selectClass = 'selected';
+        var ellipsisClass = 'ellipsis';
+
+        shared.initOper = function (object,option) {
+            obj = object;
+            if ( option ){
+                opt = option;
+            }
+            var count = obj.size < opt.count?obj.size:opt.count;
+            var middle = $('#middle');
+            var size = obj.size;
+            var cur = obj.cur;
+
+            middle.empty();
+            if ( size <= opt.count ){
+                for(var i=1;i<=count;i++)
+                    middle.append(createTabOper(i,i==cur));
+            } else {
+                var contents = getOpersContent(cur,size);
+                for(var index in contents){
+                    middle.append(createTabOper(contents[index],contents[index]==cur));
+                }
+            }
+            $('.myui-table-operator .btn').on('click',operClick);
+        }
+        shared.getCurrentPage = function () {
+            return obj.cur;
+        }
+
+        var createTabOper = function (content,selected) {
+            var html = '<button class="btn';
+            if ( opt.ellipsis == content ){
+                html+=' '+ellipsisClass;
+            }
+            if ( selected ) {
+                html+=' '+selectClass;
+            }
+            html+='">'+content+'</button>';
+            return html;
+        }
+
+        var operClick = function () {
+            var btn = $(this).html();
+            var cur = obj.cur;
+            var page;
+            if ( "&lt;&lt;" == btn ){
+                page = cur-1;
+            } else if ( "&gt;&gt;" == btn ){
+                page = cur+1;
+            } else {
+                page = parseInt(btn);
+            }
+            if ( page < 1 || page > obj.size ){
+                return;
+            }
+            refreshTabOper(page);
+            obj.callback(page);
+        }
+
+        var refreshTabOper = function(page){
+            var opers = $('.myui-table-operator #middle .btn');
+
+            if ( obj.size > opt.count ){
+                var size = obj.size;
+                var cur = page;
+                var contents = getOpersContent(cur,size);
+                for (var i=0;i<opt.count;i++){
+                    $(opers[i]).html(contents[i]);
+                }
+            }
+
+            opers.each(function () {
+                var content = $(this).html();
+                if ( content == page ) {
+                    $(this).addClass(selectClass);
+                    $(this).removeClass(ellipsisClass);
+                } else if ( content == opt.ellipsis ) {
+                    $(this).removeClass(selectClass);
+                    $(this).addClass(ellipsisClass);
+                } else {
+                    $(this).removeClass(selectClass);
+                    $(this).removeClass(ellipsisClass);
+                }
+            })
+
+            obj.cur = page;
+        }
+
+        var getOpersContent = function (cur,size) {
+            var contents = new Array(opt.count);
+            contents[0] = 1;
+            contents[opt.count-1] = size;
+            var center = Math.ceil(opt.count/2.0);
+            if ( cur <= center ){
+                for(var i=0;i<opt.count-3;i++){
+                    contents[i+1] = 2+i;
+                }
+                contents[opt.count-2] = opt.ellipsis;
+            } else if ( (size-cur) <= center ) {
+                contents[1] = opt.ellipsis;
+                for(var i=0;i<opt.count-3;i++){
+                    contents[i+2] = size-opt.count+3+i;
+                }
+            } else {
+                contents[1] = opt.ellipsis;
+                contents[opt.count-2] = opt.ellipsis;
+                for(var i=0;i<opt.count-4;i++){
+                    contents[2+i] = cur-2+i;
+                }
+            }
+            return contents;
+        }
+
+        return shared;
+    })();
+
   myui['dialog'] = myuiDialog;
+  myui['tableHelper'] = tableHelper;
 }())

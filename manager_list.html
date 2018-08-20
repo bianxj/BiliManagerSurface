@@ -19,24 +19,9 @@
   <link rel="script" href="font/iconfont.js">
 
   <link rel="stylesheet" href="css/myui_dialog.css">
+  <link rel="stylesheet" href="css/vendor/dcalendar.picker.css">
 
-</head>
-
-<body>
-  <!--[if lte IE 9]>
-    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-  <![endif]-->
-
-  <!-- Add your site or application content here -->
-  <p>Hello world! This is HTML5 Boilerplate.</p>
-<!--  <script src="js/vendor/modernizr-{{MODERNIZR_VERSION}}.min.js"></script>
-  <script src="https://code.jquery.com/jquery-{{JQUERY_VERSION}}.min.js" integrity="{{JQUERY_SRI_HASH}}" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="js/vendor/jquery-{{JQUERY_VERSION}}.min.js"><\/script>')</script>-->
-  <script src="js/vendor/jquery-3.3.1.js"></script>
-  <script src="js/vendor/jquery.tmpl.js"></script>
-  <script src="js/plugins.js"></script>
-  <script src="js/main.js"></script>
-
+  <!-- ######################################################################## -->
   <style type="text/css">
     html,body{
       margin-left: 20px;
@@ -54,102 +39,92 @@
       width: 100%;
       margin-top: 15px;
     }
-  </style>
 
-  <style type="text/css">
-      .myui-btn{
-        font-size: 16px;
-        height: 42px;
-        line-height: 42px;
-        padding: 0px 20px;
-        border-radius: 3px;
-        border: none;
-        color: white;
-        outline: none;
-        display: inline-block;
-      }
-      .myui-btn:hover{
-        opacity: .8;
-      }
-      .myui-btn-green{
-        background-color: #009688;
-      }
-      .myui-btn-orange{
-        background-color: #FF5722;
-      }
-
-      .myui-input-frame{
-        font-size: 16px;
-        height: 40px;
-        width: 100px;
-        padding: 0px 10px;
-        border-style: solid;
-        border-width: 1px;
-        border-color: rgba(198,198,198,0.8);
-        border-radius: 3px;
-        outline: none;
-      }
-      .myui-input-frame:hover{
-        opacity: 1;
-        border-color: rgba(198,198,198,1);
-      }
-      .myui-input-frame:focus{
-        border-color: #009688;
-      }
-  </style>
-
-  <div class="search-container">
-    <input id="name" class="myui-input-frame" type="text" placeholder="用户名">
-    <input id="role" class="myui-input-frame" type="text" placeholder="角色">
-    <input id="begintime" class="myui-input-frame" type="text" placeholder="起始时间">
-    <input id="endtime" class="myui-input-frame" type="text" placeholder="截止时间">
-    <button id="search" class="myui-btn myui-btn-green">搜索</button>
-  </div>
-
-  <div class="operate-container">
-    <button id="add" class="myui-btn myui-btn-green">新增</button>
-    <button id="batch-add" class="myui-btn myui-btn-green">批量导入</button>
-    <button id="batch-del" class="myui-btn myui-btn-orange">批量删除</button>
-  </div>
-
-  <link rel="import" href="template/tmpl_myui_dialog.html">
-
-  <script type="text/javascript">
-    $(document).ready(function () {
-        // $('#add').on('click',onAddClick);
-        freshTabOper(obj);
-    })
-
-    var onAddClick = function () {
-      // showDialog();
-        window.myui.dialog.showDialog({
-            type:'1',
-            title:'测试',
-            url:'http://www.baidu.com',
-            skin:'',
-            // area:{width:1200,height:600},
-            data:{},
-            callback:function () {
-
-            }
-        });
+    .myui-checkbox{
+      background-color: #FFFFFF;
     }
-  </script>
 
-  //字段：ID 用户名 密码 角色 时间 描述
-  //功能：新增 修改 批量导入 模板下载 搜索
+    .myui-checkbox .iconfont{
+      color: #FFFFFF;
+      display: block;
+      text-align: center;
+    }
+    
+    td .opertor .iconfont{
+      color: #000;
+      display: inline-block;
+      cursor: pointer;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+
+    table .column-check{
+      width: 60px;
+    }
+
+    table .column-id{
+      width: 60px;
+    }
+
+    table .column-opertor{
+      width: 100px;
+    }
+  </style>
+
   <style type="text/css">
-    .myui-checbox{
+    .myui-btn{
+      font-size: 16px;
+      height: 42px;
+      line-height: 42px;
+      padding: 0px 20px;
+      border-radius: 3px;
+      border: none;
+      color: white;
+      outline: none;
+      display: inline-block;
+    }
+    .myui-btn:hover{
+      opacity: .8;
+    }
+    .myui-btn-green{
+      background-color: #009688;
+    }
+    .myui-btn-orange{
+      background-color: #FF5722;
+    }
+
+    .myui-input-frame{
+      font-size: 16px;
+      height: 40px;
+      width: 100px;
+      padding: 0px 10px;
+      border-style: solid;
+      border-width: 1px;
+      border-color: rgba(198,198,198,0.8);
+      border-radius: 3px;
+      outline: none;
+    }
+    .myui-input-frame:hover{
+      opacity: 1;
+      border-color: rgba(198,198,198,1);
+    }
+    .myui-input-frame:focus{
+      border-color: #009688;
+    }
+  </style>
+
+  <style type="text/css">
+    .myui-checkbox{
       height: 20px;
       width: 20px;
       border: 1px solid #d2d2d2;
       border-radius: 2px;
       cursor: pointer;
     }
-    .myui-checbox:hover{
+    .myui-checkbox:hover{
       border-color: #5FB878;
     }
-    .myui-checbox.checked{
+    .myui-checkbox.checked{
       background-color: #5FB878;
       border-color: #5FB878;
     }
@@ -179,6 +154,23 @@
       color: #666666;
       font-size: 16px;
     }
+
+    /*.myui-table tbody{*/
+    /*display: block;*/
+    /*height: 500px;*/
+    /*overflow-y: scroll;*/
+    /*}*/
+    /*.myui-table thead,tbody tr{*/
+    /*display: table;*/
+    /*width: 100%;*/
+    /*table-layout: fixed;*/
+    /*}*/
+    /*table thead {*/
+    /*width: calc( 100% - 1em )*/
+    /*}*/
+  </style>
+
+  <style>
     .myui-table-operator{
       margin-top: 20px;
       text-align: center;
@@ -213,30 +205,35 @@
       display: inline-block;
     }
   </style>
+</head>
+
+<body>
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+  <!-- Add your site or application content here -->
+  <p>Hello world! This is HTML5 Boilerplate.</p>
+
+  <div class="search-container">
+    <input id="name" class="myui-input-frame" type="text" placeholder="用户名">
+    <input id="role" class="myui-input-frame" type="text" placeholder="角色">
+    <input id="begintime" class="myui-input-frame" type="text" placeholder="起始时间">
+    <input id="endtime" class="myui-input-frame" type="text" placeholder="截止时间">
+    <button id="search" class="myui-btn myui-btn-green">搜索</button>
+  </div>
+
+  <div class="operate-container">
+    <button id="add" class="myui-btn myui-btn-green">新增</button>
+    <button id="batch-add" class="myui-btn myui-btn-green">批量导入</button>
+    <button id="batch-del" class="myui-btn myui-btn-orange">批量删除</button>
+  </div>
 
   <div class="table-container">
     <table class="myui-table">
       <thead>
-        <tr>
-          <th class="myui-table-th"><div class="myui-checbox"></div></th>
-          <th class="myui-table-th"><cite>ID</cite></th>
-          <th class="myui-table-th"><cite>用户名</cite></th>
-          <th class="myui-table-th"><cite>角色</cite></th>
-          <th class="myui-table-th"><cite>时间</cite></th>
-          <th class="myui-table-th"><cite>描述</cite></th>
-          <th class="myui-table-th"><cite>操作</cite></th>
-        </tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="myui-table-td"><div class="myui-checbox"></div></td>
-          <td class="myui-table-td"><cite>{$id}</cite></td>
-          <td class="myui-table-td"><cite>{$userName}</cite></td>
-          <td class="myui-table-td"><cite>{$role}</cite></td>
-          <td class="myui-table-td"><cite>{$createTime}</cite></td>
-          <td class="myui-table-td"><cite>{$describe}</cite></td>
-          <td class="myui-table-td"><div><i class="iconfont"></i><i class="iconfont"></i></div></td>
-        </tr>
       </tbody>
     </table>
     <div class="myui-table-operator">
@@ -247,86 +244,115 @@
     </div>
   </div>
 
+<!--  <script src="js/vendor/modernizr-{{MODERNIZR_VERSION}}.min.js"></script>
+  <script src="https://code.jquery.com/jquery-{{JQUERY_VERSION}}.min.js" integrity="{{JQUERY_SRI_HASH}}" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-{{JQUERY_VERSION}}.min.js"><\/script>')</script>-->
+  <script src="js/vendor/jquery-3.3.1.js"></script>
+  <script src="js/vendor/jquery.tmpl.js"></script>
+  <script src="js/plugins.js"></script>
+  <!--<script src="js/main.js"></script>-->
+
+  <script src="js/vendor/dcalendar.picker.js"></script>
+
+
+  <link rel="import" href="template/tmpl_myui_dialog.html">
+
   <script type="text/javascript">
-    var obj = {
-        cur:2,
-        size:9,
-        callback:function (page) {
-            alert(page);
-        }
-    };
+    $(document).ready(function () {
+        // $('#add').on('click',onAddClick);
+        window.myui.tableHelper.initTable(
+            {
+                page: 1, lines: 198,
+                getTitle: function () {
+                    return $('#title').tmpl();
+                },
+                getView: function (index, view) {
+                    var html = $('#row').tmpl({
+                        id: index,
+                        userName: 'test',
+                        role: 'ttt',
+                        createTime: 'cccc',
+                        describe: 'ddddd'
+                    });
+                    return html;
+                }
+            });
 
-    var object;
-    var freshTabOper = function () {
-        var count = obj.size < 9?obj.size:9;
-        var middle = $('#middle');
-        var size = obj.size;
-        var cur = obj.cur;
-        object = obj;
+        $('.myui-checkbox').on('click',checkBoxClick);
+        $('.column-opertor .edit').on('click',editClick);
+        $('.column-opertor .delete').on('click',deleteClick);
+        $('#begintime').dcalendarpicker({
+            format:'yyyy-mm-dd'
+        });
+        $('#endtime').dcalendarpicker({
+            format:'yyyy-mm-dd'
+        });
+    })
 
-        middle.empty();
-        if ( count < 9 ){
-            for(var i=1;i<=count;i++)
-            middle.append(createTabOper(i,i==cur));
+    var deleteClick = function () {
+        alert('Todo delete');
+    }
+
+    var editClick = function () {
+        alert('Todo edit');
+    }
+
+    var checkBoxClick = function () {
+        if ( $(this).parents('td').length > 0 ){
+            if ( $(this).hasClass('checked') ){
+                $('th .myui-checkbox').removeClass('checked');
+            }
+            $(this).toggleClass('checked');
         } else {
-            var contents = new Array(9);
-            contents[0] = 1;
-            contents[8] = size;
-            if ( cur < 6 ){
-              for(var i=0;i<7;i++){
-                  contents[i+1] = 2+i;
-              }
-            } else if ( (size-cur) < 6 ) {
-              for(var i=0;i<7;i++){
-                  contents[i+1] = size-1-i;
-              }
+            if ( $(this).hasClass('checked') ){
+                $('table .myui-checkbox').removeClass('checked');
             } else {
-              contents[1] = '...';
-              contents[7] = '...';
-              for(var i=0;i<5;i++){
-                  contents[2+i] = cur-2+i;
-              }
-            }
-            for(var content in contents){
-                middle.append(createTabOper(content,content==cur));
+                $('table .myui-checkbox').addClass('checked');
             }
         }
+    }
 
-        $('.myui-table-operator .btn').on('click',function () {
-            var btn = $(this).html();
-            if ( '<<' == btn ){
-                object.callback(object.size-1);
-            } else if ( '>>' == btn ){
-                object.callback(object.size+1);
-            } else {
-                object.callback(btn);
+    var onAddClick = function () {
+      // showDialog();
+        window.myui.dialog.showDialog({
+            type:'1',
+            title:'测试',
+            url:'http://www.baidu.com',
+            skin:'',
+            // area:{width:1200,height:600},
+            data:{},
+            callback:function () {
+
             }
         });
     }
-
-    var createTabOper = function (content,selected) {
-        var html = '<button class="btn';
-        if ( '...' == content ){
-            html+=' ellipsis';
-        }
-        if ( selected ) {
-            html+=' selected';
-        }
-        html+='">'+content+'</button>';
-        return html;
-    }
-
   </script>
+
+  //字段：ID 用户名 密码 角色 时间 描述
+  //功能：新增 修改 批量导入 模板下载 搜索
+
 
   <script id="row" type="text/x-jquery-tmpl">
         <tr>
-          <td class="myui-table-td"><div class="myui-checbox"><i class="iconfont"></i></div></td>
-          <td class="myui-table-td"><cite>{$id}</cite></td>
-          <td class="myui-table-td"><cite>{$userName}</cite></td>
-          <td class="myui-table-td"><cite>{$role}</cite></td>
-          <td class="myui-table-td"><cite>{$createTime}</cite></td>
-          <td class="myui-table-td"><cite>{$describe}</cite></td>
-          <td class="myui-table-td"></td>
+          <td class="myui-table-td column-check"><div class="myui-checkbox"><i class="iconfont">&#xe63c;</i></div></td>
+          <td class="myui-table-td column-id"><cite>${id}</cite></td>
+          <td class="myui-table-td"><cite>${userName}</cite></td>
+          <td class="myui-table-td"><cite>${role}</cite></td>
+          <td class="myui-table-td"><cite>${createTime}</cite></td>
+          <td class="myui-table-td"><cite>${describe}</cite></td>
+          <td class="myui-table-td column-opertor"><div class="opertor"><i class="iconfont edit">&#xe640;</i><i class="iconfont delete">&#xe637;</i></div></td>
+        </tr>
+  </script>
+
+  <script id="title" type="text/x-jquery-tmpl">
+        <tr>
+          <th class="myui-table-th column-check"><div class="myui-checkbox"><i class="iconfont">&#xe63c;</i></div></th>
+          <th class="myui-table-th column-id"><cite>ID</cite></th>
+          <th class="myui-table-th"><cite>用户名</cite></th>
+          <th class="myui-table-th"><cite>角色</cite></th>
+          <th class="myui-table-th"><cite>时间</cite></th>
+          <th class="myui-table-th"><cite>描述</cite></th>
+          <th class="myui-table-th column-opertor"><cite>操作</cite></th>
         </tr>
   </script>
 
