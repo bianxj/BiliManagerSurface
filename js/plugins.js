@@ -31,7 +31,15 @@
         var width;
         var height;
 
-        shared.showDialog = function (obj) {
+        shared.showPromptDialog = function (obj) {
+            
+        }
+        
+        shared.closePromptDialog = function () {
+            
+        }
+        
+        shared.showPageDialog = function (obj) {
             object = obj;
             if ($('.myui-dialog-bg').length == 0){
                 var tmpl = $('#template-myui-dialog');
@@ -48,7 +56,7 @@
             show();
         };
 
-        shared.closeDialog = function () {
+        shared.closePageDialog = function () {
             $('.myui-dialog-bg').remove();
         };
 
@@ -87,7 +95,7 @@
         }
 
         var onOutSide = function () {
-            shared.closeDialog();
+            shared.closePageDialog();
         }
 
         var onMinimize = function () {
@@ -134,7 +142,7 @@
         };
 
         var onClose = function () {
-            shared.closeDialog();
+            shared.closePageDialog();
         };
 
         var clearOpratorStatus = function () {

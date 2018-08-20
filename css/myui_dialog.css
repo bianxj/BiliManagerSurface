@@ -12,6 +12,10 @@
 }
 .myui-dialog-content{
     position: absolute;
+    border: none;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
 }
 .myui-dialog-content.myui-dialog-min{
     height: 50px;
@@ -60,4 +64,23 @@
 }
 .myui-dialog-oprator .hide{
     display: none;
+}
+
+.myui-prompt-dialog-content{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    border: none;
+    border-radius: 2px;
+}
+
+.myui-dialog-title .myui-prompt-title{
+    text-align: center;
+}
+
+.myui-prompt-dialog-content .myui-prompt-content{
+    min-width: 300px;
+    min-height: 150px;
+    background-color: #ffffff;
 }

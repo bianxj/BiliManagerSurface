@@ -259,7 +259,7 @@
 
   <script type="text/javascript">
     $(document).ready(function () {
-        // $('#add').on('click',onAddClick);
+        $('#add').on('click',onAddClick);
         window.myui.tableHelper.initTable(
             {
                 page: 1, lines: 198,
@@ -313,8 +313,8 @@
     }
 
     var onAddClick = function () {
-      // showDialog();
-        window.myui.dialog.showDialog({
+      // showPageDialog();
+        window.myui.dialog.showPageDialog({
             type:'1',
             title:'测试',
             url:'http://www.baidu.com',
@@ -355,6 +355,18 @@
           <th class="myui-table-th column-opertor"><cite>操作</cite></th>
         </tr>
   </script>
+
+  <div class="myui-dialog-bg">
+    <div class="myui-prompt-content">
+      <div class="myui-prompt-title">
+        <cite class="myui-prompt-title">${title}</cite>
+        <div class="myui-dialog-oprator"><i class="iconfont close">&#xe647;</i></div>
+      </div>
+      <div class="myui-prompt-content">
+        <cite>${content}</cite>
+      </div>
+    </div>
+  </div>
 
   <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
   <script>
