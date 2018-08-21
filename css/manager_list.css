@@ -1,0 +1,95 @@
+html,body{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.operate-container{
+    margin-top: 20px;
+    padding: 5px;
+    border-radius: 2px;
+    background-color: #F2F2F2;
+}
+
+.table-container{
+    width: 100%;
+    margin-top: 15px;
+}
+
+.myui-checkbox{
+    background-color: #FFFFFF;
+}
+
+.myui-checkbox .iconfont{
+    color: #FFFFFF;
+    display: block;
+    text-align: center;
+}
+
+td .opertor .iconfont{
+    color: #000;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+table .column-check{
+    width: 60px;
+}
+
+table .column-id{
+    width: 60px;
+}
+
+table .column-opertor{
+    width: 100px;
+}
+
+.myui-checkbox{
+    height: 20px;
+    width: 20px;
+    border: 1px solid #d2d2d2;
+    border-radius: 2px;
+    cursor: pointer;
+}
+.myui-checkbox:hover{
+    border-color: #5FB878;
+}
+.myui-checkbox.checked{
+    background-color: #5FB878;
+    border-color: #5FB878;
+}
+
+.myui-table-operator{
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0px;
+}
+.myui-table-operator .btn{
+    height: 50px;
+    min-width: 50px;
+    text-align: center;
+    line-height: 50px;
+    border: 1px solid #DDDDDD;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    background-color: #FFFFFF;
+    color: #0C0C0C;
+    font-size: 18px;
+    margin: 0px 3px;
+}
+.myui-table-operator .btn.selected{
+    background-color: #009688;
+    color: #FFFFFF;
+}
+.myui-table-operator .btn.ellipsis{
+    pointer-events: none;
+    content: '...';
+    background-color: transparent;
+    border: none;
+    color: #0C0C0C;
+}
+.myui-table-operator #middle{
+    display: inline-block;
+}

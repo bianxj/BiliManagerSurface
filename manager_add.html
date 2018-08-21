@@ -1,0 +1,104 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/manager_edit.css">
+
+  <link rel="stylesheet" href="css/myui_btn.css">
+
+  <style type="text/css">
+      body{
+        color: black;
+        font-size: 16px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      span{
+        color: red;
+      }
+      .input-container{
+        margin-top: 20px;
+      }
+      .input-title{
+        display: inline-block;
+        width: 180px;
+        text-align: right;
+        margin-right: 20px;
+      }
+      .input-desc{
+        display: inline-block;
+        text-align: left;
+        margin-left: 20px;
+        color: #dddddd;
+      }
+      .myui-input-frame{
+        width: 200px;
+      }
+      #add{
+        margin-left: 200px;
+      }
+  </style>
+</head>
+
+<body>
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+  <!-- Add your site or application content here -->
+
+  <div class="input-container"><label class="input-title"><span>*</span>登录名</label><input id="login-name" class="myui-input-frame" type="text"></div>
+  <div class="input-container"><label class="input-title"><span>*</span>手机</label><input id="phone" class="myui-input-frame" type="text"></div>
+  <div class="input-container"><label class="input-title"><span>*</span>邮箱</label><input id="email" class="myui-input-frame" type="text"></div>
+  <div class="input-container"><label class="input-title"><span>*</span>角色</label><input id="role" class="myui-input-frame" type="text"></div>
+  <div class="input-container"><label class="input-title"><span>*</span>密码</label><input id="pwd" class="myui-input-frame" type="password"></div>
+  <div class="input-container"><label class="input-title"><span>*</span>确认密码</label><input id="confirm-pwd" class="myui-input-frame" type="password"></div>
+  <div class="input-container"><button id="add" class="myui-btn myui-btn-green">添加</button></div>
+
+  <script src="js/vendor/jquery-3.3.1.js"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+        $('#id').on('click',addManagerClick);
+    });
+    
+    var addManagerClick = function () {
+        if ( checkManagerData() ){
+            submitManagerData();
+        }
+    }
+    
+    var checkManagerData = function () {
+        
+    }
+    
+    var submitManagerData = function () {
+        
+    }
+
+  </script>
+
+  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+  <script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-XXXXX-Y', 'auto'); ga('send', 'pageview')
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+
+</html>

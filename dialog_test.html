@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="font/iconfont.css">
+    <style type="text/css">
+        .myui-dialog.frame{
+            background-color: rgba(221,221,221,0.8);
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            right: 0px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .myui-dialog-body.frame{
+            position: absolute;
+            border: none;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+        }
+
+        .myui-dialog-title.frame{
+            height: 50px;
+            line-height: 50px;
+            padding: 0px 20px;
+            background-color: #F8F8F8;
+            color: black;
+            font-size: 16px;
+        }
+        .myui-dialog.frame cite{
+            font-style: normal;
+            color: #000000;
+        }
+        .myui-dialog-content.frame{
+            position: absolute;
+            left: 0px;
+            right: 0px;
+            top: 50px;
+            bottom: 0px;
+            background: #FFFFFF;
+        }
+        .myui-dialog-content.frame iframe{
+            width: 100%;
+            height: 100%;
+        }
+        .myui-dialog-title.frame .myui-dialog-oprator{
+            display: inline-block;
+            margin-left: 10px;
+            float: right;
+        }
+        .myui-dialog-title.frame .myui-dialog-oprator i{
+            cursor: pointer;
+            padding: 0px 4px;
+            height: 50px;
+            line-height: 50px;
+            display: inline-block;
+            font-size: 20px;
+        }
+        .myui-dialog-title.frame .myui-dialog-oprator .hide{
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <button id="frame">FrameDialog</button>
+    <button id="toast">ToastDialog</button>
+    <button id="Prompt">PromptDialog</button>
+
+    <script src="js/vendor/jquery-3.3.1.js"></script>
+    <script src="js/vendor/jquery.tmpl.js"></script>
+    <script type="text/javascript">
+        var dialog = (function () {
+            var shared = {};
+            var frameDialog = (function () {
+                var shared = {};
+                var className = 'frame';
+                var object;
+                //object = {title:'title',url:'url',area:{width:100,height:100}}
+                var height;
+                var width;
+                var dlg;
+                var body;
+
+                shared.build = function (obj) {
+                    object = obj;
+                    build(getTemplate(className));
+                }
+
+                var build = function (template) {
+                    template = buildTitle(template);
+                    template = buildContent(template);
+                    dlg = template;
+                    body = dlg.find('.myui-dialog-body');
+                    showDialog(template);
+                    afterShow();
+                    refreshListener();
+                }
+                
+                var buildTitle = function (template) {
+                    var html = '    <cite>' + object.title + '</cite>\n' +
+                        '    <div class="myui-dialog-oprator">\n' +
+                        '        <i class="iconfont '+className+' minimize">&#xe600;</i>\n' +
+                        '        <i class="iconfont '+className+' maximize">&#xe61b;</i>\n' +
+                        '        <i class="iconfont hide '+className+' resize">&#xe602;</i>\n' +
+                        '        <i class="iconfont '+className+' close">&#xe647;</i>\n' +
+                        '        </div>';
+                    var title = template.find('.myui-dialog-title');
+                    title.append(html);
+                    return template;
+                }
+
+                var buildContent = function (template) {
+                    var html = '<iframe frameborder="0" scrolling="yes"></iframe>';
+                    var content = template.find('.myui-dialog-content');
+                    content.append(html);
+                    return template;
+                }
+
+                var closeDialog = function () {
+                    dlg.remove();
+                    dlg = undefined;
+                }
+
+                var afterShow = function () {
+                    // dlg = $('.myui-dialog.'+className);
+                    $('.myui-dialog.frame iframe').attr('src',object.url);
+                    calcWH();
+                    showCenter();
+                }
+
+                var calcWH = function () {
+                    var maxWidth = window.innerWidth;
+                    var maxHeight = window.innerHeight;
+
+                    var area = object.area;
+                    if ( area && area.width && area.width < maxWidth ){
+                        width = area.width;
+                    } else {
+                        width = maxWidth*0.8;
+                    }
+                    if ( area && area.height && area.height < maxHeight ){
+                        height = area.height;
+                    } else {
+                        height = maxHeight*0.8;
+                    }
+                }
+                
+                var showCenter = function () {
+                    var maxWidth = window.innerWidth;
+                    var maxHeight = window.innerHeight;
+                    var top = (maxHeight-height)/2;
+                    var left = (maxWidth-width)/2;
+
+                    body.height(height);
+                    body.width(width);
+                    body[0].style.top=top+'px';
+                    body[0].style.bottom='auto';
+                    body[0].style.left=left+'px';
+                    body[0].style.right='auto';
+                }
+                
+                var refreshListener = function () {
+                    dlg.find('.myui-dialog').on('click',onOutSide);
+                    dlg.find('.minimize').on('click',onMinimize);
+                    dlg.find('.maximize').on('click',onMaximize);
+                    dlg.find('.resize').on('click',onResize);
+                    dlg.find('.close').on('click',onClose);
+                }
+
+                var onOutSide = function () {
+                    closeDialog();
+                }
+
+                var onMinimize = function () {
+                    clearOpratorStatus();
+                    body.height(50);
+                    body.width('auto');
+
+                    body[0].style.top='auto';
+                    body[0].style.bottom='0px';
+                    body[0].style.left='0px';
+                    body[0].style.right='auto';
+                    body.find('.minimize').addClass('hide');
+                };
+
+                var onMaximize = function () {
+                    clearOpratorStatus();
+                    var maxWidth = window.innerWidth;
+                    var maxHeight = window.innerHeight;
+                    body.height(maxHeight);
+                    body.width(maxWidth);
+                    body[0].style.top='0px';
+                    body[0].style.left='0px';
+                    body.find('.maximize').addClass('hide');
+                };
+
+                var onResize = function () {
+                    clearOpratorStatus();
+                    showCenter();
+                    body.find('.resize').addClass('hide');
+                };
+
+                var clearOpratorStatus = function () {
+                    dlg.find('.minimize').removeClass('hide');
+                    dlg.find('.maximize').removeClass('hide');
+                    dlg.find('.resize').removeClass('hide');
+                }
+
+                var onClose = function () {
+                    closeDialog();
+                };
+                return shared;
+            })();
+
+            shared.showFrameDialog = function (obj) {
+                frameDialog.build(obj);
+            }
+
+            var customerDialog = (function () {
+                var shared = {};
+
+            })();
+
+            shared.showCustomerDialog = function (obj) {
+
+            }
+
+            var showDialog = function (dialog) {
+                $('body').append(dialog);
+                // dialog.appendTo('body');
+            } 
+            
+            var getTemplate = function (className) {
+                var html = '        <div class="myui-dialog ${customer}">\n' +
+                    '            <div class="myui-dialog-body ${customer}">\n' +
+                    '                <div class="myui-dialog-title ${customer}"></div>\n' +
+                    '                <div class="myui-dialog-content ${customer}"></div>\n' +
+                    '            </div>\n' +
+                    '        </div>';
+                html = html.replace(/\${customer}/g,className);
+
+                return $(html);
+            }
+            return shared;
+        })();
+        
+        $(document).ready(function () {
+            $('#frame').on('click',function () {
+                dialog.showFrameDialog({title:'tttt',url:'manager_list.html'});
+                // var tmp = $('#tmpl-dialog').tmpl({cccc:'test'});
+                // var title = tmp.find('.myui-dialog-title').append('<p>test</p>');
+                // tmp.appendTo('body');
+            });
+        });
+    </script>
+
+</body>
+</html>

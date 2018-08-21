@@ -1,0 +1,26 @@
+.myui-table{
+    width: 100%;
+    border: 1px solid #dddddd;
+    border-collapse: collapse;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.myui-table-th{
+    padding: 10px 20px;
+    background-color: #F2F2F2;
+}
+.myui-table-td{
+    padding: 15px 20px;
+    background-color: #FFFFFF;
+}
+.myui-table,.myui-table tr th,.myui-table tr td{
+    border: 1px solid #E6E6E6;
+}
+.myui-table cite{
+    font-style: initial;
+    font-weight: 400;
+    color: #666666;
+    font-size: 16px;
+}

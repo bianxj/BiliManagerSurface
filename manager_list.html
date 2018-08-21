@@ -13,7 +13,6 @@
   <!-- Place favicon.ico in the root directory -->
 
   <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/main.css">
 
   <link rel="stylesheet" href="font/iconfont.css">
   <link rel="script" href="font/iconfont.js">
@@ -22,189 +21,9 @@
   <link rel="stylesheet" href="css/vendor/dcalendar.picker.css">
 
   <!-- ######################################################################## -->
-  <style type="text/css">
-    html,body{
-      margin-left: 20px;
-      margin-right: 20px;
-    }
-
-    .operate-container{
-      margin-top: 20px;
-      padding: 5px;
-      border-radius: 2px;
-      background-color: #F2F2F2;
-    }
-
-    .table-container{
-      width: 100%;
-      margin-top: 15px;
-    }
-
-    .myui-checkbox{
-      background-color: #FFFFFF;
-    }
-
-    .myui-checkbox .iconfont{
-      color: #FFFFFF;
-      display: block;
-      text-align: center;
-    }
-    
-    td .opertor .iconfont{
-      color: #000;
-      display: inline-block;
-      cursor: pointer;
-      font-size: 18px;
-      margin-left: 10px;
-    }
-
-    table .column-check{
-      width: 60px;
-    }
-
-    table .column-id{
-      width: 60px;
-    }
-
-    table .column-opertor{
-      width: 100px;
-    }
-  </style>
-
-  <style type="text/css">
-    .myui-btn{
-      font-size: 16px;
-      height: 42px;
-      line-height: 42px;
-      padding: 0px 20px;
-      border-radius: 3px;
-      border: none;
-      color: white;
-      outline: none;
-      display: inline-block;
-    }
-    .myui-btn:hover{
-      opacity: .8;
-    }
-    .myui-btn-green{
-      background-color: #009688;
-    }
-    .myui-btn-orange{
-      background-color: #FF5722;
-    }
-
-    .myui-input-frame{
-      font-size: 16px;
-      height: 40px;
-      width: 100px;
-      padding: 0px 10px;
-      border-style: solid;
-      border-width: 1px;
-      border-color: rgba(198,198,198,0.8);
-      border-radius: 3px;
-      outline: none;
-    }
-    .myui-input-frame:hover{
-      opacity: 1;
-      border-color: rgba(198,198,198,1);
-    }
-    .myui-input-frame:focus{
-      border-color: #009688;
-    }
-  </style>
-
-  <style type="text/css">
-    .myui-checkbox{
-      height: 20px;
-      width: 20px;
-      border: 1px solid #d2d2d2;
-      border-radius: 2px;
-      cursor: pointer;
-    }
-    .myui-checkbox:hover{
-      border-color: #5FB878;
-    }
-    .myui-checkbox.checked{
-      background-color: #5FB878;
-      border-color: #5FB878;
-    }
-    .myui-table{
-      width: 100%;
-      border: 1px solid #dddddd;
-      border-collapse: collapse;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-    .myui-table-th{
-      padding: 10px 20px;
-      background-color: #F2F2F2;
-    }
-    .myui-table-td{
-      padding: 15px 20px;
-      background-color: #FFFFFF;
-    }
-    .myui-table,.myui-table tr th,.myui-table tr td{
-      border: 1px solid #E6E6E6;
-    }
-    .myui-table cite{
-      font-style: initial;
-      font-weight: 400;
-      color: #666666;
-      font-size: 16px;
-    }
-
-    /*.myui-table tbody{*/
-    /*display: block;*/
-    /*height: 500px;*/
-    /*overflow-y: scroll;*/
-    /*}*/
-    /*.myui-table thead,tbody tr{*/
-    /*display: table;*/
-    /*width: 100%;*/
-    /*table-layout: fixed;*/
-    /*}*/
-    /*table thead {*/
-    /*width: calc( 100% - 1em )*/
-    /*}*/
-  </style>
-
-  <style>
-    .myui-table-operator{
-      margin-top: 20px;
-      text-align: center;
-      font-size: 0px;
-    }
-    .myui-table-operator .btn{
-      height: 50px;
-      min-width: 50px;
-      text-align: center;
-      line-height: 50px;
-      border: 1px solid #DDDDDD;
-      border-radius: 3px;
-      outline: none;
-      cursor: pointer;
-      background-color: #FFFFFF;
-      color: #0C0C0C;
-      font-size: 18px;
-      margin: 0px 3px;
-    }
-    .myui-table-operator .btn.selected{
-      background-color: #009688;
-      color: #FFFFFF;
-    }
-    .myui-table-operator .btn.ellipsis{
-      pointer-events: none;
-      content: '...';
-      background-color: transparent;
-      border: none;
-      color: #0C0C0C;
-    }
-    .myui-table-operator #middle{
-      display: inline-block;
-    }
-  </style>
+  <link rel="stylesheet" href="css/myui_btn.css">
+  <link rel="stylesheet" href="css/myui_table.css">
+  <link rel="stylesheet" href="css/manager_list.css">
 </head>
 
 <body>
@@ -213,8 +32,6 @@
   <![endif]-->
 
   <!-- Add your site or application content here -->
-  <p>Hello world! This is HTML5 Boilerplate.</p>
-
   <div class="search-container">
     <input id="name" class="myui-input-frame" type="text" placeholder="用户名">
     <input id="role" class="myui-input-frame" type="text" placeholder="角色">
@@ -260,6 +77,9 @@
   <script type="text/javascript">
     $(document).ready(function () {
         $('#add').on('click',onAddClick);
+        $('#batch-add').on('click',function () {
+           myui.dialog.showPromptDialog({title:'tttttt',content:'ccccccccccc'});
+        });
         window.myui.tableHelper.initTable(
             {
                 page: 1, lines: 198,
@@ -270,9 +90,10 @@
                     var html = $('#row').tmpl({
                         id: index,
                         userName: 'test',
+                        phone:'18911111111',
+                        email:'1122@2233.com',
                         role: 'ttt',
-                        createTime: 'cccc',
-                        describe: 'ddddd'
+                        createTime: 'cccc'
                     });
                     return html;
                 }
@@ -337,9 +158,10 @@
           <td class="myui-table-td column-check"><div class="myui-checkbox"><i class="iconfont">&#xe63c;</i></div></td>
           <td class="myui-table-td column-id"><cite>${id}</cite></td>
           <td class="myui-table-td"><cite>${userName}</cite></td>
+          <td class="myui-table-td"><cite>${phone}</cite></td>
+          <td class="myui-table-td"><cite>${email}</cite></td>
           <td class="myui-table-td"><cite>${role}</cite></td>
           <td class="myui-table-td"><cite>${createTime}</cite></td>
-          <td class="myui-table-td"><cite>${describe}</cite></td>
           <td class="myui-table-td column-opertor"><div class="opertor"><i class="iconfont edit">&#xe640;</i><i class="iconfont delete">&#xe637;</i></div></td>
         </tr>
   </script>
@@ -348,25 +170,16 @@
         <tr>
           <th class="myui-table-th column-check"><div class="myui-checkbox"><i class="iconfont">&#xe63c;</i></div></th>
           <th class="myui-table-th column-id"><cite>ID</cite></th>
-          <th class="myui-table-th"><cite>用户名</cite></th>
+          <th class="myui-table-th"><cite>登录名</cite></th>
+          <th class="myui-table-th"><cite>手机</cite></th>
+          <th class="myui-table-th"><cite>邮箱</cite></th>
           <th class="myui-table-th"><cite>角色</cite></th>
-          <th class="myui-table-th"><cite>时间</cite></th>
-          <th class="myui-table-th"><cite>描述</cite></th>
+          <th class="myui-table-th"><cite>创建时间</cite></th>
           <th class="myui-table-th column-opertor"><cite>操作</cite></th>
         </tr>
   </script>
 
-  <div class="myui-dialog-bg">
-    <div class="myui-prompt-content">
-      <div class="myui-prompt-title">
-        <cite class="myui-prompt-title">${title}</cite>
-        <div class="myui-dialog-oprator"><i class="iconfont close">&#xe647;</i></div>
-      </div>
-      <div class="myui-prompt-content">
-        <cite>${content}</cite>
-      </div>
-    </div>
-  </div>
+
 
   <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
   <script>

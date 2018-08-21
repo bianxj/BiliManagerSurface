@@ -22,91 +22,138 @@
 }());
 
 // Place any jQuery/helper plugins in here.
-(function () {
+
+(
+    function () {
+        var PATTERN_MOBILE = /^1\d{10}$/;
+        var PATTERN_EMAIL = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
+        var PATTERN_PWD = /^[A-Za-z0-9]{6,16}$/;
+       var check = (window.check = window.check || {});
+       check.isEmpty = function (val) {
+           if (val == "" || val == null || val == undefined)
+               return true;
+       }
+       check.isPhone = function (phone) {
+           return PATTERN_MOBILE.text(phone);
+       }
+       check.isEmail = function (email) {
+           return PATTERN_EMAIL.test(email);
+       }
+       check.isPwd = function (pwd) {
+           return PATTERN_PWD.test(pwd);
+       }
+    }()
+);
+
+(
+// if (typeof jQuery === 'undefined') { throw new Error('DCalendar.Picker: This plugin requires jQuery'); }
+// +
+    function ($) {
   var myui = (window.myui = window.myui ||{});
   var myuiDialog = (function () {
         var shared = {};
-        var object;
-        var content;
-        var width;
-        var height;
+
+        var pageDialog = {};
+        var promptDialog = {};
+        var toastDialog = {};
+
+        shared.showToastDialog = function (obj) {
+            shared.closeDialog();
+            toastDialog.object = obj;
+        }
 
         shared.showPromptDialog = function (obj) {
-            
+            shared.closeDialog();
+            promptDialog.object = obj;
+            // if ( $('.myui-dialog').length == 0 ){
+                var tmpl = $('#template-myui-dialog-prompt');
+                if ( tmpl.length == 0 ){
+                    $('body').append('<script id="template-myui-dialog-prompt" type="text/x-jquery-tmpl"></script>');
+                    $('#template-myui-dialog-prompt').load('/Surface/template/tmpl_myui_dialog_prompt.html',function () {
+                        $('#template-myui-dialog-prompt').tmpl(promptDialog.object).appendTo('body');
+                        $('.myui-dialog #close').on('click',onClose);
+                        $('.myui-dialog').on('click',onOutSide);
+                    });
+                    return;
+                }
+                $('#template-myui-dialog-prompt').tmpl(promptDialog.object).appendTo('body');
+            // }
+            $('.myui-dialog #close').on('click',onClose);
+            $('.myui-dialog').on('click',onOutSide);
         }
-        
-        shared.closePromptDialog = function () {
-            
+
+        shared.closeDialog = function () {
+            $('.myui-dialog').remove();
         }
         
         shared.showPageDialog = function (obj) {
-            object = obj;
-            if ($('.myui-dialog-bg').length == 0){
+            pageDialog.object = obj;
+            if ($('.myui-dialog').length == 0){
                 var tmpl = $('#template-myui-dialog');
                 if ( tmpl.length == 0 ){
                   $('body').append('<script id="template-myui-dialog" type="text/x-jquery-tmpl"></script>');
                     $('#template-myui-dialog').load('/Surface/template/tmpl_myui_dialog.html',function () {
-                        $('#template-myui-dialog').tmpl(object).appendTo('body');
+                        $('#template-myui-dialog').tmpl(pageDialog.object).appendTo('body');
                         show();
                     });
                     return;
                 }
-                $('#template-myui-dialog').tmpl(object).appendTo('body');
+                $('#template-myui-dialog').tmpl(pageDialog.object).appendTo('body');
             }
             show();
         };
 
         shared.closePageDialog = function () {
-            $('.myui-dialog-bg').remove();
+            $('.myui-dialog').remove();
         };
 
         var show = function () {
             var maxWidth = window.innerWidth;
             var maxHeight = window.innerHeight;
 
-            var area = object.area;
+            var area = pageDialog.object.area;
             if ( area && area.width && area.width < maxWidth ){
-                width = area.width;
+                pageDialog.width = area.width;
             } else {
-                width = maxWidth*0.8;
+                pageDialog.width = maxWidth*0.8;
             }
             if ( area && area.height && area.height < maxHeight ){
-                height = area.height;
+                pageDialog.height = area.height;
             } else {
-                height = maxHeight*0.8;
+                pageDialog.height = maxHeight*0.8;
             }
 
             onResize();
 
-            $('.myui-dialog-bg iframe').attr('src',object.url);
+            $('.myui-dialog iframe').attr('src',pageDialog.object.url);
             setListener();
         }
 
         var setListener = function () {
             $('.myui-dialog-oprator .iconfont').off();
-            $('.myui-dialog-bg #minimize').on('click',onMinimize);
-            $('.myui-dialog-bg #maximize').on('click',onMaximize);
-            $('.myui-dialog-bg #resize').on('click',onResize);
-            $('.myui-dialog-bg #close').on('click',onClose);
-            $('.myui-dialog-bg').on('click',onOutSide);
-            $('.myui-dialog-bg .myui-dialog-content').on('click',function () {
+            $('.myui-dialog #minimize').on('click',onMinimize);
+            $('.myui-dialog #maximize').on('click',onMaximize);
+            $('.myui-dialog #resize').on('click',onResize);
+            $('.myui-dialog #close').on('click',onClose);
+            $('.myui-dialog').on('click',onOutSide);
+            $('.myui-dialog .myui-dialog-container').on('click',function () {
                 return false;
             })
         }
 
         var onOutSide = function () {
-            shared.closePageDialog();
+            shared.closeDialog();
         }
 
         var onMinimize = function () {
             clearOpratorStatus();
-            content.height(50);
-            content.width('auto');
+            pageDialog.content.height(50);
+            pageDialog.content.width('auto');
 
-            content[0].style.top='auto';
-            content[0].style.bottom='0px';
-            content[0].style.left='0px';
-            content[0].style.right='auto';
+            pageDialog.content[0].style.top='auto';
+            pageDialog.content[0].style.bottom='0px';
+            pageDialog.content[0].style.left='0px';
+            pageDialog.content[0].style.right='auto';
             // content.offset({top:'auto',bottom:'0px',left:'0px',right:'auto'});
             $('.myui-dialog-oprator #minimize').addClass('hide');
         };
@@ -115,10 +162,10 @@
             clearOpratorStatus();
             var maxWidth = window.innerWidth;
             var maxHeight = window.innerHeight;
-            content.height(maxHeight);
-            content.width(maxWidth);
-            content[0].style.top='0px';
-            content[0].style.left='0px';
+            pageDialog.content.height(maxHeight);
+            pageDialog.content.width(maxWidth);
+            pageDialog.content[0].style.top='0px';
+            pageDialog.content[0].style.left='0px';
             // content.offset({top:0,left:0});
             $('.myui-dialog-oprator #maximize').addClass('hide');
         };
@@ -127,22 +174,22 @@
             clearOpratorStatus();
             var maxWidth = window.innerWidth;
             var maxHeight = window.innerHeight;
-            var top = (maxHeight-height)/2;
-            var left = (maxWidth-width)/2;
+            var top = (maxHeight-pageDialog.height)/2;
+            var left = (maxWidth-pageDialog.width)/2;
 
-            content = $('.myui-dialog-content');
-            content.height(height);
-            content.width(width);
-            content[0].style.top=top+'px';
-            content[0].style.bottom='auto';
-            content[0].style.left=left+'px';
-            content[0].style.right='auto';
+            pageDialog.content = $('.myui-dialog-container');
+            pageDialog.content.height(pageDialog.height);
+            pageDialog.content.width(pageDialog.width);
+            pageDialog.content[0].style.top=top+'px';
+            pageDialog.content[0].style.bottom='auto';
+            pageDialog.content[0].style.left=left+'px';
+            pageDialog.content[0].style.right='auto';
             // content.offset({ top: top, left: left , bottom:'auto',right:'auto'});
             $('.myui-dialog-oprator #resize').addClass('hide');
         };
 
         var onClose = function () {
-            shared.closePageDialog();
+            shared.closeDialog();
         };
 
         var clearOpratorStatus = function () {
@@ -326,4 +373,4 @@
 
   myui['dialog'] = myuiDialog;
   myui['tableHelper'] = tableHelper;
-}())
+}(jQuery));
