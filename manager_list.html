@@ -18,12 +18,27 @@
   <link rel="script" href="font/iconfont.js">
 
   <link rel="stylesheet" href="css/myui_dialog.css">
+  <link rel="stylesheet" href="css/myui_anime.css">
   <link rel="stylesheet" href="css/vendor/dcalendar.picker.css">
 
   <!-- ######################################################################## -->
   <link rel="stylesheet" href="css/myui_btn.css">
   <link rel="stylesheet" href="css/myui_table.css">
   <link rel="stylesheet" href="css/manager_list.css">
+
+  <style type="text/css">
+      .myui-pulldown-container{
+          position: absolute;
+          min-width: 50px;
+          max-height: 50%;
+          overflow-y: auto;
+          border: 1px solid #dddddd;
+      }
+      .myui-line-container{
+          min-width: 50px;
+          border-bottom: 1px solid #dddddd;
+      }
+  </style>
 </head>
 
 <body>
@@ -34,9 +49,9 @@
   <!-- Add your site or application content here -->
   <div class="search-container">
     <input id="name" class="myui-input-frame" type="text" placeholder="用户名">
-    <input id="role" class="myui-input-frame" type="text" placeholder="角色">
-    <input id="begintime" class="myui-input-frame" type="text" placeholder="起始时间">
-    <input id="endtime" class="myui-input-frame" type="text" placeholder="截止时间">
+    <input id="role" class="myui-input-frame" readonly="readonly" type="text" placeholder="角色">
+    <input id="begintime" class="myui-input-frame" readonly="readonly" type="text" placeholder="起始时间">
+    <input id="endtime" class="myui-input-frame" readonly="readonly" type="text" placeholder="截止时间">
     <button id="search" class="myui-btn myui-btn-green">搜索</button>
   </div>
 
@@ -102,6 +117,19 @@
         $('.myui-checkbox').on('click',checkBoxClick);
         $('.column-opertor .edit').on('click',editClick);
         $('.column-opertor .delete').on('click',deleteClick);
+
+        $('#role').on('click',function () {
+            pullDownListHelper.showAsDropDown($(this),{
+                length:10,
+                getView:function (index) {
+                    var html = '<span>'+index+'</span>';
+                    return html;
+                },
+                onItemClick:function (index) {
+                    alert('click:'+index);
+                }
+            });
+        });
         $('#begintime').dcalendarpicker({
             format:'yyyy-mm-dd'
         });
@@ -135,12 +163,9 @@
 
     var onAddClick = function () {
       // showPageDialog();
-        window.myui.dialog.showPageDialog({
-            type:'1',
-            title:'测试',
-            url:'http://www.baidu.com',
-            skin:'',
-            // area:{width:1200,height:600},
+        window.myui.dialog.showFrameDialog({
+            title:'新增',
+            url:'manager_add.html',
             data:{},
             callback:function () {
 
@@ -148,10 +173,63 @@
         });
     }
   </script>
+  <script type="text/javascript">
+      var pullDownListHelper = (function () {
+          var shared = {};
+          var opt = {
+              length:20,
+              getView:function (index) {
 
-  //字段：ID 用户名 密码 角色 时间 描述
-  //功能：新增 修改 批量导入 模板下载 搜索
+              },
+              onItemClick:function (index) {
 
+              },
+              addListener:function () {
+
+              }
+          };
+          shared.showAsDropDown = function(dom,option){
+              opt = option;
+              var container = buildContainer();
+              for(var i=0;i<opt.length;i++){
+                  container.append(buildLine(i).append(opt.getView(i)));
+              }
+              location(dom,container);
+              $('body').append(container);
+              addListener();
+          }
+          
+          shared.close = function () {
+              $('.myui-pulldown-container').remove();
+          }
+          
+          var buildContainer = function () {
+              var html = '<div class="myui-pulldown-container"></div>';
+              return $(html);
+          }
+          var buildLine = function (index) {
+              var html = '<div lid="'+index+'" class="myui-line-container"></div>';
+              return $(html);
+          }
+          var location = function (dom,list) {
+              var left = dom[0].offsetLeft + dom.innerWidth() - dom.width();
+              var top = dom[0].offsetTop + dom[0].offsetHeight;
+              list[0].style.top = top+"px";
+              list[0].style.left = left+"px";
+          }
+          var addListener = function () {
+              $('.myui-pulldown-container .myui-line-container').on('click',onItemClick);
+              if ( opt.addListener ){
+                  opt.addListener();
+              }
+          }
+          var onItemClick = function () {
+              var index = $(this).attr('lid');
+              opt.onItemClick(index);
+          }
+          return shared;
+      })();
+  </script>
 
   <script id="row" type="text/x-jquery-tmpl">
         <tr>
@@ -178,8 +256,6 @@
           <th class="myui-table-th column-opertor"><cite>操作</cite></th>
         </tr>
   </script>
-
-
 
   <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
   <script>

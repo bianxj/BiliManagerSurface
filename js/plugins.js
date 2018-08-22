@@ -34,7 +34,7 @@
                return true;
        }
        check.isPhone = function (phone) {
-           return PATTERN_MOBILE.text(phone);
+           return PATTERN_MOBILE.test(phone);
        }
        check.isEmail = function (email) {
            return PATTERN_EMAIL.test(email);
@@ -50,155 +50,467 @@
 // +
     function ($) {
   var myui = (window.myui = window.myui ||{});
-  var myuiDialog = (function () {
-        var shared = {};
+  var dialog = (function ($) {
+            var shared = {};
+            var frameDialog = (function () {
+                var shared = {};
+                var object;
+                var className = 'frame';
+                //object = {title:'title',url:'url',area:{width:100,height:100}}
+                var height;
+                var width;
+                var dlg;
+                var body;
 
-        var pageDialog = {};
-        var promptDialog = {};
-        var toastDialog = {};
-
-        shared.showToastDialog = function (obj) {
-            shared.closeDialog();
-            toastDialog.object = obj;
-        }
-
-        shared.showPromptDialog = function (obj) {
-            shared.closeDialog();
-            promptDialog.object = obj;
-            // if ( $('.myui-dialog').length == 0 ){
-                var tmpl = $('#template-myui-dialog-prompt');
-                if ( tmpl.length == 0 ){
-                    $('body').append('<script id="template-myui-dialog-prompt" type="text/x-jquery-tmpl"></script>');
-                    $('#template-myui-dialog-prompt').load('/Surface/template/tmpl_myui_dialog_prompt.html',function () {
-                        $('#template-myui-dialog-prompt').tmpl(promptDialog.object).appendTo('body');
-                        $('.myui-dialog #close').on('click',onClose);
-                        $('.myui-dialog').on('click',onOutSide);
-                    });
-                    return;
+                shared.getBuilder = function(obj){
+                    object = obj;
+                    return {
+                        className:className,
+                        buildTitle:buildTitle,
+                        buildContent:buildContent,
+                        getArea:getArea,
+                        addListener:addListener
+                    }
                 }
-                $('#template-myui-dialog-prompt').tmpl(promptDialog.object).appendTo('body');
-            // }
-            $('.myui-dialog #close').on('click',onClose);
-            $('.myui-dialog').on('click',onOutSide);
-        }
 
-        shared.closeDialog = function () {
-            $('.myui-dialog').remove();
-        }
-        
-        shared.showPageDialog = function (obj) {
-            pageDialog.object = obj;
-            if ($('.myui-dialog').length == 0){
-                var tmpl = $('#template-myui-dialog');
-                if ( tmpl.length == 0 ){
-                  $('body').append('<script id="template-myui-dialog" type="text/x-jquery-tmpl"></script>');
-                    $('#template-myui-dialog').load('/Surface/template/tmpl_myui_dialog.html',function () {
-                        $('#template-myui-dialog').tmpl(pageDialog.object).appendTo('body');
-                        show();
-                    });
-                    return;
+                var buildTitle = function (title) {
+                    var html = '    <cite>' + object.title + '</cite>\n' +
+                        '    <div class="myui-dialog-oprator">\n' +
+                        '        <i class="iconfont '+className+' minimize">&#xe600;</i>\n' +
+                        '        <i class="iconfont '+className+' maximize">&#xe61b;</i>\n' +
+                        '        <i class="iconfont hide '+className+' resize">&#xe602;</i>\n' +
+                        '        <i class="iconfont '+className+' close">&#xe647;</i>\n' +
+                        '        </div>';
+                    title.append(html);
                 }
-                $('#template-myui-dialog').tmpl(pageDialog.object).appendTo('body');
+
+                var buildContent = function (content) {
+                    var html = '<iframe frameborder="0" scrolling="yes"></iframe>';
+                    content.append(html);
+                }
+
+                var closeDialog = function () {
+                    dlg.remove();
+                    dlg = undefined;
+                }
+
+                var showCenter = function () {
+                    var maxWidth = window.innerWidth;
+                    var maxHeight = window.innerHeight;
+                    var top = (maxHeight-height)/2;
+                    var left = (maxWidth-width)/2;
+
+                    body.height(height);
+                    body.width(width);
+                    body[0].style.top=top+'px';
+                    body[0].style.bottom='auto';
+                    body[0].style.left=left+'px';
+                    body[0].style.right='auto';
+                }
+
+                var getArea = function () {
+                    var maxWidth = window.innerWidth;
+                    var maxHeight = window.innerHeight;
+
+                    var area = object.area;
+                    if ( area && area.width && area.width < maxWidth ){
+                        width = area.width;
+                    } else {
+                        width = maxWidth*0.8;
+                    }
+                    if ( area && area.height && area.height < maxHeight ){
+                        height = area.height;
+                    } else {
+                        height = maxHeight*0.8;
+                    }
+                    return {width:width,height:height};
+                }
+
+                var addListener = function (dialog) {
+                    dialog.find('iframe').attr('src',object.url);
+                    dlg = dialog;
+                    body = dialog.find('.myui-dialog-body');
+                    dialog.on('click',onOutSide);
+                    dialog.find('.minimize').on('click',onMinimize);
+                    dialog.find('.maximize').on('click',onMaximize);
+                    dialog.find('.resize').on('click',onResize);
+                    dialog.find('.close').on('click',onClose);
+                    body.on('click',function () {
+                        return false;
+                    })
+                }
+
+                var onOutSide = function () {
+                    closeDialog();
+                }
+
+                var onMinimize = function () {
+                    clearOpratorStatus();
+                    body.height(50);
+                    body.width('auto');
+
+                    body[0].style.top='auto';
+                    body[0].style.bottom='0px';
+                    body[0].style.left='0px';
+                    body[0].style.right='auto';
+                    body.find('.minimize').addClass('hide');
+                };
+
+                var onMaximize = function () {
+                    clearOpratorStatus();
+                    var maxWidth = window.innerWidth;
+                    var maxHeight = window.innerHeight;
+                    body.height(maxHeight);
+                    body.width(maxWidth);
+                    body[0].style.top='0px';
+                    body[0].style.left='0px';
+                    body.find('.maximize').addClass('hide');
+                };
+
+                var onResize = function () {
+                    clearOpratorStatus();
+                    showCenter();
+                    body.find('.resize').addClass('hide');
+                };
+
+                var clearOpratorStatus = function () {
+                    dlg.find('.minimize').removeClass('hide');
+                    dlg.find('.maximize').removeClass('hide');
+                    dlg.find('.resize').removeClass('hide');
+                }
+
+                var onClose = function () {
+                    closeDialog();
+                };
+                return shared;
+            })();
+            var toastDialog = (function () {
+                var shared = {};
+                var className = 'toast';
+                var obj;
+                var dlg;
+                shared.getBuilder = function (object) {
+                    obj = object;
+                    return {
+                        className:className,
+                        buildTitle:buildTitle,
+                        buildContent:buildContent,
+                        getArea:getArea,
+                        addListener:addListener
+                    };
+                }
+
+                var buildTitle = function (title) {
+
+                }
+                var buildContent = function (content) {
+                    var html = '    <div>\n' +
+                        '        <i class="iconfont">&#xe615;</i>\n' +
+                        '        <cite class="content">'+obj.content+'</cite>\n' +
+                        '    </div>';
+                    content.append(html);
+                }
+                var getArea = function (dialog) {
+                    var width = 0;
+                    var children = dialog.find('.myui-dialog-content div').children();
+                    children.each(function () {
+                        width+=$(this).outerWidth(true);
+                    })
+                    return {width:width,height:64};
+                }
+                var addListener = function (dialog) {
+                    dlg = dialog;
+                    setTimeout(closeDialog,2000);
+                }
+
+                var closeDialog = function () {
+                    dlg.remove();
+                }
+                return shared;
+            })();
+            var promptDialog = (function () {
+                var shared = {};
+                var className = 'prompt';
+                var obj;
+                var dlg;
+                shared.getBuilder = function (object) {
+                    obj = object;
+                    return {
+                        className:'prompt',
+                        buildTitle:buildTitle,
+                        buildContent:buildContent,
+                        getArea:getArea,
+                        addListener:addListener
+                    }
+                };
+
+                var buildTitle = function (title) {
+                    var html = '    <cite>' + obj.title + '</cite>\n' +
+                        '    <div class="myui-dialog-oprator">\n' +
+                        '        <i class="iconfont '+className+' close">&#xe647;</i>\n' +
+                        '        </div>';
+                    title.append(html);
+                }
+
+                var buildContent = function (content) {
+                    var html = '        <cite class="content">'+obj.content+'</cite>\n' +
+                        '        <div class="buttons">\n' +
+                        '            <button class="btn sure">确定</button>\n' +
+                        '            <button class="btn cancel">取消</button>\n' +
+                        '        </div>';
+                    content.append(html);
+                }
+
+                var getArea = function (dialog) {
+                    return {height:154,width:260};
+                }
+
+                var addListener = function (dialog) {
+                    dlg = dialog;
+                    dialog.find('.close').on('click',closeDialog);
+                    dialog.find('.sure').on('click',sureClick);
+                    dialog.find('.cancel').on('click',cancelClick);
+                }
+
+                var closeDialog = function () {
+                    dlg.remove();
+                }
+
+                var sureClick = function () {
+                    closeDialog();
+                    obj.sureCallback();
+                }
+
+                var cancelClick = function () {
+                    closeDialog();
+                    obj.cancelCallback()
+                }
+                return shared;
+            })();
+
+            shared.showFrameDialog = function (obj) {
+                // frameDialog.build(obj);
+                var builder = frameDialog.getBuilder(obj);
+                showDialog(builder);
             }
-            show();
-        };
 
-        shared.closePageDialog = function () {
-            $('.myui-dialog').remove();
-        };
-
-        var show = function () {
-            var maxWidth = window.innerWidth;
-            var maxHeight = window.innerHeight;
-
-            var area = pageDialog.object.area;
-            if ( area && area.width && area.width < maxWidth ){
-                pageDialog.width = area.width;
-            } else {
-                pageDialog.width = maxWidth*0.8;
+            shared.showToastDialog = function (obj) {
+                var builder = toastDialog.getBuilder(obj);
+                showDialog(builder);
             }
-            if ( area && area.height && area.height < maxHeight ){
-                pageDialog.height = area.height;
-            } else {
-                pageDialog.height = maxHeight*0.8;
+            shared.showPromptDialog = function (obj) {
+                var builder = promptDialog.getBuilder(obj);
+                showDialog(builder);
             }
 
-            onResize();
+            var showDialog = function (builder) {
+                var temp = getTemplate(builder.className);
+                var title = temp.find('.myui-dialog-title');
+                builder.buildTitle(title);
+                var content = temp.find('.myui-dialog-content');
+                builder.buildContent(content);
 
-            $('.myui-dialog iframe').attr('src',pageDialog.object.url);
-            setListener();
-        }
+                $('body').append(temp);
+                var area = builder.getArea(temp);
+                if ( !area ){
+                    area = {width:window.innerWidth*0.8,height:window.innerHeight*0.8}
+                } else if ( !area.width ){
+                    area.width = window.innerWidth*0.8;
+                } else if ( !area.height ){
+                    area.height = window.innerHeight*0.8;
+                }
 
-        var setListener = function () {
-            $('.myui-dialog-oprator .iconfont').off();
-            $('.myui-dialog #minimize').on('click',onMinimize);
-            $('.myui-dialog #maximize').on('click',onMaximize);
-            $('.myui-dialog #resize').on('click',onResize);
-            $('.myui-dialog #close').on('click',onClose);
-            $('.myui-dialog').on('click',onOutSide);
-            $('.myui-dialog .myui-dialog-container').on('click',function () {
-                return false;
-            })
-        }
+                var body = temp.find('.myui-dialog-body');
+                showCenter(body,area.height,area.width);
 
-        var onOutSide = function () {
-            shared.closeDialog();
-        }
+                temp.addClass('show');
+                var body = temp.find('.myui-dialog-body');
+                body.addClass('myui-m-anim-scale');
+                // body[0].addEventListener('transitionend',transition);
+                builder.addListener(temp);
+            }
 
-        var onMinimize = function () {
-            clearOpratorStatus();
-            pageDialog.content.height(50);
-            pageDialog.content.width('auto');
+            var transition = function () {
+                $(this).removeClass('myui-m-anim-scale');
+            }
 
-            pageDialog.content[0].style.top='auto';
-            pageDialog.content[0].style.bottom='0px';
-            pageDialog.content[0].style.left='0px';
-            pageDialog.content[0].style.right='auto';
-            // content.offset({top:'auto',bottom:'0px',left:'0px',right:'auto'});
-            $('.myui-dialog-oprator #minimize').addClass('hide');
-        };
+            var showCenter = function (body,height,width) {
+                var maxWidth = window.innerWidth;
+                var maxHeight = window.innerHeight;
+                var top = (maxHeight-height)/2;
+                var left = (maxWidth-width)/2;
 
-        var onMaximize = function () {
-            clearOpratorStatus();
-            var maxWidth = window.innerWidth;
-            var maxHeight = window.innerHeight;
-            pageDialog.content.height(maxHeight);
-            pageDialog.content.width(maxWidth);
-            pageDialog.content[0].style.top='0px';
-            pageDialog.content[0].style.left='0px';
-            // content.offset({top:0,left:0});
-            $('.myui-dialog-oprator #maximize').addClass('hide');
-        };
+                body.height(height);
+                body.width(width);
+                body[0].style.top=top+'px';
+                body[0].style.bottom='auto';
+                body[0].style.left=left+'px';
+                body[0].style.right='auto';
+            }
 
-        var onResize = function () {
-            clearOpratorStatus();
-            var maxWidth = window.innerWidth;
-            var maxHeight = window.innerHeight;
-            var top = (maxHeight-pageDialog.height)/2;
-            var left = (maxWidth-pageDialog.width)/2;
+            var getTemplate = function (className) {
+                var html = '        <div class="myui-dialog ${customer}">\n' +
+                    '            <div class="myui-dialog-body ${customer}">\n' +
+                    '                <div class="myui-dialog-title ${customer}"></div>\n' +
+                    '                <div class="myui-dialog-content ${customer}"></div>\n' +
+                    '            </div>\n' +
+                    '        </div>';
+                html = html.replace(/\${customer}/g,className);
 
-            pageDialog.content = $('.myui-dialog-container');
-            pageDialog.content.height(pageDialog.height);
-            pageDialog.content.width(pageDialog.width);
-            pageDialog.content[0].style.top=top+'px';
-            pageDialog.content[0].style.bottom='auto';
-            pageDialog.content[0].style.left=left+'px';
-            pageDialog.content[0].style.right='auto';
-            // content.offset({ top: top, left: left , bottom:'auto',right:'auto'});
-            $('.myui-dialog-oprator #resize').addClass('hide');
-        };
+                return $(html);
+            }
+            return shared;
+        })(jQuery);
 
-        var onClose = function () {
-            shared.closeDialog();
-        };
-
-        var clearOpratorStatus = function () {
-            $('.myui-dialog-oprator #minimize').removeClass('hide');
-            $('.myui-dialog-oprator #maximize').removeClass('hide');
-            $('.myui-dialog-oprator #resize').removeClass('hide');
-        }
-        return shared;
-    })();
+  // var myuiDialog = (function () {
+  //       var shared = {};
+  //
+  //       var pageDialog = {};
+  //       var promptDialog = {};
+  //       var toastDialog = {};
+  //
+  //       shared.showToastDialog = function (obj) {
+  //           shared.closeDialog();
+  //           toastDialog.object = obj;
+  //       }
+  //
+  //       shared.showPromptDialog = function (obj) {
+  //           shared.closeDialog();
+  //           promptDialog.object = obj;
+  //           // if ( $('.myui-dialog').length == 0 ){
+  //               var tmpl = $('#template-myui-dialog-prompt');
+  //               if ( tmpl.length == 0 ){
+  //                   $('body').append('<script id="template-myui-dialog-prompt" type="text/x-jquery-tmpl"></script>');
+  //                   $('#template-myui-dialog-prompt').load('/Surface/template/tmpl_myui_dialog_prompt.html',function () {
+  //                       $('#template-myui-dialog-prompt').tmpl(promptDialog.object).appendTo('body');
+  //                       $('.myui-dialog #close').on('click',onClose);
+  //                       $('.myui-dialog').on('click',onOutSide);
+  //                   });
+  //                   return;
+  //               }
+  //               $('#template-myui-dialog-prompt').tmpl(promptDialog.object).appendTo('body');
+  //           // }
+  //           $('.myui-dialog #close').on('click',onClose);
+  //           $('.myui-dialog').on('click',onOutSide);
+  //       }
+  //
+  //       shared.closeDialog = function () {
+  //           $('.myui-dialog').remove();
+  //       }
+  //
+  //       shared.showPageDialog = function (obj) {
+  //           pageDialog.object = obj;
+  //           if ($('.myui-dialog').length == 0){
+  //               var tmpl = $('#template-myui-dialog');
+  //               if ( tmpl.length == 0 ){
+  //                 $('body').append('<script id="template-myui-dialog" type="text/x-jquery-tmpl"></script>');
+  //                   $('#template-myui-dialog').load('/Surface/template/tmpl_myui_dialog.html',function () {
+  //                       $('#template-myui-dialog').tmpl(pageDialog.object).appendTo('body');
+  //                       show();
+  //                   });
+  //                   return;
+  //               }
+  //               $('#template-myui-dialog').tmpl(pageDialog.object).appendTo('body');
+  //           }
+  //           show();
+  //       };
+  //
+  //       shared.closePageDialog = function () {
+  //           $('.myui-dialog').remove();
+  //       };
+  //
+  //       var show = function () {
+  //           var maxWidth = window.innerWidth;
+  //           var maxHeight = window.innerHeight;
+  //
+  //           var area = pageDialog.object.area;
+  //           if ( area && area.width && area.width < maxWidth ){
+  //               pageDialog.width = area.width;
+  //           } else {
+  //               pageDialog.width = maxWidth*0.8;
+  //           }
+  //           if ( area && area.height && area.height < maxHeight ){
+  //               pageDialog.height = area.height;
+  //           } else {
+  //               pageDialog.height = maxHeight*0.8;
+  //           }
+  //
+  //           onResize();
+  //
+  //           $('.myui-dialog iframe').attr('src',pageDialog.object.url);
+  //           setListener();
+  //       }
+  //
+  //       var setListener = function () {
+  //           $('.myui-dialog-oprator .iconfont').off();
+  //           $('.myui-dialog #minimize').on('click',onMinimize);
+  //           $('.myui-dialog #maximize').on('click',onMaximize);
+  //           $('.myui-dialog #resize').on('click',onResize);
+  //           $('.myui-dialog #close').on('click',onClose);
+  //           $('.myui-dialog').on('click',onOutSide);
+  //           $('.myui-dialog .myui-dialog-container').on('click',function () {
+  //               return false;
+  //           })
+  //       }
+  //
+  //       var onOutSide = function () {
+  //           shared.closeDialog();
+  //       }
+  //
+  //       var onMinimize = function () {
+  //           clearOpratorStatus();
+  //           pageDialog.content.height(50);
+  //           pageDialog.content.width('auto');
+  //
+  //           pageDialog.content[0].style.top='auto';
+  //           pageDialog.content[0].style.bottom='0px';
+  //           pageDialog.content[0].style.left='0px';
+  //           pageDialog.content[0].style.right='auto';
+  //           // content.offset({top:'auto',bottom:'0px',left:'0px',right:'auto'});
+  //           $('.myui-dialog-oprator #minimize').addClass('hide');
+  //       };
+  //
+  //       var onMaximize = function () {
+  //           clearOpratorStatus();
+  //           var maxWidth = window.innerWidth;
+  //           var maxHeight = window.innerHeight;
+  //           pageDialog.content.height(maxHeight);
+  //           pageDialog.content.width(maxWidth);
+  //           pageDialog.content[0].style.top='0px';
+  //           pageDialog.content[0].style.left='0px';
+  //           // content.offset({top:0,left:0});
+  //           $('.myui-dialog-oprator #maximize').addClass('hide');
+  //       };
+  //
+  //       var onResize = function () {
+  //           clearOpratorStatus();
+  //           var maxWidth = window.innerWidth;
+  //           var maxHeight = window.innerHeight;
+  //           var top = (maxHeight-pageDialog.height)/2;
+  //           var left = (maxWidth-pageDialog.width)/2;
+  //
+  //           pageDialog.content = $('.myui-dialog-container');
+  //           pageDialog.content.height(pageDialog.height);
+  //           pageDialog.content.width(pageDialog.width);
+  //           pageDialog.content[0].style.top=top+'px';
+  //           pageDialog.content[0].style.bottom='auto';
+  //           pageDialog.content[0].style.left=left+'px';
+  //           pageDialog.content[0].style.right='auto';
+  //           // content.offset({ top: top, left: left , bottom:'auto',right:'auto'});
+  //           $('.myui-dialog-oprator #resize').addClass('hide');
+  //       };
+  //
+  //       var onClose = function () {
+  //           shared.closeDialog();
+  //       };
+  //
+  //       var clearOpratorStatus = function () {
+  //           $('.myui-dialog-oprator #minimize').removeClass('hide');
+  //           $('.myui-dialog-oprator #maximize').removeClass('hide');
+  //           $('.myui-dialog-oprator #resize').removeClass('hide');
+  //       }
+  //       return shared;
+  //   })();
   var tableHelper = (function (option) {
         var opt = {pageSize:10};
         if ( option ){
@@ -370,7 +682,24 @@
 
         return shared;
     })();
+  
+  var pullDownListHelper = (function () {
+      var shared = {};
+      var opt = {
+          length:20,
+          getView:function () {
 
-  myui['dialog'] = myuiDialog;
+          },
+          onItemClick:function () {
+
+          }
+      };
+      shared.showAsDropDown = function(dom,option){
+
+      }
+      return shared;
+  })();
+  
+  myui['dialog'] = dialog;
   myui['tableHelper'] = tableHelper;
 }(jQuery));

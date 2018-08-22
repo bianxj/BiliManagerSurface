@@ -3,6 +3,10 @@ html,body{
     margin-right: 20px;
 }
 
+.search-container{
+    margin-top: 20px;
+}
+
 .operate-container{
     margin-top: 20px;
     padding: 5px;
@@ -13,6 +17,10 @@ html,body{
 .table-container{
     width: 100%;
     margin-top: 15px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .myui-checkbox{

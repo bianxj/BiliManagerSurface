@@ -6,8 +6,7 @@
 
     <link rel="stylesheet" href="font/iconfont.css">
     <style type="text/css">
-        .myui-dialog.frame{
-            background-color: rgba(221,221,221,0.8);
+        .myui-dialog{
             position: fixed;
             top: 0px;
             left: 0px;
@@ -17,34 +16,52 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            z-index: 1000;
         }
-        .myui-dialog-body.frame{
+        .myui-dialog.show{
+            display: block;
+        }
+        .myui-dialog-body{
             position: absolute;
             border: none;
             -webkit-border-radius: 2px;
             -moz-border-radius: 2px;
             border-radius: 2px;
+            z-index: 1000;
         }
-
-        .myui-dialog-title.frame{
+        .myui-dialog-title{
             height: 50px;
             line-height: 50px;
             padding: 0px 20px;
             background-color: #F8F8F8;
             color: black;
             font-size: 16px;
+            z-index: 1000;
         }
+        .myui-dialog-content{
+            position: absolute;
+            background: #FFFFFF;
+            z-index: 1000;
+        }
+
+    </style>
+
+    <style type="text/css">
+        .myui-dialog.frame{
+            background-color: rgba(221,221,221,0.8);
+        }
+        .myui-dialog-title.frame{}
+        .myui-dialog-body.frame{}
+
         .myui-dialog.frame cite{
             font-style: normal;
             color: #000000;
         }
         .myui-dialog-content.frame{
-            position: absolute;
             left: 0px;
             right: 0px;
             top: 50px;
             bottom: 0px;
-            background: #FFFFFF;
         }
         .myui-dialog-content.frame iframe{
             width: 100%;
@@ -68,43 +85,149 @@
         }
     </style>
 
+    <style type="text/css">
+        .myui-dialog.toast{
+            z-index: -1;
+        }
+        .myui-dialog-body.toast{
+            overflow: hidden;
+        }
+        .myui-dialog-title.toast{
+            display: none;
+        }
+        .myui-dialog-content.toast{
+            left: 0px;
+            right: 0px;
+            top: 0px;
+            bottom: 0px;
+        }
+
+        .myui-dialog-content.toast div{
+            height: 62px;
+            line-height: 64px;
+            border: 1px solid #dddddd;
+            white-space: nowrap;
+        }
+        .myui-dialog-content.toast div cite{
+            display: inline-block;
+            font-style: normal;
+            vertical-align: top;
+            margin-right: 20px;
+            min-width: 180px;
+            margin-left: 5px;
+        }
+        .myui-dialog-content.toast div i.iconfont{
+            display: inline-block;
+            font-size: 32px;
+            color: red;
+            vertical-align: top;
+            margin-left: 20px;
+        }
+
+    </style>
+
+    <style type="text/css">
+        .myui-dialog.prompt{
+            background-color: rgba(221,221,221,0.8);
+        }
+        .myui-dialog-title.prompt{
+
+        }
+        .myui-dialog-title.prompt .myui-dialog-oprator{
+            display: inline-block;
+            margin-left: 10px;
+            float: right;
+        }
+        .myui-dialog-title.prompt .myui-dialog-oprator i{
+            cursor: pointer;
+            padding: 0px 4px;
+            height: 43px;
+            line-height: 50px;
+            display: inline-block;
+            font-size: 20px;
+        }
+        .myui-dialog-body.prompt{
+            left: 0px;
+            right: 0px;
+            top: 0px;
+            bottom: 0px;
+        }
+
+        .myui-dialog-body.prompt cite{
+            font-style: normal;
+        }
+
+        .myui-dialog-content.prompt{
+            position: absolute;
+            top: 43px;
+            height:104px;
+            width: 260px;
+            border-top: 1px solid #dddddd;
+        }
+
+        .myui-dialog-content.prompt .buttons{
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+        }
+        .myui-dialog-content.prompt .content{
+            display: block;
+            padding: 20px 15px;
+            font-size: 16px;
+        }
+
+        .myui-dialog-content.prompt .btn{
+            height: 28px;
+            border: 1px solid #dedede;
+            border-radius: 3px;
+            padding: 0px 15px;
+            cursor: pointer;
+        }
+        .myui-dialog-content.prompt .btn:hover{
+            opacity: 0.8;
+        }
+        .myui-dialog-content.prompt .btn.sure{
+            background-color: #1E9FFF;
+            color: #ffffff;
+        }
+        .myui-dialog-content.prompt .btn.cancel{
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+    </style>
 </head>
 <body>
     <button id="frame">FrameDialog</button>
     <button id="toast">ToastDialog</button>
-    <button id="Prompt">PromptDialog</button>
+    <button id="prompt">PromptDialog</button>
 
     <script src="js/vendor/jquery-3.3.1.js"></script>
-    <script src="js/vendor/jquery.tmpl.js"></script>
     <script type="text/javascript">
-        var dialog = (function () {
+        var dialog = (function ($) {
             var shared = {};
             var frameDialog = (function () {
                 var shared = {};
-                var className = 'frame';
                 var object;
+                var className = 'frame';
                 //object = {title:'title',url:'url',area:{width:100,height:100}}
                 var height;
                 var width;
                 var dlg;
                 var body;
 
-                shared.build = function (obj) {
+                shared.getBuilder = function(obj){
                     object = obj;
-                    build(getTemplate(className));
-                }
-
-                var build = function (template) {
-                    template = buildTitle(template);
-                    template = buildContent(template);
-                    dlg = template;
-                    body = dlg.find('.myui-dialog-body');
-                    showDialog(template);
-                    afterShow();
-                    refreshListener();
+                    return {
+                        className:className,
+                        buildTitle:buildTitle,
+                        buildContent:buildContent,
+                        getArea:getArea,
+                        addListener:addListener
+                    }
                 }
                 
-                var buildTitle = function (template) {
+                var buildTitle = function (title) {
                     var html = '    <cite>' + object.title + '</cite>\n' +
                         '    <div class="myui-dialog-oprator">\n' +
                         '        <i class="iconfont '+className+' minimize">&#xe600;</i>\n' +
@@ -112,45 +235,17 @@
                         '        <i class="iconfont hide '+className+' resize">&#xe602;</i>\n' +
                         '        <i class="iconfont '+className+' close">&#xe647;</i>\n' +
                         '        </div>';
-                    var title = template.find('.myui-dialog-title');
                     title.append(html);
-                    return template;
                 }
 
-                var buildContent = function (template) {
+                var buildContent = function (content) {
                     var html = '<iframe frameborder="0" scrolling="yes"></iframe>';
-                    var content = template.find('.myui-dialog-content');
                     content.append(html);
-                    return template;
                 }
 
                 var closeDialog = function () {
                     dlg.remove();
                     dlg = undefined;
-                }
-
-                var afterShow = function () {
-                    // dlg = $('.myui-dialog.'+className);
-                    $('.myui-dialog.frame iframe').attr('src',object.url);
-                    calcWH();
-                    showCenter();
-                }
-
-                var calcWH = function () {
-                    var maxWidth = window.innerWidth;
-                    var maxHeight = window.innerHeight;
-
-                    var area = object.area;
-                    if ( area && area.width && area.width < maxWidth ){
-                        width = area.width;
-                    } else {
-                        width = maxWidth*0.8;
-                    }
-                    if ( area && area.height && area.height < maxHeight ){
-                        height = area.height;
-                    } else {
-                        height = maxHeight*0.8;
-                    }
                 }
                 
                 var showCenter = function () {
@@ -167,12 +262,36 @@
                     body[0].style.right='auto';
                 }
                 
-                var refreshListener = function () {
-                    dlg.find('.myui-dialog').on('click',onOutSide);
-                    dlg.find('.minimize').on('click',onMinimize);
-                    dlg.find('.maximize').on('click',onMaximize);
-                    dlg.find('.resize').on('click',onResize);
-                    dlg.find('.close').on('click',onClose);
+                var getArea = function () {
+                    var maxWidth = window.innerWidth;
+                    var maxHeight = window.innerHeight;
+
+                    var area = object.area;
+                    if ( area && area.width && area.width < maxWidth ){
+                        width = area.width;
+                    } else {
+                        width = maxWidth*0.8;
+                    }
+                    if ( area && area.height && area.height < maxHeight ){
+                        height = area.height;
+                    } else {
+                        height = maxHeight*0.8;
+                    }
+                    return {width:width,height:height};
+                }
+                
+                var addListener = function (dialog) {
+                    dialog.find('iframe').attr('src',object.url);
+                    dlg = dialog;
+                    body = dialog.find('.myui-dialog-body');
+                    dialog.on('click',onOutSide);
+                    dialog.find('.minimize').on('click',onMinimize);
+                    dialog.find('.maximize').on('click',onMaximize);
+                    dialog.find('.resize').on('click',onResize);
+                    dialog.find('.close').on('click',onClose);
+                    body.on('click',function () {
+                        return false;
+                    })
                 }
 
                 var onOutSide = function () {
@@ -219,25 +338,170 @@
                 };
                 return shared;
             })();
-
-            shared.showFrameDialog = function (obj) {
-                frameDialog.build(obj);
-            }
-
-            var customerDialog = (function () {
+            var toastDialog = (function () {
                 var shared = {};
+                var className = 'toast';
+                var obj;
+                var dlg;
+                shared.getBuilder = function (object) {
+                    obj = object;
+                    return {
+                        className:className,
+                        buildTitle:buildTitle,
+                        buildContent:buildContent,
+                        getArea:getArea,
+                        addListener:addListener
+                    };
+                }
 
+                var buildTitle = function (title) {
+
+                }
+                var buildContent = function (content) {
+                    var html = '    <div>\n' +
+                        '        <i class="iconfont">&#xe615;</i>\n' +
+                        '        <cite class="content">'+obj.content+'</cite>\n' +
+                        '    </div>';
+                    content.append(html);
+                }
+                var getArea = function (dialog) {
+                    var width = 0;
+                    var children = dialog.find('.myui-dialog-content div').children();
+                    children.each(function () {
+                        width+=$(this).outerWidth(true);
+                    })
+                    return {width:width,height:64};
+                }
+                var addListener = function (dialog) {
+                    dlg = dialog;
+                    setTimeout(closeDialog,2000);
+                }
+
+                var closeDialog = function () {
+                    dlg.remove();
+                }
+                return shared;
             })();
+            var promptDialog = (function () {
+                var shared = {};
+                var className = 'prompt';
+                var obj;
+                var dlg;
+                shared.getBuilder = function (object) {
+                    obj = object;
+                    return {
+                        className:'prompt',
+                        buildTitle:buildTitle,
+                        buildContent:buildContent,
+                        getArea:getArea,
+                        addListener:addListener
+                    }
+                };
+                
+                var buildTitle = function (title) {
+                    var html = '    <cite>' + obj.title + '</cite>\n' +
+                        '    <div class="myui-dialog-oprator">\n' +
+                        '        <i class="iconfont '+className+' close">&#xe647;</i>\n' +
+                        '        </div>';
+                    title.append(html);
+                }
+                
+                var buildContent = function (content) {
+                    var html = '        <cite class="content">'+obj.content+'</cite>\n' +
+                        '        <div class="buttons">\n' +
+                        '            <button class="btn sure">确定</button>\n' +
+                        '            <button class="btn cancel">取消</button>\n' +
+                        '        </div>';
+                    content.append(html);
+                }
+                
+                var getArea = function (dialog) {
+                    return {height:154,width:260};
+                }
+                
+                var addListener = function (dialog) {
+                    dlg = dialog;
+                    dialog.find('.close').on('click',closeDialog);
+                    dialog.find('.sure').on('click',sureClick);
+                    dialog.find('.cancel').on('click',cancelClick);
+                }
+                
+                var closeDialog = function () {
+                    dlg.remove();
+                }
 
-            shared.showCustomerDialog = function (obj) {
+                var sureClick = function () {
+                    closeDialog();
+                    obj.sureCallback();
+                }
 
+                var cancelClick = function () {
+                    closeDialog();
+                    obj.cancelCallback()
+                }
+                return shared;
+            })();
+            
+            shared.showFrameDialog = function (obj) {
+                // frameDialog.build(obj);
+                var builder = frameDialog.getBuilder(obj);
+                showDialog(builder);
             }
 
-            var showDialog = function (dialog) {
-                $('body').append(dialog);
-                // dialog.appendTo('body');
-            } 
-            
+            shared.showToastDialog = function (obj) {
+                var builder = toastDialog.getBuilder(obj);
+                showDialog(builder);
+            }
+            shared.showPromptDialog = function (obj) {
+                var builder = promptDialog.getBuilder(obj);
+                showDialog(builder);
+            }
+
+            var showDialog = function (builder) {
+                var temp = getTemplate(builder.className);
+                var title = temp.find('.myui-dialog-title');
+                builder.buildTitle(title);
+                var content = temp.find('.myui-dialog-content');
+                builder.buildContent(content);
+
+                $('body').append(temp);
+                var area = builder.getArea(temp);
+                if ( !area ){
+                    area = {width:window.innerWidth*0.8,height:window.innerHeight*0.8}
+                } else if ( !area.width ){
+                    area.width = window.innerWidth*0.8;
+                } else if ( !area.height ){
+                    area.height = window.innerHeight*0.8;
+                }
+
+                var body = temp.find('.myui-dialog-body');
+                showCenter(body,area.height,area.width);
+
+                temp.addClass('show');
+                var body = temp.find('.myui-dialog-body');
+                body.addClass('myui-m-anim-scale');
+                // body[0].addEventListener('transitionend',transition);
+                builder.addListener(temp);
+            }
+
+            var transition = function () {
+                $(this).removeClass('myui-m-anim-scale');
+            }
+
+            var showCenter = function (body,height,width) {
+                var maxWidth = window.innerWidth;
+                var maxHeight = window.innerHeight;
+                var top = (maxHeight-height)/2;
+                var left = (maxWidth-width)/2;
+
+                body.height(height);
+                body.width(width);
+                body[0].style.top=top+'px';
+                body[0].style.bottom='auto';
+                body[0].style.left=left+'px';
+                body[0].style.right='auto';
+            }
+
             var getTemplate = function (className) {
                 var html = '        <div class="myui-dialog ${customer}">\n' +
                     '            <div class="myui-dialog-body ${customer}">\n' +
@@ -250,14 +514,26 @@
                 return $(html);
             }
             return shared;
-        })();
+        })(jQuery);
         
         $(document).ready(function () {
             $('#frame').on('click',function () {
                 dialog.showFrameDialog({title:'tttt',url:'manager_list.html'});
-                // var tmp = $('#tmpl-dialog').tmpl({cccc:'test'});
-                // var title = tmp.find('.myui-dialog-title').append('<p>test</p>');
-                // tmp.appendTo('body');
+            });
+            $('#toast').on('click',function () {
+                dialog.showToastDialog({content:'测试数据'});
+            });
+            $('#prompt').on('click',function () {
+               dialog.showPromptDialog({
+                   title:'测试',
+                   content:'content',
+                   sureCallback:function () {
+                       alert('sure');
+                   },
+                   cancelCallback:function () {
+                       alert('cancel');
+                   }
+               });
             });
         });
     </script>

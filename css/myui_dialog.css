@@ -1,5 +1,4 @@
 .myui-dialog{
-    background-color: rgba(221,221,221,0.8);
     position: fixed;
     top: 0px;
     left: 0px;
@@ -9,23 +8,19 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    z-index: 1000;
 }
-.myui-dialog-container{
+.myui-dialog.show{
+    display: block;
+}
+.myui-dialog-body{
     position: absolute;
     border: none;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;
+    z-index: 1000;
 }
-.myui-dialog-container.myui-dialog-min{
-    height: 50px;
-    width: auto;
-    top: auto;
-    bottom: 0px;
-    left: 0px;
-    transform: none;
-}
-
 .myui-dialog-title{
     height: 50px;
     line-height: 50px;
@@ -33,29 +28,42 @@
     background-color: #F8F8F8;
     color: black;
     font-size: 16px;
-}
-.myui-dialog cite{
-    font-style: normal;
-    color: #000000;
+    z-index: 1000;
 }
 .myui-dialog-content{
     position: absolute;
+    background: #FFFFFF;
+    z-index: 1000;
+}
+
+/*-------------------------------------------------frame-------------------------------------------------------------*/
+
+.myui-dialog.frame{
+    background-color: rgba(221,221,221,0.8);
+}
+.myui-dialog-title.frame{}
+.myui-dialog-body.frame{}
+
+.myui-dialog.frame cite{
+    font-style: normal;
+    color: #000000;
+}
+.myui-dialog-content.frame{
     left: 0px;
     right: 0px;
     top: 50px;
     bottom: 0px;
-    background: #FFFFFF;
 }
-.myui-dialog-content iframe{
+.myui-dialog-content.frame iframe{
     width: 100%;
     height: 100%;
 }
-.myui-dialog-oprator{
+.myui-dialog-title.frame .myui-dialog-oprator{
     display: inline-block;
     margin-left: 10px;
     float: right;
 }
-.myui-dialog-oprator i{
+.myui-dialog-title.frame .myui-dialog-oprator i{
     cursor: pointer;
     padding: 0px 4px;
     height: 50px;
@@ -63,45 +71,116 @@
     display: inline-block;
     font-size: 20px;
 }
-.myui-dialog-oprator .hide{
+.myui-dialog-title.frame .myui-dialog-oprator .hide{
     display: none;
 }
 
-/*----------------------------------------------------------------------------------*/
-.myui-dialog-container.prompt{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    border: none;
-    border-radius: 2px;
+/*-------------------------------------------------toast---------------------------------------------------------------*/
+.myui-dialog.toast{
+    z-index: -1;
 }
-.myui-dialog-title.prompt{
-    min-width: 300px;
-    text-align: center;
+.myui-dialog-body.toast{
+    overflow: hidden;
+}
+.myui-dialog-title.toast{
+    display: none;
+}
+.myui-dialog-content.toast{
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
 }
 
-.myui-dialog-oprator.prompt{
-    margin-right: 10px;
-    position: absolute;
-    top: 0px;
+.myui-dialog-content.toast div{
+    height: 62px;
+    line-height: 64px;
+    border: 1px solid #dddddd;
+    white-space: nowrap;
+}
+.myui-dialog-content.toast div cite{
+    display: inline-block;
+    font-style: normal;
+    vertical-align: top;
+    margin-right: 20px;
+    min-width: 180px;
+    margin-left: 5px;
+}
+.myui-dialog-content.toast div i.iconfont{
+    display: inline-block;
+    font-size: 32px;
+    color: red;
+    vertical-align: top;
+    margin-left: 20px;
+}
+
+/*----------------------------------------------------prompt--------------------------------------------------------*/
+
+.myui-dialog.prompt{
+    background-color: rgba(221,221,221,0.8);
+}
+.myui-dialog-title.prompt{
+
+}
+.myui-dialog-title.prompt .myui-dialog-oprator{
+    display: inline-block;
+    margin-left: 10px;
+    float: right;
+}
+.myui-dialog-title.prompt .myui-dialog-oprator i{
+    cursor: pointer;
+    padding: 0px 4px;
+    height: 43px;
+    line-height: 50px;
+    display: inline-block;
+    font-size: 20px;
+}
+.myui-dialog-body.prompt{
+    left: 0px;
     right: 0px;
+    top: 0px;
+    bottom: 0px;
+}
+
+.myui-dialog-body.prompt cite{
+    font-style: normal;
 }
 
 .myui-dialog-content.prompt{
-    position: relative;
-    top: 0px;
-    text-align: center;
-    min-width: 300px;
-    min-height: 150px;
-    background-color: #ffffff;
+    position: absolute;
+    top: 43px;
+    height:104px;
+    width: 260px;
+    border-top: 1px solid #dddddd;
 }
 
-.myui-dialog-content cite{
-    display: block;
+.myui-dialog-content.prompt .buttons{
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
+    bottom: 10px;
+    right: 10px;
+    text-align: right;
 }
-/*---------------------------------------------------------------------*/
+.myui-dialog-content.prompt .content{
+    display: block;
+    padding: 20px 15px;
+    font-size: 16px;
+}
+
+.myui-dialog-content.prompt .btn{
+    height: 28px;
+    border: 1px solid #dedede;
+    border-radius: 3px;
+    padding: 0px 15px;
+    cursor: pointer;
+}
+.myui-dialog-content.prompt .btn:hover{
+    opacity: 0.8;
+}
+.myui-dialog-content.prompt .btn.sure{
+    background-color: #1E9FFF;
+    color: #ffffff;
+}
+.myui-dialog-content.prompt .btn.cancel{
+    background-color: #FFFFFF;
+    color: #000000;
+}
