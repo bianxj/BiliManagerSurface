@@ -101,3 +101,7 @@ table .column-opertor{
 .myui-table-operator #middle{
     display: inline-block;
 }
+
+.datepicker{
+    vertical-align: top;
+}

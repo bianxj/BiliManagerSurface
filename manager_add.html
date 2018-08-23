@@ -39,6 +39,9 @@
         width: 180px;
         text-align: right;
         margin-right: 20px;
+        vertical-align: middle;
+        height: 42px;
+        line-height: 42px;
       }
       .input-desc{
         display: inline-block;
@@ -48,6 +51,9 @@
       }
       .myui-input-frame{
         width: 200px;
+      }
+      .myui-select{
+        width: 220px;
       }
       #add{
         margin-left: 200px;
@@ -65,7 +71,7 @@
   <div class="input-container"><label class="input-title"><span>*</span>登录名</label><input id="login-name" class="myui-input-frame" type="text"></div>
   <div class="input-container"><label class="input-title"><span>*</span>手机</label><input id="phone" class="myui-input-frame" type="text"></div>
   <div class="input-container"><label class="input-title"><span>*</span>邮箱</label><input id="email" class="myui-input-frame" type="text"></div>
-  <div class="input-container"><label class="input-title"><span>*</span>角色</label><input id="role" class="myui-input-frame" type="text"></div>
+  <div class="input-container"><label class="input-title"><span>*</span>角色</label><select id="role" class="myui-select"></select></div>
   <div class="input-container"><label class="input-title"><span>*</span>密码</label><input id="pwd" class="myui-input-frame" type="password"><label class="input-desc"><span>*</span>请输入6~16位的数字或英文</label></div>
   <div class="input-container"><label class="input-title"><span>*</span>确认密码</label><input id="confirm-pwd" class="myui-input-frame" type="password"></div>
   <div class="input-container"><button id="add" class="myui-btn myui-btn-green">添加</button></div>
@@ -76,6 +82,13 @@
   <script type="text/javascript">
     $(document).ready(function () {
         $('#add').on('click',addManagerClick);
+        window.myui.pullDownListHelper.showAsDropDown($('#role'),{
+            length:10,
+            hasBlank:false,
+            getView:function (index) {
+                return '<p>'+index+'</p>';
+            }
+        })
     });
     
     var addManagerClick = function () {
@@ -131,7 +144,7 @@
     }
     
     var submitManagerData = function () {
-        
+        alert('Todo submit');
     }
 
   </script>

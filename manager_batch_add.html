@@ -1,0 +1,108 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <link rel="stylesheet" href="css/myui_btn.css">
+
+  <style type="text/css">
+    body{
+      text-align: center;
+    }
+
+    body div{
+      margin-top: 300px;
+    }
+
+    #file-selector{
+      position: absolute;
+      top: 300px;
+      height: 42px;
+      width: 360px;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    #file-path{
+      display: inline-block;
+      background-color: #FFFFFF;
+      border: 1px solid #dddddd;
+      border-radius: 3px;
+      width: 360px;
+      height: 40px;
+      line-height: 40px;
+      cursor: pointer;
+      font-size: 14px;
+      color: black;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #selector{
+      width: 104px;
+    }
+  </style>
+</head>
+
+<body>
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+  <!-- Add your site or application content here -->
+  <div id="file-container">
+    <input id="file-selector" type="file" name="file" accept=".csv">
+    <label id="file-path"></label>
+    <button id="selector" class="myui-btn myui-btn-green">选择文件</button>
+    <button id="upload" class="myui-btn myui-btn-green">上传</button>
+  </div>
+
+  <script src="js/vendor/jquery-3.3.1.js"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+        $('#selector').on('click',fileSelect);
+        $('#file-selector').on('change',fileChange);
+        $('#upload').on('click',upload);
+    });
+
+    var fileSelect = function () {
+        $('#file-selector').click();
+    }
+
+    var fileChange = function () {
+        $('#file-path').text($(this).val());
+    }
+    
+    var upload = function () {
+        var object = urlHelper.loadParam(window.location.href);
+        for ( var index in object ){
+            alert(index+'-'+object[index]);
+        }
+    }
+  </script>
+
+  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+  <script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-XXXXX-Y', 'auto'); ga('send', 'pageview')
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+
+</html>

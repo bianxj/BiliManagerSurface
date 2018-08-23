@@ -74,25 +74,31 @@
     var data = [
         {tag:'home',content:'首页',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]
         },
-        {tag:'template-manager',content:'模板管理',icBe4:'&#xe6b8;',href:'',children:[]
-        },
-        //字段：ID 用户名 密码 角色 时间 描述
-        //功能：新增 修改 批量导入 模板下载 搜索
-        {tag:'manager-list',content:'管理员列表',icBe4:'&#xe6b8;',href:'./manager_list.html',children:[]
-        },
-        {tag:'permission-manager',content:'权限管理',icBe4:'&#xe6b8;',href:'',
+        {tag:'permission-manager',content:'广告管理',icBe4:'&#xe6b8;',href:'',
+            //各类位置的广告
             children:[
-                {tag:'role-manager',content:'角色管理',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]}
+                {tag:'role-manager',content:'首页广告',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]}
             ]
         },
         {tag:'anime-manager',content:'动漫管理',icBe4:'&#xe6b8;',href:'',
             children:[
-                {tag:'anime-series-add',content:'录入系列',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
-                {tag:'anime-series-batch',content:'批量导入系列',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
-                {tag:'anime-series-edit',content:'修改系列',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
-                {tag:'anime-add',content:'录入动漫',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
-                {tag:'anime-batch',content:'批量导入动漫',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
-                {tag:'anime-edit',content:'修改动漫',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]}
+                {tag:'anime-series-list',content:'系列列表',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
+                {tag:'anime-list',content:'动漫列表',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
+                {tag:'anime-upload',content:'动漫上传',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]}
+            ]
+        },
+        {tag:'user-manager',content:'用户管理',icBe4:'&#xe6b8;',href:'',
+            children:[
+                {tag:'anime-series-list',content:'用户列表',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]},
+                {tag:'anime-list',content:'动漫列表',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]}
+            ]
+        },
+        //字段：ID 用户名 密码 角色 时间 描述
+        //功能：新增 修改 批量导入 模板下载 搜索
+        {tag:'system-manager',content:'系统管理',icBe4:'&#xe6b8;',href:'',
+            children:[
+                {tag:'manager-list',content:'管理员列表',icBe4:'&#xe6b8;',href:'./manager_list.html',children:[]},
+                {tag:'role-manager',content:'角色管理',icBe4:'&#xe6b8;',href:'http://www.baidu.com',children:[]}
             ]
         }
     ];

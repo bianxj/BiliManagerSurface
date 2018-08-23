@@ -26,19 +26,6 @@
   <link rel="stylesheet" href="css/myui_table.css">
   <link rel="stylesheet" href="css/manager_list.css">
 
-  <style type="text/css">
-      .myui-pulldown-container{
-          position: absolute;
-          min-width: 50px;
-          max-height: 50%;
-          overflow-y: auto;
-          border: 1px solid #dddddd;
-      }
-      .myui-line-container{
-          min-width: 50px;
-          border-bottom: 1px solid #dddddd;
-      }
-  </style>
 </head>
 
 <body>
@@ -49,7 +36,9 @@
   <!-- Add your site or application content here -->
   <div class="search-container">
     <input id="name" class="myui-input-frame" type="text" placeholder="用户名">
-    <input id="role" class="myui-input-frame" readonly="readonly" type="text" placeholder="角色">
+    <!--<input id="role" class="myui-input-frame" readonly="readonly" type="text" placeholder="角色">-->
+    <select class="myui-select" placeholder="角色">
+    </select>
     <input id="begintime" class="myui-input-frame" readonly="readonly" type="text" placeholder="起始时间">
     <input id="endtime" class="myui-input-frame" readonly="readonly" type="text" placeholder="截止时间">
     <button id="search" class="myui-btn myui-btn-green">搜索</button>
@@ -91,10 +80,7 @@
 
   <script type="text/javascript">
     $(document).ready(function () {
-        $('#add').on('click',onAddClick);
-        $('#batch-add').on('click',function () {
-           myui.dialog.showPromptDialog({title:'tttttt',content:'ccccccccccc'});
-        });
+        $('#add').on('click',addClick);
         window.myui.tableHelper.initTable(
             {
                 page: 1, lines: 198,
@@ -118,32 +104,67 @@
         $('.column-opertor .edit').on('click',editClick);
         $('.column-opertor .delete').on('click',deleteClick);
 
-        $('#role').on('click',function () {
-            pullDownListHelper.showAsDropDown($(this),{
-                length:10,
-                getView:function (index) {
-                    var html = '<span>'+index+'</span>';
-                    return html;
-                },
-                onItemClick:function (index) {
-                    alert('click:'+index);
-                }
-            });
+
+        window.myui.pullDownListHelper.showAsDropDown($('select'),{
+            length:10,
+            hasBlank:true,
+            getView:function (index) {
+                var html = '<p>'+index+'</p>';
+                return html;
+            }
         });
+
+/*        $('#role').on('click',function () {
+        });*/
         $('#begintime').dcalendarpicker({
             format:'yyyy-mm-dd'
         });
         $('#endtime').dcalendarpicker({
             format:'yyyy-mm-dd'
         });
+        $('#search').on('click',searchClick);
+        $('#batch-add').on('click',batchAddClick);
+        $('#batch-del').on('click',batchDelClick);
     })
 
+    var searchClick = function () {
+        alert('Todo search');
+    }
+    
     var deleteClick = function () {
         alert('Todo delete');
     }
 
     var editClick = function () {
-        alert('Todo edit');
+        window.myui.dialog.showFrameDialog({
+            title:'修改',
+            url:'manager_add.html',
+            data:{}
+        })
+    }
+
+    var batchAddClick = function () {
+        window.myui.dialog.showFrameDialog({
+            title:'批量导入',
+            url:'manager_batch_add.html',
+            data:{
+                accept:'.csv',
+                uploadUrl:''
+            }
+        })
+    }
+
+    var batchDelClick = function () {
+        window.myui.dialog.showPromptDialog({
+            title:'提示',
+            content:'确认删除以下条目',
+            sureCallback:function () {
+                alert('Todo sure');
+            },
+            cancelCallback:function () {
+                alert('Todo cancel');
+            }
+        });
     }
 
     var checkBoxClick = function () {
@@ -161,7 +182,7 @@
         }
     }
 
-    var onAddClick = function () {
+    var addClick = function () {
       // showPageDialog();
         window.myui.dialog.showFrameDialog({
             title:'新增',
@@ -172,63 +193,6 @@
             }
         });
     }
-  </script>
-  <script type="text/javascript">
-      var pullDownListHelper = (function () {
-          var shared = {};
-          var opt = {
-              length:20,
-              getView:function (index) {
-
-              },
-              onItemClick:function (index) {
-
-              },
-              addListener:function () {
-
-              }
-          };
-          shared.showAsDropDown = function(dom,option){
-              opt = option;
-              var container = buildContainer();
-              for(var i=0;i<opt.length;i++){
-                  container.append(buildLine(i).append(opt.getView(i)));
-              }
-              location(dom,container);
-              $('body').append(container);
-              addListener();
-          }
-          
-          shared.close = function () {
-              $('.myui-pulldown-container').remove();
-          }
-          
-          var buildContainer = function () {
-              var html = '<div class="myui-pulldown-container"></div>';
-              return $(html);
-          }
-          var buildLine = function (index) {
-              var html = '<div lid="'+index+'" class="myui-line-container"></div>';
-              return $(html);
-          }
-          var location = function (dom,list) {
-              var left = dom[0].offsetLeft + dom.innerWidth() - dom.width();
-              var top = dom[0].offsetTop + dom[0].offsetHeight;
-              list[0].style.top = top+"px";
-              list[0].style.left = left+"px";
-          }
-          var addListener = function () {
-              $('.myui-pulldown-container .myui-line-container').on('click',onItemClick);
-              if ( opt.addListener ){
-                  opt.addListener();
-              }
-          }
-          var onItemClick = function () {
-              var index = $(this).attr('lid');
-              opt.onItemClick(index);
-          }
-          return shared;
-      })();
   </script>
 
   <script id="row" type="text/x-jquery-tmpl">

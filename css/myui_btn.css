@@ -1,4 +1,5 @@
 .myui-btn{
+    display: inline-block;
     font-size: 16px;
     height: 42px;
     line-height: 42px;
@@ -7,8 +8,8 @@
     border: none;
     color: white;
     outline: none;
-    display: inline-block;
     cursor: pointer;
+    vertical-align: top;
 }
 .myui-btn:hover{
     opacity: .8;
@@ -21,6 +22,7 @@
 }
 
 .myui-input-frame{
+    display: inline-block;
     font-size: 16px;
     height: 40px;
     width: 100px;
@@ -29,6 +31,7 @@
     border-width: 1px;
     border-color: rgba(198,198,198,0.8);
     border-radius: 3px;
+    vertical-align: middle;
     outline: none;
 }
 .myui-input-frame:hover{
@@ -37,4 +40,18 @@
 }
 .myui-input-frame:focus{
     border-color: #009688;
+}
+
+.myui-select{
+    display: inline-block;
+    font-size: 16px;
+    height: 42px;
+    width: 120px;
+    padding: 0px 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(198,198,198,0.8);
+    border-radius: 3px;
+    vertical-align: top;
+    outline: none;
 }
