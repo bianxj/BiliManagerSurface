@@ -51,18 +51,18 @@
   </div>
 
   <div class="table-container">
-    <table class="myui-table">
-      <thead>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-    <div class="myui-table-operator">
-      <button id="prev" class="btn"><<</button>
-      <div id="middle">
-      </div>
-      <button id="next" class="btn">>></button>
-    </div>
+    <!--<table class="myui-table">-->
+      <!--<thead>-->
+      <!--</thead>-->
+      <!--<tbody>-->
+      <!--</tbody>-->
+    <!--</table>-->
+    <!--<div class="myui-table-operator">-->
+      <!--<button id="prev" class="btn"><<</button>-->
+      <!--<div id="middle">-->
+      <!--</div>-->
+      <!--<button id="next" class="btn">>></button>-->
+    <!--</div>-->
   </div>
 
 <!--  <script src="js/vendor/modernizr-{{MODERNIZR_VERSION}}.min.js"></script>
@@ -79,9 +79,14 @@
   <link rel="import" href="template/tmpl_myui_dialog.html">
 
   <script type="text/javascript">
+    var table;
     $(document).ready(function () {
         $('#add').on('click',addClick);
-        window.myui.tableHelper.initTable(
+        table = new window.myui.Table($('.table-container'),
+            {
+                pageSize:10,
+                cur:1
+            },
             {
                 page: 1, lines: 198,
                 getTitle: function () {
@@ -98,7 +103,27 @@
                     });
                     return html;
                 }
-            });
+            }
+        );
+
+        // window.myui.table.initTable(
+        //     {
+        //         page: 1, lines: 198,
+        //         getTitle: function () {
+        //             return $('#title').tmpl();
+        //         },
+        //         getView: function (index, view) {
+        //             var html = $('#row').tmpl({
+        //                 id: index,
+        //                 userName: 'test',
+        //                 phone:'18911111111',
+        //                 email:'1122@2233.com',
+        //                 role: 'ttt',
+        //                 createTime: 'cccc'
+        //             });
+        //             return html;
+        //         }
+        //     });
 
         $('.myui-checkbox').on('click',checkBoxClick);
         $('.column-opertor .edit').on('click',editClick);

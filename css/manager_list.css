@@ -68,39 +68,6 @@ table .column-opertor{
     border-color: #5FB878;
 }
 
-.myui-table-operator{
-    margin-top: 20px;
-    text-align: center;
-    font-size: 0px;
-}
-.myui-table-operator .btn{
-    height: 50px;
-    min-width: 50px;
-    text-align: center;
-    line-height: 50px;
-    border: 1px solid #DDDDDD;
-    border-radius: 3px;
-    outline: none;
-    cursor: pointer;
-    background-color: #FFFFFF;
-    color: #0C0C0C;
-    font-size: 18px;
-    margin: 0px 3px;
-}
-.myui-table-operator .btn.selected{
-    background-color: #009688;
-    color: #FFFFFF;
-}
-.myui-table-operator .btn.ellipsis{
-    pointer-events: none;
-    content: '...';
-    background-color: transparent;
-    border: none;
-    color: #0C0C0C;
-}
-.myui-table-operator #middle{
-    display: inline-block;
-}
 
 .datepicker{
     vertical-align: top;

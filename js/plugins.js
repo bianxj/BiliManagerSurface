@@ -49,14 +49,14 @@
 (
     function () {
         var urlHelper = (window.urlHelper = window.urlHelper || {});
-        urlHelper.mergeParam = function (url,map) {
-            if ( map ){
-                url+='?';
-                for ( var key in map ){
-                    url+=key+'='+JSON.stringify(map[key])+'&';
+        urlHelper.mergeParam = function (url, map) {
+            if (map) {
+                url += '?';
+                for (var key in map) {
+                    url += key + '=' + JSON.stringify(map[key]) + '&';
                 }
-                if (url.charAt(url.length-1) == '&'){
-                    url = url.substring(0,url.length-1);
+                if (url.charAt(url.length - 1) == '&') {
+                    url = url.substring(0, url.length - 1);
                 }
             }
             return url;
@@ -64,9 +64,9 @@
         urlHelper.loadParam = function (url) {
             var result = {};
             var params = url.split('?')[1];
-            if ( params ){
+            if (params) {
                 var array = params.split('&');
-                for (var index in array){
+                for (var index in array) {
                     var set = array[index].split('=')
                     result[set[0]] = set[1];
                 }
@@ -158,8 +158,8 @@
                 }
 
                 var addListener = function (dialog) {
-                    if ( object.data ){
-                        var url = urlHelper.mergeParam(object.url,{param:object.data});
+                    if (object.data) {
+                        var url = urlHelper.mergeParam(object.url, {param: object.data});
                         dialog.find('iframe').attr('src', url);
                     } else {
                         dialog.find('iframe').attr('src', object.url);
@@ -404,255 +404,126 @@
             return shared;
         })(jQuery);
 
-        // var myuiDialog = (function () {
-        //       var shared = {};
-        //
-        //       var pageDialog = {};
-        //       var promptDialog = {};
-        //       var toastDialog = {};
-        //
-        //       shared.showToastDialog = function (obj) {
-        //           shared.closeDialog();
-        //           toastDialog.object = obj;
-        //       }
-        //
-        //       shared.showPromptDialog = function (obj) {
-        //           shared.closeDialog();
-        //           promptDialog.object = obj;
-        //           // if ( $('.myui-dialog').length == 0 ){
-        //               var tmpl = $('#template-myui-dialog-prompt');
-        //               if ( tmpl.length == 0 ){
-        //                   $('body').append('<script id="template-myui-dialog-prompt" type="text/x-jquery-tmpl"></script>');
-        //                   $('#template-myui-dialog-prompt').load('/Surface/template/tmpl_myui_dialog_prompt.html',function () {
-        //                       $('#template-myui-dialog-prompt').tmpl(promptDialog.object).appendTo('body');
-        //                       $('.myui-dialog #close').on('click',onClose);
-        //                       $('.myui-dialog').on('click',onOutSide);
-        //                   });
-        //                   return;
-        //               }
-        //               $('#template-myui-dialog-prompt').tmpl(promptDialog.object).appendTo('body');
-        //           // }
-        //           $('.myui-dialog #close').on('click',onClose);
-        //           $('.myui-dialog').on('click',onOutSide);
-        //       }
-        //
-        //       shared.closeDialog = function () {
-        //           $('.myui-dialog').remove();
-        //       }
-        //
-        //       shared.showPageDialog = function (obj) {
-        //           pageDialog.object = obj;
-        //           if ($('.myui-dialog').length == 0){
-        //               var tmpl = $('#template-myui-dialog');
-        //               if ( tmpl.length == 0 ){
-        //                 $('body').append('<script id="template-myui-dialog" type="text/x-jquery-tmpl"></script>');
-        //                   $('#template-myui-dialog').load('/Surface/template/tmpl_myui_dialog.html',function () {
-        //                       $('#template-myui-dialog').tmpl(pageDialog.object).appendTo('body');
-        //                       show();
-        //                   });
-        //                   return;
-        //               }
-        //               $('#template-myui-dialog').tmpl(pageDialog.object).appendTo('body');
-        //           }
-        //           show();
-        //       };
-        //
-        //       shared.closePageDialog = function () {
-        //           $('.myui-dialog').remove();
-        //       };
-        //
-        //       var show = function () {
-        //           var maxWidth = window.innerWidth;
-        //           var maxHeight = window.innerHeight;
-        //
-        //           var area = pageDialog.object.area;
-        //           if ( area && area.width && area.width < maxWidth ){
-        //               pageDialog.width = area.width;
-        //           } else {
-        //               pageDialog.width = maxWidth*0.8;
-        //           }
-        //           if ( area && area.height && area.height < maxHeight ){
-        //               pageDialog.height = area.height;
-        //           } else {
-        //               pageDialog.height = maxHeight*0.8;
-        //           }
-        //
-        //           onResize();
-        //
-        //           $('.myui-dialog iframe').attr('src',pageDialog.object.url);
-        //           setListener();
-        //       }
-        //
-        //       var setListener = function () {
-        //           $('.myui-dialog-oprator .iconfont').off();
-        //           $('.myui-dialog #minimize').on('click',onMinimize);
-        //           $('.myui-dialog #maximize').on('click',onMaximize);
-        //           $('.myui-dialog #resize').on('click',onResize);
-        //           $('.myui-dialog #close').on('click',onClose);
-        //           $('.myui-dialog').on('click',onOutSide);
-        //           $('.myui-dialog .myui-dialog-container').on('click',function () {
-        //               return false;
-        //           })
-        //       }
-        //
-        //       var onOutSide = function () {
-        //           shared.closeDialog();
-        //       }
-        //
-        //       var onMinimize = function () {
-        //           clearOpratorStatus();
-        //           pageDialog.content.height(50);
-        //           pageDialog.content.width('auto');
-        //
-        //           pageDialog.content[0].style.top='auto';
-        //           pageDialog.content[0].style.bottom='0px';
-        //           pageDialog.content[0].style.left='0px';
-        //           pageDialog.content[0].style.right='auto';
-        //           // content.offset({top:'auto',bottom:'0px',left:'0px',right:'auto'});
-        //           $('.myui-dialog-oprator #minimize').addClass('hide');
-        //       };
-        //
-        //       var onMaximize = function () {
-        //           clearOpratorStatus();
-        //           var maxWidth = window.innerWidth;
-        //           var maxHeight = window.innerHeight;
-        //           pageDialog.content.height(maxHeight);
-        //           pageDialog.content.width(maxWidth);
-        //           pageDialog.content[0].style.top='0px';
-        //           pageDialog.content[0].style.left='0px';
-        //           // content.offset({top:0,left:0});
-        //           $('.myui-dialog-oprator #maximize').addClass('hide');
-        //       };
-        //
-        //       var onResize = function () {
-        //           clearOpratorStatus();
-        //           var maxWidth = window.innerWidth;
-        //           var maxHeight = window.innerHeight;
-        //           var top = (maxHeight-pageDialog.height)/2;
-        //           var left = (maxWidth-pageDialog.width)/2;
-        //
-        //           pageDialog.content = $('.myui-dialog-container');
-        //           pageDialog.content.height(pageDialog.height);
-        //           pageDialog.content.width(pageDialog.width);
-        //           pageDialog.content[0].style.top=top+'px';
-        //           pageDialog.content[0].style.bottom='auto';
-        //           pageDialog.content[0].style.left=left+'px';
-        //           pageDialog.content[0].style.right='auto';
-        //           // content.offset({ top: top, left: left , bottom:'auto',right:'auto'});
-        //           $('.myui-dialog-oprator #resize').addClass('hide');
-        //       };
-        //
-        //       var onClose = function () {
-        //           shared.closeDialog();
-        //       };
-        //
-        //       var clearOpratorStatus = function () {
-        //           $('.myui-dialog-oprator #minimize').removeClass('hide');
-        //           $('.myui-dialog-oprator #maximize').removeClass('hide');
-        //           $('.myui-dialog-oprator #resize').removeClass('hide');
-        //       }
-        //       return shared;
-        //   })();
-        var tableHelper = (function (option) {
-            var opt = {pageSize: 10};
+
+
+        // new Table();
+        var Table = function (container, option, data) {
+            var local = {};
+            local['container'] = container;
+            local['option'] = {pageSize: 10};
+            local['data'] = data;
+            // this.container = container;
+            // this.option = {pageSize: 10};
+            // this.data = data;
+            //{lines:100,curPage:1,operOption:{},getView}
+
             if (option) {
-                opt = option;
+                $.extend(local['option'], option)
             }
 
-            var obj;
-            var shared = {};
-            var operObj = {};
-            // var views = new Array();
+            var createTable = function () {
+                var html = '    <table class="myui-table">' +
+                    '      <thead>' +
+                    '      </thead>' +
+                    '      <tbody>' +
+                    '      </tbody>' +
+                    '    </table>';
+                return $(html);
+            };
 
-            shared.initTable = function (object, option) {
-                obj = object;
-                operObj.cur = obj.page;
-                operObj.size = Math.ceil(obj.lines / opt.pageSize);
-                operObj.callback = operCallback;
-                tableOper.initOper(operObj);
+            var init = function (option, data) {
+                if ( local['container'].find('.myui-table').length <= 0 ){
+                    local['table'] = createTable();
+                    local['container'].append(local['table']);
+                }
+                local['table'] = local['container'].find('.myui-table');
+
+                if (option) {
+                    $.extend(local['option'], option)
+                }
+                local['data'] = data;
+
+                var operData = {};
+                operData.cur = data.page;
+                operData.size = Math.ceil(local['data'].lines / local['option'].pageSize);
+                operData.callback = operCallback;
+                if ( local['operation'] ){
+                    local['operation'].rebuildTabOper(local['container'], local['data'].option);
+                } else {
+                    local['operation'] = new TableOper(local['container'], local['data'].option,operData);
+                }
+
                 refreshTableTitle();
-                refreshTableItem(operObj.cur);
-            }
-
-            shared.getCurrentPage = function () {
-                return obj.page;
-            }
+                refreshTableItem(local['operation'].getCurrentPage());
+            };
 
             var operCallback = function (page) {
-                obj.page = page;
+                local['data'].page = page;
                 refreshTableItem(page);
-            }
+            };
 
-            var refreshTableTitle = function () {
-                var title = obj.getTitle();
-                $('.myui-table thead').append(title);
-            }
 
             var refreshTableItem = function (page) {
-                $('.myui-table tbody').empty();
+                local['table'].find('tbody').empty();
                 var index = 0;
-                for (var i = 0; i < opt.pageSize; i++) {
-                    index = (page - 1) * opt.pageSize + i;
-                    if (index < obj.lines) {
-                        var view = obj.getView(index);
-                        $('.myui-table tbody').append(view);
+                for (var i = 0; i < local['option'].pageSize; i++) {
+                    index = (page - 1) * local['option'].pageSize + i;
+                    if (index < local['data'].lines) {
+                        var view = local['data'].getView(index);
+                        local['table'].find('tbody').append(view);
                     }
                 }
+            };
+            var refreshTableTitle = function () {
+                var title = local['data'].getTitle();
+                local['table'].find('thead').append(title);
+            };
+
+            init(option, data);
+            var shared = {};
+            shared.rebuildTable = init;
+            shared.refreshTable = refreshTableItem;
+            shared.getCurrentPage = function () {
+                return data.page;
             }
 
             return shared;
-        })();
-        var tableOper = (function (option) {
-            var opt = {count: 9, ellipsis: '...'};
+        }
+
+        var TableOper = function (container, option, data) {
+            var local = {};
+            local['option'] = {count: 9, ellipsis: '...', selectClass: 'selected', ellipsisClass: 'ellipsis'};
             if (option) {
-                opt = option;
+                $.extend(local['option'], option)
             }
-            var obj;
-            var shared = {};
-            var selectClass = 'selected';
-            var ellipsisClass = 'ellipsis';
+            local['data'] = data;
+            local['container'] = undefined;
 
-            shared.initOper = function (object, option) {
-                obj = object;
-                if (option) {
-                    opt = option;
-                }
-                var count = obj.size < opt.count ? obj.size : opt.count;
-                var middle = $('#middle');
-                var size = obj.size;
-                var cur = obj.cur;
-
-                middle.empty();
-                if (size <= opt.count) {
-                    for (var i = 1; i <= count; i++)
-                        middle.append(createTabOper(i, i == cur));
-                } else {
-                    var contents = getOpersContent(cur, size);
-                    for (var index in contents) {
-                        middle.append(createTabOper(contents[index], contents[index] == cur));
-                    }
-                }
-                $('.myui-table-operator .btn').on('click', operClick);
+            var createTableOper = function () {
+                var html = '      <div class="myui-table-operator">\n' +
+                    '        <button id="prev" class="btn"><<</button>\n' +
+                    '        <div id="middle">\n' +
+                    '        </div>\n' +
+                    '        <button id="next" class="btn">>></button>\n' +
+                    '      </div>';
+                return html;
             }
-            shared.getCurrentPage = function () {
-                return obj.cur;
-            }
-
-            var createTabOper = function (content, selected) {
+            
+            var createOperBtn = function (content, selected) {
                 var html = '<button class="btn';
-                if (opt.ellipsis == content) {
-                    html += ' ' + ellipsisClass;
+                if (local['option'].ellipsis == content) {
+                    html += ' ' + local['option'].ellipsisClass;
                 }
                 if (selected) {
-                    html += ' ' + selectClass;
+                    html += ' ' + local['option'].selectClass;
                 }
                 html += '">' + content + '</button>';
                 return html;
             }
 
-            var operClick = function () {
+            var operClickListener = function () {
                 var btn = $(this).html();
-                var cur = obj.cur;
+                var cur = local['data'].cur;
                 var page;
                 if ("&lt;&lt;" == btn) {
                     page = cur - 1;
@@ -661,21 +532,21 @@
                 } else {
                     page = parseInt(btn);
                 }
-                if (page < 1 || page > obj.size) {
+                if (page < 1 || page > local['data'].size) {
                     return;
                 }
                 refreshTabOper(page);
-                obj.callback(page);
+                local['data'].callback(page);
             }
 
             var refreshTabOper = function (page) {
-                var opers = $('.myui-table-operator #middle .btn');
+                var opers = local['container'].find('#middle .btn');
 
-                if (obj.size > opt.count) {
-                    var size = obj.size;
+                if (local['data'].size > local['option'].count) {
+                    var size = local['data'].size;
                     var cur = page;
                     var contents = getOpersContent(cur, size);
-                    for (var i = 0; i < opt.count; i++) {
+                    for (var i = 0; i < local['option'].count; i++) {
                         $(opers[i]).html(contents[i]);
                     }
                 }
@@ -683,47 +554,304 @@
                 opers.each(function () {
                     var content = $(this).html();
                     if (content == page) {
-                        $(this).addClass(selectClass);
-                        $(this).removeClass(ellipsisClass);
-                    } else if (content == opt.ellipsis) {
-                        $(this).removeClass(selectClass);
-                        $(this).addClass(ellipsisClass);
+                        $(this).addClass(local['option'].selectClass);
+                        $(this).removeClass(local['option'].ellipsisClass);
+                    } else if (content == local['option'].ellipsis) {
+                        $(this).removeClass(local['option'].selectClass);
+                        $(this).addClass(local['option'].ellipsisClass);
                     } else {
-                        $(this).removeClass(selectClass);
-                        $(this).removeClass(ellipsisClass);
+                        $(this).removeClass(local['option'].selectClass);
+                        $(this).removeClass(local['option'].ellipsisClass);
                     }
                 })
 
-                obj.cur = page;
+                local['data'].cur = page;
             }
 
             var getOpersContent = function (cur, size) {
-                var contents = new Array(opt.count);
+                var contents = new Array(local['option'].count);
                 contents[0] = 1;
-                contents[opt.count - 1] = size;
-                var center = Math.ceil(opt.count / 2.0);
+                contents[local['option'].count - 1] = size;
+                var center = Math.ceil(local['option'].count / 2.0);
                 if (cur <= center) {
-                    for (var i = 0; i < opt.count - 3; i++) {
+                    for (var i = 0; i < local['option'].count - 3; i++) {
                         contents[i + 1] = 2 + i;
                     }
-                    contents[opt.count - 2] = opt.ellipsis;
+                    contents[local['option'].count - 2] = local['option'].ellipsis;
                 } else if ((size - cur) <= center) {
-                    contents[1] = opt.ellipsis;
-                    for (var i = 0; i < opt.count - 3; i++) {
-                        contents[i + 2] = size - opt.count + 3 + i;
+                    contents[1] = local['option'].ellipsis;
+                    for (var i = 0; i < local['option'].count - 3; i++) {
+                        contents[i + 2] = size - local['option'].count + 3 + i;
                     }
                 } else {
-                    contents[1] = opt.ellipsis;
-                    contents[opt.count - 2] = opt.ellipsis;
-                    for (var i = 0; i < opt.count - 4; i++) {
+                    contents[1] = local['option'].ellipsis;
+                    contents[local['option'].count - 2] = local['option'].ellipsis;
+                    for (var i = 0; i < local['option'].count - 4; i++) {
                         contents[2 + i] = cur - 2 + i;
                     }
                 }
                 return contents;
             }
 
+            var init = function (container, option) {
+                if ( container.find('.myui-table-operator').length <= 0 ){
+                    container.append(createTableOper());
+                }
+                local['container'] = container.find('.myui-table-operator');
+                if (option) {
+                    local['option'] = option;
+                }
+                var count = local['data'].size < local['option'].count ? local['data'].size : local['option'].count;
+                var middle = local['container'].find('#middle');
+                var size = local['data'].size;
+                var cur = local['data'].cur;
+
+                middle.empty();
+                if (size <= local['option'].count) {
+                    for (var i = 1; i <= count; i++)
+                        middle.append(createOperBtn(i, i == cur));
+                } else {
+                    var contents = getOpersContent(cur, size);
+                    for (var index in contents) {
+                        middle.append(createOperBtn(contents[index], contents[index] == cur));
+                    }
+                }
+                local['container'].find('.btn').on('click', operClickListener);
+            }
+
+            init(container,option);
+            var shared = {};
+            shared.rebuildTabOper = init;
+            shared.refreshTabOper = refreshTabOper;
+            shared.getCurrentPage = function () {
+                return local['data'].cur;
+            }
             return shared;
-        })();
+        }
+
+
+        // var tableHelper = (function (option) {
+        //     var opt = {pageSize: 10};
+        //     if (option) {
+        //         opt = option;
+        //     }
+        //
+        //     var obj;
+        //     var shared = {};
+        //     var operObj = {};
+        //
+        //     // var views = new Array();
+        //
+        //     function Table(object, option) {
+        //         var opt = {pageSize: 10};
+        //         if (option) {
+        //             opt = option;
+        //         }
+        //         var obj = object;
+        //         var shared = {};
+        //
+        //         var generateOper = function (object, option) {
+        //             var oper = {};
+        //             oper.cur = obj.page;
+        //             oper.size = Math.ceil(obj.lines / opt.pageSize);
+        //             oper.callback = operCallback;
+        //             refreshTableTitle();
+        //             refreshTableItem(operObj.cur);
+        //         }
+        //
+        //         var operCallback = function (page) {
+        //             obj.page = page;
+        //             refreshTableItem(page);
+        //         }
+        //
+        //         var refreshTableTitle = function () {
+        //             var title = obj.getTitle();
+        //             $('.myui-table thead').append(title);
+        //         }
+        //
+        //         var refreshTableItem = function (page) {
+        //             $('.myui-table tbody').empty();
+        //             var index = 0;
+        //             for (var i = 0; i < opt.pageSize; i++) {
+        //                 index = (page - 1) * opt.pageSize + i;
+        //                 if (index < obj.lines) {
+        //                     var view = obj.getView(index);
+        //                     $('.myui-table tbody').append(view);
+        //                 }
+        //             }
+        //         }
+        //
+        //         shared.refreshTable = function (object, option) {
+        //
+        //         }
+        //
+        //         shared.getCurrentPage = function () {
+        //             return obj.page;
+        //         }
+        //         return shared;
+        //     }
+        //
+        //     shared.initTable = function (object, option) {
+        //         // obj = object;
+        //         // operObj.cur = obj.page;
+        //         // operObj.size = Math.ceil(obj.lines / opt.pageSize);
+        //         // operObj.callback = operCallback;
+        //         // tableOper.initOper(operObj);
+        //         // refreshTableTitle();
+        //         // refreshTableItem(operObj.cur);
+        //         return new Table(object, option);
+        //     }
+        //
+        //     // shared.getCurrentPage = function () {
+        //     //     return obj.page;
+        //     // }
+        //     //
+        //     // var operCallback = function (page) {
+        //     //     obj.page = page;
+        //     //     refreshTableItem(page);
+        //     // }
+        //     //
+        //     // var refreshTableTitle = function () {
+        //     //     var title = obj.getTitle();
+        //     //     $('.myui-table thead').append(title);
+        //     // }
+        //     //
+        //     // var refreshTableItem = function (page) {
+        //     //     $('.myui-table tbody').empty();
+        //     //     var index = 0;
+        //     //     for (var i = 0; i < opt.pageSize; i++) {
+        //     //         index = (page - 1) * opt.pageSize + i;
+        //     //         if (index < obj.lines) {
+        //     //             var view = obj.getView(index);
+        //     //             $('.myui-table tbody').append(view);
+        //     //         }
+        //     //     }
+        //     // }
+        //
+        //     return shared;
+        // })();
+        // var tableOper = (function (option) {
+        //     var opt = {count: 9, ellipsis: '...'};
+        //     if (option) {
+        //         opt = option;
+        //     }
+        //     var obj;
+        //     var shared = {};
+        //     var selectClass = 'selected';
+        //     var ellipsisClass = 'ellipsis';
+        //
+        //     shared.initOper = function (object, option) {
+        //         obj = object;
+        //         if (option) {
+        //             opt = option;
+        //         }
+        //         var count = obj.size < opt.count ? obj.size : opt.count;
+        //         var middle = $('#middle');
+        //         var size = obj.size;
+        //         var cur = obj.cur;
+        //
+        //         middle.empty();
+        //         if (size <= opt.count) {
+        //             for (var i = 1; i <= count; i++)
+        //                 middle.append(createTabOper(i, i == cur));
+        //         } else {
+        //             var contents = getOpersContent(cur, size);
+        //             for (var index in contents) {
+        //                 middle.append(createTabOper(contents[index], contents[index] == cur));
+        //             }
+        //         }
+        //         $('.myui-table-operator .btn').on('click', operClick);
+        //     }
+        //     shared.getCurrentPage = function () {
+        //         return obj.cur;
+        //     }
+        //
+        //     var createTabOper = function (content, selected) {
+        //         var html = '<button class="btn';
+        //         if (opt.ellipsis == content) {
+        //             html += ' ' + ellipsisClass;
+        //         }
+        //         if (selected) {
+        //             html += ' ' + selectClass;
+        //         }
+        //         html += '">' + content + '</button>';
+        //         return html;
+        //     }
+        //
+        //     var operClick = function () {
+        //         var btn = $(this).html();
+        //         var cur = obj.cur;
+        //         var page;
+        //         if ("&lt;&lt;" == btn) {
+        //             page = cur - 1;
+        //         } else if ("&gt;&gt;" == btn) {
+        //             page = cur + 1;
+        //         } else {
+        //             page = parseInt(btn);
+        //         }
+        //         if (page < 1 || page > obj.size) {
+        //             return;
+        //         }
+        //         refreshTabOper(page);
+        //         obj.callback(page);
+        //     }
+        //
+        //     var refreshTabOper = function (page) {
+        //         var opers = $('.myui-table-operator #middle .btn');
+        //
+        //         if (obj.size > opt.count) {
+        //             var size = obj.size;
+        //             var cur = page;
+        //             var contents = getOpersContent(cur, size);
+        //             for (var i = 0; i < opt.count; i++) {
+        //                 $(opers[i]).html(contents[i]);
+        //             }
+        //         }
+        //
+        //         opers.each(function () {
+        //             var content = $(this).html();
+        //             if (content == page) {
+        //                 $(this).addClass(selectClass);
+        //                 $(this).removeClass(ellipsisClass);
+        //             } else if (content == opt.ellipsis) {
+        //                 $(this).removeClass(selectClass);
+        //                 $(this).addClass(ellipsisClass);
+        //             } else {
+        //                 $(this).removeClass(selectClass);
+        //                 $(this).removeClass(ellipsisClass);
+        //             }
+        //         })
+        //
+        //         obj.cur = page;
+        //     }
+        //
+        //     var getOpersContent = function (cur, size) {
+        //         var contents = new Array(opt.count);
+        //         contents[0] = 1;
+        //         contents[opt.count - 1] = size;
+        //         var center = Math.ceil(opt.count / 2.0);
+        //         if (cur <= center) {
+        //             for (var i = 0; i < opt.count - 3; i++) {
+        //                 contents[i + 1] = 2 + i;
+        //             }
+        //             contents[opt.count - 2] = opt.ellipsis;
+        //         } else if ((size - cur) <= center) {
+        //             contents[1] = opt.ellipsis;
+        //             for (var i = 0; i < opt.count - 3; i++) {
+        //                 contents[i + 2] = size - opt.count + 3 + i;
+        //             }
+        //         } else {
+        //             contents[1] = opt.ellipsis;
+        //             contents[opt.count - 2] = opt.ellipsis;
+        //             for (var i = 0; i < opt.count - 4; i++) {
+        //                 contents[2 + i] = cur - 2 + i;
+        //             }
+        //         }
+        //         return contents;
+        //     }
+        //
+        //     return shared;
+        // })();
 
 
         var pullDownListHelper = (function () {
@@ -752,6 +880,7 @@
         })();
 
         myui['dialog'] = dialog;
-        myui['tableHelper'] = tableHelper;
+        myui['Table'] = Table;
+        myui['TableOper'] = TableOper;
         myui['pullDownListHelper'] = pullDownListHelper;
     }(jQuery));

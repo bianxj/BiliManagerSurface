@@ -203,339 +203,382 @@
     <button id="prompt">PromptDialog</button>
 
     <script src="js/vendor/jquery-3.3.1.js"></script>
+
     <script type="text/javascript">
-        var dialog = (function ($) {
-            var shared = {};
-            var frameDialog = (function () {
-                var shared = {};
-                var object;
-                var className = 'frame';
-                //object = {title:'title',url:'url',area:{width:100,height:100}}
-                var height;
-                var width;
-                var dlg;
-                var body;
-
-                shared.getBuilder = function(obj){
-                    object = obj;
-                    return {
-                        className:className,
-                        buildTitle:buildTitle,
-                        buildContent:buildContent,
-                        getArea:getArea,
-                        addListener:addListener
-                    }
-                }
-                
-                var buildTitle = function (title) {
-                    var html = '    <cite>' + object.title + '</cite>\n' +
-                        '    <div class="myui-dialog-oprator">\n' +
-                        '        <i class="iconfont '+className+' minimize">&#xe600;</i>\n' +
-                        '        <i class="iconfont '+className+' maximize">&#xe61b;</i>\n' +
-                        '        <i class="iconfont hide '+className+' resize">&#xe602;</i>\n' +
-                        '        <i class="iconfont '+className+' close">&#xe647;</i>\n' +
-                        '        </div>';
-                    title.append(html);
-                }
-
-                var buildContent = function (content) {
-                    var html = '<iframe frameborder="0" scrolling="yes"></iframe>';
-                    content.append(html);
-                }
-
-                var closeDialog = function () {
-                    dlg.remove();
-                    dlg = undefined;
-                }
-                
-                var showCenter = function () {
-                    var maxWidth = window.innerWidth;
-                    var maxHeight = window.innerHeight;
-                    var top = (maxHeight-height)/2;
-                    var left = (maxWidth-width)/2;
-
-                    body.height(height);
-                    body.width(width);
-                    body[0].style.top=top+'px';
-                    body[0].style.bottom='auto';
-                    body[0].style.left=left+'px';
-                    body[0].style.right='auto';
-                }
-                
-                var getArea = function () {
-                    var maxWidth = window.innerWidth;
-                    var maxHeight = window.innerHeight;
-
-                    var area = object.area;
-                    if ( area && area.width && area.width < maxWidth ){
-                        width = area.width;
-                    } else {
-                        width = maxWidth*0.8;
-                    }
-                    if ( area && area.height && area.height < maxHeight ){
-                        height = area.height;
-                    } else {
-                        height = maxHeight*0.8;
-                    }
-                    return {width:width,height:height};
-                }
-                
-                var addListener = function (dialog) {
-                    dialog.find('iframe').attr('src',object.url);
-                    dlg = dialog;
-                    body = dialog.find('.myui-dialog-body');
-                    dialog.on('click',onOutSide);
-                    dialog.find('.minimize').on('click',onMinimize);
-                    dialog.find('.maximize').on('click',onMaximize);
-                    dialog.find('.resize').on('click',onResize);
-                    dialog.find('.close').on('click',onClose);
-                    body.on('click',function () {
-                        return false;
-                    })
-                }
-
-                var onOutSide = function () {
-                    closeDialog();
-                }
-
-                var onMinimize = function () {
-                    clearOpratorStatus();
-                    body.height(50);
-                    body.width('auto');
-
-                    body[0].style.top='auto';
-                    body[0].style.bottom='0px';
-                    body[0].style.left='0px';
-                    body[0].style.right='auto';
-                    body.find('.minimize').addClass('hide');
-                };
-
-                var onMaximize = function () {
-                    clearOpratorStatus();
-                    var maxWidth = window.innerWidth;
-                    var maxHeight = window.innerHeight;
-                    body.height(maxHeight);
-                    body.width(maxWidth);
-                    body[0].style.top='0px';
-                    body[0].style.left='0px';
-                    body.find('.maximize').addClass('hide');
-                };
-
-                var onResize = function () {
-                    clearOpratorStatus();
-                    showCenter();
-                    body.find('.resize').addClass('hide');
-                };
-
-                var clearOpratorStatus = function () {
-                    dlg.find('.minimize').removeClass('hide');
-                    dlg.find('.maximize').removeClass('hide');
-                    dlg.find('.resize').removeClass('hide');
-                }
-
-                var onClose = function () {
-                    closeDialog();
-                };
-                return shared;
-            })();
-            var toastDialog = (function () {
-                var shared = {};
-                var className = 'toast';
-                var obj;
-                var dlg;
-                shared.getBuilder = function (object) {
-                    obj = object;
-                    return {
-                        className:className,
-                        buildTitle:buildTitle,
-                        buildContent:buildContent,
-                        getArea:getArea,
-                        addListener:addListener
-                    };
-                }
-
-                var buildTitle = function (title) {
-
-                }
-                var buildContent = function (content) {
-                    var html = '    <div>\n' +
-                        '        <i class="iconfont">&#xe615;</i>\n' +
-                        '        <cite class="content">'+obj.content+'</cite>\n' +
-                        '    </div>';
-                    content.append(html);
-                }
-                var getArea = function (dialog) {
-                    var width = 0;
-                    var children = dialog.find('.myui-dialog-content div').children();
-                    children.each(function () {
-                        width+=$(this).outerWidth(true);
-                    })
-                    return {width:width,height:64};
-                }
-                var addListener = function (dialog) {
-                    dlg = dialog;
-                    setTimeout(closeDialog,2000);
-                }
-
-                var closeDialog = function () {
-                    dlg.remove();
-                }
-                return shared;
-            })();
-            var promptDialog = (function () {
-                var shared = {};
-                var className = 'prompt';
-                var obj;
-                var dlg;
-                shared.getBuilder = function (object) {
-                    obj = object;
-                    return {
-                        className:'prompt',
-                        buildTitle:buildTitle,
-                        buildContent:buildContent,
-                        getArea:getArea,
-                        addListener:addListener
-                    }
-                };
-                
-                var buildTitle = function (title) {
-                    var html = '    <cite>' + obj.title + '</cite>\n' +
-                        '    <div class="myui-dialog-oprator">\n' +
-                        '        <i class="iconfont '+className+' close">&#xe647;</i>\n' +
-                        '        </div>';
-                    title.append(html);
-                }
-                
-                var buildContent = function (content) {
-                    var html = '        <cite class="content">'+obj.content+'</cite>\n' +
-                        '        <div class="buttons">\n' +
-                        '            <button class="btn sure">确定</button>\n' +
-                        '            <button class="btn cancel">取消</button>\n' +
-                        '        </div>';
-                    content.append(html);
-                }
-                
-                var getArea = function (dialog) {
-                    return {height:154,width:260};
-                }
-                
-                var addListener = function (dialog) {
-                    dlg = dialog;
-                    dialog.find('.close').on('click',closeDialog);
-                    dialog.find('.sure').on('click',sureClick);
-                    dialog.find('.cancel').on('click',cancelClick);
-                }
-                
-                var closeDialog = function () {
-                    dlg.remove();
-                }
-
-                var sureClick = function () {
-                    closeDialog();
-                    obj.sureCallback();
-                }
-
-                var cancelClick = function () {
-                    closeDialog();
-                    obj.cancelCallback()
-                }
-                return shared;
-            })();
-            
-            shared.showFrameDialog = function (obj) {
-                // frameDialog.build(obj);
-                var builder = frameDialog.getBuilder(obj);
-                showDialog(builder);
-            }
-
-            shared.showToastDialog = function (obj) {
-                var builder = toastDialog.getBuilder(obj);
-                showDialog(builder);
-            }
-            shared.showPromptDialog = function (obj) {
-                var builder = promptDialog.getBuilder(obj);
-                showDialog(builder);
-            }
-
-            var showDialog = function (builder) {
-                var temp = getTemplate(builder.className);
-                var title = temp.find('.myui-dialog-title');
-                builder.buildTitle(title);
-                var content = temp.find('.myui-dialog-content');
-                builder.buildContent(content);
-
-                $('body').append(temp);
-                var area = builder.getArea(temp);
-                if ( !area ){
-                    area = {width:window.innerWidth*0.8,height:window.innerHeight*0.8}
-                } else if ( !area.width ){
-                    area.width = window.innerWidth*0.8;
-                } else if ( !area.height ){
-                    area.height = window.innerHeight*0.8;
-                }
-
-                var body = temp.find('.myui-dialog-body');
-                showCenter(body,area.height,area.width);
-
-                temp.addClass('show');
-                var body = temp.find('.myui-dialog-body');
-                body.addClass('myui-m-anim-scale');
-                // body[0].addEventListener('transitionend',transition);
-                builder.addListener(temp);
-            }
-
-            var transition = function () {
-                $(this).removeClass('myui-m-anim-scale');
-            }
-
-            var showCenter = function (body,height,width) {
-                var maxWidth = window.innerWidth;
-                var maxHeight = window.innerHeight;
-                var top = (maxHeight-height)/2;
-                var left = (maxWidth-width)/2;
-
-                body.height(height);
-                body.width(width);
-                body[0].style.top=top+'px';
-                body[0].style.bottom='auto';
-                body[0].style.left=left+'px';
-                body[0].style.right='auto';
-            }
-
-            var getTemplate = function (className) {
-                var html = '        <div class="myui-dialog ${customer}">\n' +
-                    '            <div class="myui-dialog-body ${customer}">\n' +
-                    '                <div class="myui-dialog-title ${customer}"></div>\n' +
-                    '                <div class="myui-dialog-content ${customer}"></div>\n' +
-                    '            </div>\n' +
-                    '        </div>';
-                html = html.replace(/\${customer}/g,className);
-
-                return $(html);
-            }
-            return shared;
-        })(jQuery);
-        
         $(document).ready(function () {
-            $('#frame').on('click',function () {
-                dialog.showFrameDialog({title:'tttt',url:'manager_list.html'});
-            });
-            $('#toast').on('click',function () {
-                dialog.showToastDialog({content:'测试数据'});
-            });
-            $('#prompt').on('click',function () {
-               dialog.showPromptDialog({
-                   title:'测试',
-                   content:'content',
-                   sureCallback:function () {
-                       alert('sure');
-                   },
-                   cancelCallback:function () {
-                       alert('cancel');
-                   }
-               });
-            });
+            var obj = {};
+            obj['name'] = 'ttt';
+            obj['func'] = function () {
+                console.log('func');
+            }
+            console.log(obj.name);
+            obj.func();
+
+            function Test(selector,pri,pub) {
+                var priv = pri;
+                var callback = function () {
+                    console.log(priv);
+                    console.log(Test.prototype.pub2);
+                }
+                $('#'+selector).on('click',callback);
+
+
+                this.pub = pub;
+                Test.prototype.pub2 = pub;
+                Test.prototype.printf = function () {
+                    console.log(this.pub);
+                    console.log(priv);
+                }
+
+                // var shared = {};
+                // shared.callback = callback;
+                // return shared;
+            }
+            var test = new Test('frame','priv11111','pub1111111');
+            var test2 = new Test('toast','priv22222','pub2222222');
+
+            for(var key in test){
+                console.log('console:'+key);
+            }
+
+            test.printf();
+            test2.printf();
         });
+    </script>
+
+    <script type="text/javascript">
+        // var dialog = (function ($) {
+        //     var shared = {};
+        //     var frameDialog = (function () {
+        //         var shared = {};
+        //         var object;
+        //         var className = 'frame';
+        //         //object = {title:'title',url:'url',area:{width:100,height:100}}
+        //         var height;
+        //         var width;
+        //         var dlg;
+        //         var body;
+        //
+        //         shared.getBuilder = function(obj){
+        //             object = obj;
+        //             return {
+        //                 className:className,
+        //                 buildTitle:buildTitle,
+        //                 buildContent:buildContent,
+        //                 getArea:getArea,
+        //                 addListener:addListener
+        //             }
+        //         }
+        //
+        //         var buildTitle = function (title) {
+        //             var html = '    <cite>' + object.title + '</cite>\n' +
+        //                 '    <div class="myui-dialog-oprator">\n' +
+        //                 '        <i class="iconfont '+className+' minimize">&#xe600;</i>\n' +
+        //                 '        <i class="iconfont '+className+' maximize">&#xe61b;</i>\n' +
+        //                 '        <i class="iconfont hide '+className+' resize">&#xe602;</i>\n' +
+        //                 '        <i class="iconfont '+className+' close">&#xe647;</i>\n' +
+        //                 '        </div>';
+        //             title.append(html);
+        //         }
+        //
+        //         var buildContent = function (content) {
+        //             var html = '<iframe frameborder="0" scrolling="yes"></iframe>';
+        //             content.append(html);
+        //         }
+        //
+        //         var closeDialog = function () {
+        //             dlg.remove();
+        //             dlg = undefined;
+        //         }
+        //
+        //         var showCenter = function () {
+        //             var maxWidth = window.innerWidth;
+        //             var maxHeight = window.innerHeight;
+        //             var top = (maxHeight-height)/2;
+        //             var left = (maxWidth-width)/2;
+        //
+        //             body.height(height);
+        //             body.width(width);
+        //             body[0].style.top=top+'px';
+        //             body[0].style.bottom='auto';
+        //             body[0].style.left=left+'px';
+        //             body[0].style.right='auto';
+        //         }
+        //
+        //         var getArea = function () {
+        //             var maxWidth = window.innerWidth;
+        //             var maxHeight = window.innerHeight;
+        //
+        //             var area = object.area;
+        //             if ( area && area.width && area.width < maxWidth ){
+        //                 width = area.width;
+        //             } else {
+        //                 width = maxWidth*0.8;
+        //             }
+        //             if ( area && area.height && area.height < maxHeight ){
+        //                 height = area.height;
+        //             } else {
+        //                 height = maxHeight*0.8;
+        //             }
+        //             return {width:width,height:height};
+        //         }
+        //
+        //         var addListener = function (dialog) {
+        //             dialog.find('iframe').attr('src',object.url);
+        //             dlg = dialog;
+        //             body = dialog.find('.myui-dialog-body');
+        //             dialog.on('click',onOutSide);
+        //             dialog.find('.minimize').on('click',onMinimize);
+        //             dialog.find('.maximize').on('click',onMaximize);
+        //             dialog.find('.resize').on('click',onResize);
+        //             dialog.find('.close').on('click',onClose);
+        //             body.on('click',function () {
+        //                 return false;
+        //             })
+        //         }
+        //
+        //         var onOutSide = function () {
+        //             closeDialog();
+        //         }
+        //
+        //         var onMinimize = function () {
+        //             clearOpratorStatus();
+        //             body.height(50);
+        //             body.width('auto');
+        //
+        //             body[0].style.top='auto';
+        //             body[0].style.bottom='0px';
+        //             body[0].style.left='0px';
+        //             body[0].style.right='auto';
+        //             body.find('.minimize').addClass('hide');
+        //         };
+        //
+        //         var onMaximize = function () {
+        //             clearOpratorStatus();
+        //             var maxWidth = window.innerWidth;
+        //             var maxHeight = window.innerHeight;
+        //             body.height(maxHeight);
+        //             body.width(maxWidth);
+        //             body[0].style.top='0px';
+        //             body[0].style.left='0px';
+        //             body.find('.maximize').addClass('hide');
+        //         };
+        //
+        //         var onResize = function () {
+        //             clearOpratorStatus();
+        //             showCenter();
+        //             body.find('.resize').addClass('hide');
+        //         };
+        //
+        //         var clearOpratorStatus = function () {
+        //             dlg.find('.minimize').removeClass('hide');
+        //             dlg.find('.maximize').removeClass('hide');
+        //             dlg.find('.resize').removeClass('hide');
+        //         }
+        //
+        //         var onClose = function () {
+        //             closeDialog();
+        //         };
+        //         return shared;
+        //     })();
+        //     var toastDialog = (function () {
+        //         var shared = {};
+        //         var className = 'toast';
+        //         var obj;
+        //         var dlg;
+        //         shared.getBuilder = function (object) {
+        //             obj = object;
+        //             return {
+        //                 className:className,
+        //                 buildTitle:buildTitle,
+        //                 buildContent:buildContent,
+        //                 getArea:getArea,
+        //                 addListener:addListener
+        //             };
+        //         }
+        //
+        //         var buildTitle = function (title) {
+        //
+        //         }
+        //         var buildContent = function (content) {
+        //             var html = '    <div>\n' +
+        //                 '        <i class="iconfont">&#xe615;</i>\n' +
+        //                 '        <cite class="content">'+obj.content+'</cite>\n' +
+        //                 '    </div>';
+        //             content.append(html);
+        //         }
+        //         var getArea = function (dialog) {
+        //             var width = 0;
+        //             var children = dialog.find('.myui-dialog-content div').children();
+        //             children.each(function () {
+        //                 width+=$(this).outerWidth(true);
+        //             })
+        //             return {width:width,height:64};
+        //         }
+        //         var addListener = function (dialog) {
+        //             dlg = dialog;
+        //             setTimeout(closeDialog,2000);
+        //         }
+        //
+        //         var closeDialog = function () {
+        //             dlg.remove();
+        //         }
+        //         return shared;
+        //     })();
+        //     var promptDialog = (function () {
+        //         var shared = {};
+        //         var className = 'prompt';
+        //         var obj;
+        //         var dlg;
+        //         shared.getBuilder = function (object) {
+        //             obj = object;
+        //             return {
+        //                 className:'prompt',
+        //                 buildTitle:buildTitle,
+        //                 buildContent:buildContent,
+        //                 getArea:getArea,
+        //                 addListener:addListener
+        //             }
+        //         };
+        //
+        //         var buildTitle = function (title) {
+        //             var html = '    <cite>' + obj.title + '</cite>\n' +
+        //                 '    <div class="myui-dialog-oprator">\n' +
+        //                 '        <i class="iconfont '+className+' close">&#xe647;</i>\n' +
+        //                 '        </div>';
+        //             title.append(html);
+        //         }
+        //
+        //         var buildContent = function (content) {
+        //             var html = '        <cite class="content">'+obj.content+'</cite>\n' +
+        //                 '        <div class="buttons">\n' +
+        //                 '            <button class="btn sure">确定</button>\n' +
+        //                 '            <button class="btn cancel">取消</button>\n' +
+        //                 '        </div>';
+        //             content.append(html);
+        //         }
+        //
+        //         var getArea = function (dialog) {
+        //             return {height:154,width:260};
+        //         }
+        //
+        //         var addListener = function (dialog) {
+        //             dlg = dialog;
+        //             dialog.find('.close').on('click',closeDialog);
+        //             dialog.find('.sure').on('click',sureClick);
+        //             dialog.find('.cancel').on('click',cancelClick);
+        //         }
+        //
+        //         var closeDialog = function () {
+        //             dlg.remove();
+        //         }
+        //
+        //         var sureClick = function () {
+        //             closeDialog();
+        //             obj.sureCallback();
+        //         }
+        //
+        //         var cancelClick = function () {
+        //             closeDialog();
+        //             obj.cancelCallback()
+        //         }
+        //         return shared;
+        //     })();
+        //
+        //     shared.showFrameDialog = function (obj) {
+        //         // frameDialog.build(obj);
+        //         var builder = frameDialog.getBuilder(obj);
+        //         showDialog(builder);
+        //     }
+        //
+        //     shared.showToastDialog = function (obj) {
+        //         var builder = toastDialog.getBuilder(obj);
+        //         showDialog(builder);
+        //     }
+        //     shared.showPromptDialog = function (obj) {
+        //         var builder = promptDialog.getBuilder(obj);
+        //         showDialog(builder);
+        //     }
+        //
+        //     var showDialog = function (builder) {
+        //         var temp = getTemplate(builder.className);
+        //         var title = temp.find('.myui-dialog-title');
+        //         builder.buildTitle(title);
+        //         var content = temp.find('.myui-dialog-content');
+        //         builder.buildContent(content);
+        //
+        //         $('body').append(temp);
+        //         var area = builder.getArea(temp);
+        //         if ( !area ){
+        //             area = {width:window.innerWidth*0.8,height:window.innerHeight*0.8}
+        //         } else if ( !area.width ){
+        //             area.width = window.innerWidth*0.8;
+        //         } else if ( !area.height ){
+        //             area.height = window.innerHeight*0.8;
+        //         }
+        //
+        //         var body = temp.find('.myui-dialog-body');
+        //         showCenter(body,area.height,area.width);
+        //
+        //         temp.addClass('show');
+        //         var body = temp.find('.myui-dialog-body');
+        //         body.addClass('myui-m-anim-scale');
+        //         // body[0].addEventListener('transitionend',transition);
+        //         builder.addListener(temp);
+        //     }
+        //
+        //     var transition = function () {
+        //         $(this).removeClass('myui-m-anim-scale');
+        //     }
+        //
+        //     var showCenter = function (body,height,width) {
+        //         var maxWidth = window.innerWidth;
+        //         var maxHeight = window.innerHeight;
+        //         var top = (maxHeight-height)/2;
+        //         var left = (maxWidth-width)/2;
+        //
+        //         body.height(height);
+        //         body.width(width);
+        //         body[0].style.top=top+'px';
+        //         body[0].style.bottom='auto';
+        //         body[0].style.left=left+'px';
+        //         body[0].style.right='auto';
+        //     }
+        //
+        //     var getTemplate = function (className) {
+        //         var html = '        <div class="myui-dialog ${customer}">\n' +
+        //             '            <div class="myui-dialog-body ${customer}">\n' +
+        //             '                <div class="myui-dialog-title ${customer}"></div>\n' +
+        //             '                <div class="myui-dialog-content ${customer}"></div>\n' +
+        //             '            </div>\n' +
+        //             '        </div>';
+        //         html = html.replace(/\${customer}/g,className);
+        //
+        //         return $(html);
+        //     }
+        //     return shared;
+        // })(jQuery);
+        //
+        // $(document).ready(function () {
+        //     $('#frame').on('click',function () {
+        //         dialog.showFrameDialog({title:'tttt',url:'manager_list.html'});
+        //     });
+        //     $('#toast').on('click',function () {
+        //         dialog.showToastDialog({content:'测试数据'});
+        //     });
+        //     $('#prompt').on('click',function () {
+        //        dialog.showPromptDialog({
+        //            title:'测试',
+        //            content:'content',
+        //            sureCallback:function () {
+        //                alert('sure');
+        //            },
+        //            cancelCallback:function () {
+        //                alert('cancel');
+        //            }
+        //        });
+        //     });
+        // });
     </script>
 
 </body>
