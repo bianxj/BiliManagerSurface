@@ -1,0 +1,115 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/myui_btn.css">
+  <link rel="stylesheet" href="css/vendor/zTreeStyle.css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <style type="text/css">
+    #body{
+      margin-left: 30px;
+      margin-top: 30px;
+    }
+
+    #role-name{
+
+    }
+
+    ul.ztree {
+      margin-top: 10px;
+      border: 1px solid #617775;
+      background: #f0f6e4;
+      width:220px;
+      height:360px;
+      overflow-y:scroll;
+      overflow-x:auto;
+    }
+
+    #save{
+      margin-top: 10px;
+    }
+  </style>
+
+</head>
+
+<body>
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+  <div id="body">
+    <input id="role-name" class="myui-input-frame" placeholder="角色">
+
+    <div>
+      <ul id="role-tree" class="ztree"></ul>
+    </div>
+
+    <button id="save" class="myui-btn myui-btn-green">保存</button>
+  </div>
+
+
+  <script src="js/vendor/jquery-3.3.1.js"></script>
+  <script src="js/vendor/jquery.ztree.core.js"></script>
+  <script src="js/vendor/jquery.ztree.excheck.js"></script>
+
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+        initTree();
+    });
+    
+    var initTree = function () {
+        var settings = {
+            check:{
+                enable:true,
+                checkboxType:{"Y":"ps","N":"ps"}
+            },
+            data:{
+                simpleData:{
+                    enable:true
+                }
+            }
+        }
+        var zNodes =[
+            { id:1, pId:0, name:"随意勾选 1", open:true},
+            { id:11, pId:1, name:"随意勾选 1-1", open:true},
+            { id:111, pId:11, name:"随意勾选 1-1-1"},
+            { id:112, pId:11, name:"随意勾选 1-1-2"},
+            { id:12, pId:1, name:"随意勾选 1-2", open:true},
+            { id:121, pId:12, name:"随意勾选 1-2-1"},
+            { id:122, pId:12, name:"随意勾选 1-2-2"},
+            { id:2, pId:0, name:"随意勾选 2", checked:true, open:true},
+            { id:21, pId:2, name:"随意勾选 2-1"},
+            { id:22, pId:2, name:"随意勾选 2-2", open:true},
+            { id:221, pId:22, name:"随意勾选 2-2-1", checked:true},
+            { id:222, pId:22, name:"随意勾选 2-2-2"},
+            { id:23, pId:2, name:"随意勾选 2-3"}
+        ];
+
+        $.fn.zTree.init($('#role-tree'),settings,zNodes);
+    }
+  </script>
+
+  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+  <script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-XXXXX-Y', 'auto'); ga('send', 'pageview')
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+
+</html>

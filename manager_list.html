@@ -102,6 +102,14 @@
                         createTime: 'cccc'
                     });
                     return html;
+                },
+                addListener:function () {
+                    $('.myui-checkbox').off();
+                    $('.column-opertor .edit').off();
+                    $('.column-opertor .delete').off()
+                    $('.myui-checkbox').on('click',checkBoxClick);
+                    $('.column-opertor .edit').on('click',editClick);
+                    $('.column-opertor .delete').on('click',deleteClick);
                 }
             }
         );
@@ -125,9 +133,6 @@
         //         }
         //     });
 
-        $('.myui-checkbox').on('click',checkBoxClick);
-        $('.column-opertor .edit').on('click',editClick);
-        $('.column-opertor .delete').on('click',deleteClick);
 
 
         window.myui.pullDownListHelper.showAsDropDown($('select'),{

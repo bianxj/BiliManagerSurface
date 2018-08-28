@@ -26,6 +26,24 @@
 
 (
     function () {
+       var storage = (window.storage = window.storage || {});
+       storage.saveToLocal = function (key,val) {
+           localStorage.setItem(key,val);
+       };
+       storage.saveToSession = function (key,val) {
+           sessionStorage.setItem(key,val);
+       };
+       storage.loadFromLocal = function (key) {
+           return localStorage.getItem(key);
+       };
+       storage.loadFromSession = function (key) {
+           return sessionStorage.getItem(key);
+       };
+    }()
+);
+
+(
+    function () {
         var PATTERN_MOBILE = /^1\d{10}$/;
         var PATTERN_EMAIL = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
         var PATTERN_PWD = /^[A-Za-z0-9]{6,16}$/;
@@ -42,6 +60,12 @@
         }
         check.isPwd = function (pwd) {
             return PATTERN_PWD.test(pwd);
+        }
+        check.isObj = function (obj) {
+            return typeof(obj) == 'object';
+        }
+        check.isArr = function (arr) {
+            return Array.isArray(arr);
         }
     }()
 );
@@ -73,8 +97,42 @@
             }
             return result;
         }
-    }
-)
+    }()
+);
+
+(
+    function ($) {
+        var baseUrl = 'http://localhost:8080/bili/';
+        var http = (window.http = window.http || {});
+
+        var dataFilter = function (data,type) {
+            //TODO
+            return data;
+        }
+
+        var dispose404 = function () {
+            //TODO
+        }
+
+        http.request = function (request) {
+            var def = {
+                type:'post',
+                contentType:'application/json;charset=utf-8',
+                // contentType:'application/x-www-form-urlencoded',
+                dataType:'json',
+                timeout:60 * 1000,
+                statusCode:{
+                    404:dispose404
+                }
+            };
+            $.extend(def,request);
+            def.url = baseUrl + def.url;
+            def.data = JSON.stringify(def.data);
+            def.dataFilter = dataFilter;
+            $.ajax(def);
+        }
+    }(jQuery)
+);
 
 (
 // if (typeof jQuery === 'undefined') { throw new Error('DCalendar.Picker: This plugin requires jQuery'); }
@@ -473,6 +531,7 @@
                         local['table'].find('tbody').append(view);
                     }
                 }
+                if (typeof local['data'].addListener === "function"){local['data'].addListener()}
             };
             var refreshTableTitle = function () {
                 var title = local['data'].getTitle();

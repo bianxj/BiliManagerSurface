@@ -12,48 +12,29 @@
   <link rel="apple-touch-icon" href="icon.png">
   <!-- Place favicon.ico in the root directory -->
 
+  <link rel="stylesheet" href="css/vendor/zTreeStyle.css" type="text/css">
+  <link rel="stylesheet" href="font/iconfont.css">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/myui_btn.css">
   <link rel="stylesheet" href="css/myui_table.css">
+  <link rel="stylesheet" href="css/myui_anime.css">
+  <link rel="stylesheet" href="css/myui_dialog.css">
 
   <style type="text/css">
     html body{
       width: 100%;
     }
-    #container{
-      position: relative;
-      min-width: 280px;
-      max-width: 460px;
-      margin: 80px auto 0px;
+    .control{
+      margin-left: 100px;
+      margin-top: 30px;
     }
-    #new-role{
-      width: auto;
-    }
-    .left{
-      position: fixed;
-      width: 50%;
-      left: 0px;
-      top: 0px;
-      bottom: 0px;
-    }
-    .left .table-container{
-      min-width: 280px;
-      max-width: 460px;
-      margin: 40px auto 0px;
-    }
-    .table-container .column-radio{
-      width: 50px;
-    }
-    .right{
-      width: 50%;
-      position: fixed;
-      right: 0px;
-      top: 0px;
-      bottom: 0px;
-      background-color: #00F7DE;
+    .table-container{
+      margin: 30px 100px;
+      color: black;
     }
   </style>
+
 </head>
 
 <body>
@@ -62,16 +43,13 @@
   <![endif]-->
 
   <div>
-    <div class="left">
-      <div id="container">
-        <input id="new-role" class="myui-input-frame" type="text">
+      <div class="control">
         <button id="add" class="myui-btn myui-btn-green">新增</button>
+        <button id="batch-del" class="myui-btn myui-btn-orange">批量删除</button>
       </div>
       <div class="table-container">
 
       </div>
-    </div>
-    <div class="right"></div>
   </div>
 
   <!-- Add your site or application content here -->
@@ -92,33 +70,89 @@
             },
             {
                 page: 1,
-                lines: 23,
-                option:{count:7},
+                lines: 39,
+                option:{count:9},
                 getTitle: function () {
                     return $('#title').tmpl();
                 },
                 getView: function (index, view) {
                     var html = $('#row').tmpl({
+                        id:index,
                         role: 'role'+index,
+                        createTime: 'createTime'+index
                     });
                     return html;
+                },
+                addListener:function () {
+                    $('.myui-checkbox').off();
+                    $('.column-opertor .edit').off();
+                    $('.column-opertor .delete').off()
+                    $('.myui-checkbox').on('click',checkBoxClick);
+                    $('.column-opertor .edit').on('click',editClick);
+                    $('.column-opertor .delete').on('click',deleteClick);
                 }
             }
         );
+        $('#add').on('click',addClick);
+        $('#batch-del').on('click',batchDeleteClick);
     });
+
+    var editClick = function () {
+        window.myui.dialog.showFrameDialog({
+            title:'修改',
+            url:'./role_add.html',
+            area:{width:400,height:600}
+        })
+    }
+
+    var deleteClick = function () {
+        alert('delete');
+    }
+    
+    var batchDeleteClick = function () {
+        alert('batchDelete');
+    }
+
+    var addClick = function () {
+        window.myui.dialog.showFrameDialog({
+            title:'新增',
+            url:'./role_add.html',
+            area:{width:400,height:600}
+        })
+    }
+
+    var checkBoxClick = function () {
+        if ( $(this).parents('td').length > 0 ){
+            if ( $(this).hasClass('checked') ){
+                $('th .myui-checkbox').removeClass('checked');
+            }
+            $(this).toggleClass('checked');
+        } else {
+            if ( $(this).hasClass('checked') ){
+                $('table .myui-checkbox').removeClass('checked');
+            } else {
+                $('table .myui-checkbox').addClass('checked');
+            }
+        }
+    }
   </script>
 
   <script id="title" type="text/x-jquery-tmpl">
         <tr>
-          <th class="myui-table-th column-radio"></th>
+          <th class="myui-table-th column-check"><div class="myui-checkbox"><i class="iconfont">&#xe63c;</i></div></th>
+          <th class="myui-table-th column-id"><cite>ID</cite></th>
           <th class="myui-table-th"><cite>角色</cite></th>
+          <th class="myui-table-th"><cite>创建时间</cite></th>
+          <th class="myui-table-th column-opertor"><cite>操作</cite></th>
         </tr>
   </script>
-
   <script id="row" type="text/x-jquery-tmpl">
-        <tr class="row-item">
-          <td class="myui-table-td column-radio"></td>
+        <tr>
+          <td class="myui-table-td column-check"><div class="myui-checkbox"><i class="iconfont">&#xe63c;</i></div></td>
+          <td class="myui-table-td column-id"><cite>${id}</cite></td>
           <td class="myui-table-td"><cite>${role}</cite></td>
+          <td class="myui-table-td"><cite>${createTime}</cite></td>
+          <td class="myui-table-td column-opertor"><div class="opertor"><i class="iconfont edit">&#xe640;</i><i class="iconfont delete">&#xe637;</i></div></td>
         </tr>
   </script>
 

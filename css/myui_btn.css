@@ -21,6 +21,11 @@
     background-color: #FF5722;
 }
 
+.myui-btn-loading {
+    opacity: .6;
+    pointer-events: none;
+}
+
 .myui-input-frame{
     display: inline-block;
     font-size: 16px;

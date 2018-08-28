@@ -23,24 +23,6 @@ html,body{
     user-select: none;
 }
 
-.myui-checkbox{
-    background-color: #FFFFFF;
-}
-
-.myui-checkbox .iconfont{
-    color: #FFFFFF;
-    display: block;
-    text-align: center;
-}
-
-td .opertor .iconfont{
-    color: #000;
-    display: inline-block;
-    cursor: pointer;
-    font-size: 18px;
-    margin-left: 10px;
-}
-
 table .column-check{
     width: 60px;
 }
@@ -51,21 +33,6 @@ table .column-id{
 
 table .column-opertor{
     width: 100px;
-}
-
-.myui-checkbox{
-    height: 20px;
-    width: 20px;
-    border: 1px solid #d2d2d2;
-    border-radius: 2px;
-    cursor: pointer;
-}
-.myui-checkbox:hover{
-    border-color: #5FB878;
-}
-.myui-checkbox.checked{
-    background-color: #5FB878;
-    border-color: #5FB878;
 }
 
 
