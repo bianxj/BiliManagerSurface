@@ -37,7 +37,7 @@
   <div class="search-container">
     <input id="name" class="myui-input-frame" type="text" placeholder="用户名">
     <!--<input id="role" class="myui-input-frame" readonly="readonly" type="text" placeholder="角色">-->
-    <select class="myui-select" placeholder="角色">
+    <select id="role" class="myui-select" placeholder="角色">
     </select>
     <input id="begintime" class="myui-input-frame" readonly="readonly" type="text" placeholder="起始时间">
     <input id="endtime" class="myui-input-frame" readonly="readonly" type="text" placeholder="截止时间">
@@ -82,37 +82,41 @@
     var table;
     $(document).ready(function () {
         $('#add').on('click',addClick);
-        table = new window.myui.Table($('.table-container'),
-            {
-                pageSize:10,
-                cur:1
-            },
-            {
-                page: 1, lines: 198,
-                getTitle: function () {
-                    return $('#title').tmpl();
-                },
-                getView: function (index, view) {
-                    var html = $('#row').tmpl({
-                        id: index,
-                        userName: 'test',
-                        phone:'18911111111',
-                        email:'1122@2233.com',
-                        role: 'ttt',
-                        createTime: 'cccc'
-                    });
-                    return html;
-                },
-                addListener:function () {
-                    $('.myui-checkbox').off();
-                    $('.column-opertor .edit').off();
-                    $('.column-opertor .delete').off()
-                    $('.myui-checkbox').on('click',checkBoxClick);
-                    $('.column-opertor .edit').on('click',editClick);
-                    $('.column-opertor .delete').on('click',deleteClick);
-                }
-            }
-        );
+
+        searchManagers({});
+        searchRoles();
+
+        // table = new window.myui.Table($('.table-container'),
+        //     {
+        //         pageSize:10,
+        //         cur:1
+        //     },
+        //     {
+        //         page: 1, lines: 198,
+        //         getTitle: function () {
+        //             return $('#title').tmpl();
+        //         },
+        //         getView: function (index, view) {
+        //             var html = $('#row').tmpl({
+        //                 id: index,
+        //                 userName: 'test',
+        //                 phone:'18911111111',
+        //                 email:'1122@2233.com',
+        //                 role: 'ttt',
+        //                 createTime: 'cccc'
+        //             });
+        //             return html;
+        //         },
+        //         addListener:function () {
+        //             $('.myui-checkbox').off();
+        //             $('.column-opertor .edit').off();
+        //             $('.column-opertor .delete').off()
+        //             $('.myui-checkbox').on('click',checkBoxClick);
+        //             $('.column-opertor .edit').on('click',editClick);
+        //             $('.column-opertor .delete').on('click',deleteClick);
+        //         }
+        //     }
+        // );
 
         // window.myui.table.initTable(
         //     {
@@ -135,14 +139,14 @@
 
 
 
-        window.myui.pullDownListHelper.showAsDropDown($('select'),{
-            length:10,
-            hasBlank:true,
-            getView:function (index) {
-                var html = '<p>'+index+'</p>';
-                return html;
-            }
-        });
+        // window.myui.pullDownListHelper.showAsDropDown($('select'),{
+        //     length:10,
+        //     hasBlank:true,
+        //     getView:function (index) {
+        //         var html = '<p>'+index+'</p>';
+        //         return html;
+        //     }
+        // });
 
 /*        $('#role').on('click',function () {
         });*/
@@ -157,14 +161,113 @@
         $('#batch-del').on('click',batchDelClick);
     })
 
+    var roles;
+    var searchRoles = function () {
+        window.http.request({
+            url:'Manager/searchRoles.do',
+            data:{},
+            success:function (data) {
+                if ( data.responseId == 0 ){
+                    roles = data.roles;
+                    initRoleSelect();
+                }
+            }
+        })
+    }
+
+    var initRoleSelect = function(){
+        window.myui.pullDownListHelper.showAsDropDown($('select'),{
+            length:roles.length,
+            hasBlank:true,
+            getView:function (index) {
+                var html = roles[index];
+                return html;
+            }
+        });
+    }
+
+    var managers;
+    var searchManagers = function (reqObj) {
+        window.http.request({
+            url:'Manager/searchManagers.do',
+            data:reqObj,
+            success:function (data) {
+              if ( data.responseId == 0 ){
+                  managers = data.managers;
+                  initTable()
+              }
+            }
+        })
+    }
+
+    var initTable = function () {
+        // if ( window.check.isEmpty(managers) || !window.check.isArr(managers) || managers.length <=0 ){
+        //     return;
+        // }
+        table = new window.myui.Table($('.table-container'),
+            {
+                pageSize:10,
+                cur:1
+            },
+            {
+                page: 1, lines: managers.length,
+                getTitle: function () {
+                    return $('#title').tmpl();
+                },
+                getView: function (index, view) {
+                    var manager = managers[index];
+                    var html = $('#row').tmpl({
+                        id: index,
+                        userName: manager.name,
+                        phone:manager.phone,
+                        email:manager.email,
+                        role:manager.role,
+                        createTime:manager.createTime
+                    });
+                    return html;
+                },
+                addListener:function () {
+                    $('.myui-checkbox').off();
+                    $('.column-opertor .edit').off();
+                    $('.column-opertor .delete').off()
+                    $('.myui-checkbox').on('click',checkBoxClick);
+                    $('.column-opertor .edit').on('click',editClick);
+                    $('.column-opertor .delete').on('click',deleteClick);
+                }
+            }
+        );
+    }
+
     var searchClick = function () {
-        alert('Todo search');
+        // alert($('#role option:selected').text());
+        var obj = {};
+        obj.name = $('#name').val();
+        if ( '请选择' == $('#role option:selected').text() ){
+            obj.role = null;
+        } else {
+            obj.role = $('#role option:selected').text();
+        }
+        obj.startTime = $('#begintime').val();
+        obj.endTime = $('#endtime').val();
+        searchManagers(obj)
     }
     
     var deleteClick = function () {
-        alert('Todo delete');
+        var tr = $(this).parent('tr');
+        var name = tr.find('cite.name').text();
+        deleteManager(name);
     }
 
+    var deleteManager = function (name) {
+        window.http.request({
+            url:'Manager/deleteManager.do',
+            data:{name:name},
+            success:function () {
+                window.myui.dialog.showToastDialog({title:'提示',content:'用户删除成功'});
+            }
+        })
+    }
+    
     var editClick = function () {
         window.myui.dialog.showFrameDialog({
             title:'修改',
@@ -178,6 +281,7 @@
             title:'批量导入',
             url:'manager_batch_add.html',
             data:{
+                targetUrl:'Manager/batchInsertManager.do',
                 accept:'.csv',
                 uploadUrl:''
             }
@@ -229,11 +333,11 @@
         <tr>
           <td class="myui-table-td column-check"><div class="myui-checkbox"><i class="iconfont">&#xe63c;</i></div></td>
           <td class="myui-table-td column-id"><cite>${id}</cite></td>
-          <td class="myui-table-td"><cite>${userName}</cite></td>
-          <td class="myui-table-td"><cite>${phone}</cite></td>
-          <td class="myui-table-td"><cite>${email}</cite></td>
-          <td class="myui-table-td"><cite>${role}</cite></td>
-          <td class="myui-table-td"><cite>${createTime}</cite></td>
+          <td class="myui-table-td"><cite class="name">${userName}</cite></td>
+          <td class="myui-table-td"><cite class="phone">${phone}</cite></td>
+          <td class="myui-table-td"><cite class="email">${email}</cite></td>
+          <td class="myui-table-td"><cite class="role">${role}</cite></td>
+          <td class="myui-table-td"><cite class="create-time">${createTime}</cite></td>
           <td class="myui-table-td column-opertor"><div class="opertor"><i class="iconfont edit">&#xe640;</i><i class="iconfont delete">&#xe637;</i></div></td>
         </tr>
   </script>

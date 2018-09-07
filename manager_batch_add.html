@@ -75,7 +75,13 @@
   <script src="js/main.js"></script>
 
   <script type="text/javascript">
+    var param;
     $(document).ready(function () {
+        var param = JSON.parse(window.urlHelper.loadParam(window.location.href).param);
+        if ( window.check.isEmpty(param) ){
+            //TODO
+        }
+
         $('#selector').on('click',fileSelect);
         $('#file-selector').on('change',fileChange);
         $('#upload').on('click',upload);

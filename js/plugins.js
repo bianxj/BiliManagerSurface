@@ -27,16 +27,38 @@
 (
     function () {
        var storage = (window.storage = window.storage || {});
-       storage.saveToLocal = function (key,val) {
+
+       storage.saveSessionId = function (sessionId) {
+           saveToLocal('session',sessionId);
+       }
+
+       storage.loadSessionId = function () {
+           return loadFromLocal('session');
+       }
+
+       storage.saveManager = function (manager) {
+            saveToLocal('manager',JSON.stringify(manager));
+       }
+
+       storage.loadManager = function () {
+           var manager = loadFromLocal('manager');
+           if ( !check.isEmpty(manager) ){
+               return JSON.parse(manager);
+           }
+           return null;
+       }
+       
+       var saveToLocal = function (key,val) {
            localStorage.setItem(key,val);
        };
-       storage.saveToSession = function (key,val) {
+       var saveToSession = function (key,val) {
            sessionStorage.setItem(key,val);
        };
-       storage.loadFromLocal = function (key) {
+       var loadFromLocal = function (key) {
            return localStorage.getItem(key);
        };
-       storage.loadFromSession = function (key) {
+       var loadFromSession = function (key) {
+           var session = sessionStorage;
            return sessionStorage.getItem(key);
        };
     }()
@@ -92,7 +114,7 @@
                 var array = params.split('&');
                 for (var index in array) {
                     var set = array[index].split('=')
-                    result[set[0]] = set[1];
+                    result[set[0]] = decodeURI(set[1]);
                 }
             }
             return result;
@@ -114,12 +136,22 @@
             //TODO
         }
 
+        var getTopWindow = function (window) {
+            if ( window.parent != window ){
+                return getTopWindow(window.parent);
+            }
+            return window;
+        }
+
         http.request = function (request) {
             var def = {
                 type:'post',
                 contentType:'application/json;charset=utf-8',
                 // contentType:'application/x-www-form-urlencoded',
                 dataType:'json',
+                beforeSend:function (req) {
+                    req.setRequestHeader('sessionId',window.storage.loadSessionId());
+                },
                 timeout:60 * 1000,
                 statusCode:{
                     404:dispose404
@@ -129,6 +161,13 @@
             def.url = baseUrl + def.url;
             def.data = JSON.stringify(def.data);
             def.dataFilter = dataFilter;
+            def.success = function (data, textStatus, response) {
+                if ( data.responseId == 101 && request.url != "Manager/checkLogin.do" ){
+                    getTopWindow(window).location.href = 'login.html';
+                } else {
+                    request.success(data, textStatus, response);
+                }
+            }
             $.ajax(def);
         }
     }(jQuery)
@@ -298,9 +337,13 @@
 
                 }
                 var buildContent = function (content) {
-                    var html = '    <div>\n' +
-                        '        <i class="iconfont">&#xe615;</i>\n' +
-                        '        <cite class="content">' + obj.content + '</cite>\n' +
+                    var html = '    <div>\n';
+                    if (!obj.success) {
+                        html += '        <i class="iconfont">&#xe615;</i>\n';
+                    } else {
+                        html += '        <i class="iconfont">&#xe603;</i>\n';
+                    }
+                    html += '        <cite class="content">' + obj.content + '</cite>\n' +
                         '    </div>';
                     content.append(html);
                 }
@@ -462,8 +505,6 @@
             return shared;
         })(jQuery);
 
-
-
         // new Table();
         var Table = function (container, option, data) {
             var local = {};
@@ -490,7 +531,7 @@
             };
 
             var init = function (option, data) {
-                if ( local['container'].find('.myui-table').length <= 0 ){
+                if (local['container'].find('.myui-table').length <= 0) {
                     local['table'] = createTable();
                     local['container'].append(local['table']);
                 }
@@ -501,18 +542,21 @@
                 }
                 local['data'] = data;
 
-                var operData = {};
-                operData.cur = data.page;
-                operData.size = Math.ceil(local['data'].lines / local['option'].pageSize);
-                operData.callback = operCallback;
-                if ( local['operation'] ){
-                    local['operation'].rebuildTabOper(local['container'], local['data'].option);
-                } else {
-                    local['operation'] = new TableOper(local['container'], local['data'].option,operData);
-                }
+                var size = Math.ceil(local['data'].lines / local['option'].pageSize);
 
+                if (size > 1) {
+                    var operData = {};
+                    operData.cur = data.page;
+                    operData.size = Math.ceil(local['data'].lines / local['option'].pageSize);
+                    operData.callback = operCallback;
+                    if (local['operation']) {
+                        local['operation'].rebuildTabOper(local['container'], local['data'].option);
+                    } else {
+                        local['operation'] = new TableOper(local['container'], local['data'].option, operData);
+                    }
+                }
                 refreshTableTitle();
-                refreshTableItem(local['operation'].getCurrentPage());
+                refreshTableItem(local['operation']?local['operation'].getCurrentPage():1);
             };
 
             var operCallback = function (page) {
@@ -535,7 +579,9 @@
             };
             var refreshTableTitle = function () {
                 var title = local['data'].getTitle();
-                local['table'].find('thead').append(title);
+                if (local['table'].find('thead').children().length <= 0) {
+                    local['table'].find('thead').append(title);
+                }
             };
 
             init(option, data);

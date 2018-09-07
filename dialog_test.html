@@ -205,46 +205,65 @@
     <script src="js/vendor/jquery-3.3.1.js"></script>
 
     <script type="text/javascript">
+        var param;
         $(document).ready(function () {
-            var obj = {};
-            obj['name'] = 'ttt';
-            obj['func'] = function () {
-                console.log('func');
-            }
-            console.log(obj.name);
-            obj.func();
-
-            function Test(selector,pri,pub) {
-                var priv = pri;
-                var callback = function () {
-                    console.log(priv);
-                    console.log(Test.prototype.pub2);
-                }
-                $('#'+selector).on('click',callback);
-
-
-                this.pub = pub;
-                Test.prototype.pub2 = pub;
-                Test.prototype.printf = function () {
-                    console.log(this.pub);
-                    console.log(priv);
-                }
-
-                // var shared = {};
-                // shared.callback = callback;
-                // return shared;
-            }
-            var test = new Test('frame','priv11111','pub1111111');
-            var test2 = new Test('toast','priv22222','pub2222222');
-
-            for(var key in test){
-                console.log('console:'+key);
-            }
-
-            test.printf();
-            test2.printf();
+            $('#frame').on('click',function () {
+               param = JSON.stringify(
+                   {
+                       targetUrl:'Manager/batchInsertManager.do',
+                       accept:'.csv',
+                       uploadUrl:''
+                   }
+               )
+            });
+            $('#toast').on('click',function () {
+                var data = JSON.parse(param);
+                alert(data.targetUrl);
+            });
         });
     </script>
+
+    <!--<script type="text/javascript">-->
+        <!--$(document).ready(function () {-->
+            <!--var obj = {};-->
+            <!--obj['name'] = 'ttt';-->
+            <!--obj['func'] = function () {-->
+                <!--console.log('func');-->
+            <!--}-->
+            <!--console.log(obj.name);-->
+            <!--obj.func();-->
+
+            <!--function Test(selector,pri,pub) {-->
+                <!--var priv = pri;-->
+                <!--var callback = function () {-->
+                    <!--console.log(priv);-->
+                    <!--console.log(Test.prototype.pub2);-->
+                <!--}-->
+                <!--$('#'+selector).on('click',callback);-->
+
+
+                <!--this.pub = pub;-->
+                <!--Test.prototype.pub2 = pub;-->
+                <!--Test.prototype.printf = function () {-->
+                    <!--console.log(this.pub);-->
+                    <!--console.log(priv);-->
+                <!--}-->
+
+                <!--// var shared = {};-->
+                <!--// shared.callback = callback;-->
+                <!--// return shared;-->
+            <!--}-->
+            <!--var test = new Test('frame','priv11111','pub1111111');-->
+            <!--var test2 = new Test('toast','priv22222','pub2222222');-->
+
+            <!--for(var key in test){-->
+                <!--console.log('console:'+key);-->
+            <!--}-->
+
+            <!--test.printf();-->
+            <!--test2.printf();-->
+        <!--});-->
+    <!--</script>-->
 
     <script type="text/javascript">
         // var dialog = (function ($) {

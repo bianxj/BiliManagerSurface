@@ -82,15 +82,41 @@
   <script type="text/javascript">
     $(document).ready(function () {
         $('#add').on('click',addManagerClick);
-        window.myui.pullDownListHelper.showAsDropDown($('#role'),{
-            length:10,
-            hasBlank:false,
-            getView:function (index) {
-                return '<p>'+index+'</p>';
+        searchRoles();
+        // window.myui.pullDownListHelper.showAsDropDown($('#role'),{
+        //     length:10,
+        //     hasBlank:false,
+        //     getView:function (index) {
+        //         return '<p>'+index+'</p>';
+        //     }
+        // })
+    });
+
+    var roles;
+    var searchRoles = function () {
+        window.http.request({
+            url:'Manager/searchRoles.do',
+            data:{},
+            success:function (data) {
+                if ( data.responseId == 0 ){
+                    roles = data.roles;
+                    initRoleSelect();
+                }
             }
         })
-    });
-    
+    }
+
+    var initRoleSelect = function(){
+        window.myui.pullDownListHelper.showAsDropDown($('select'),{
+            length:roles.length,
+            hasBlank:true,
+            getView:function (index) {
+                var html = roles[index];
+                return html;
+            }
+        });
+    }
+
     var addManagerClick = function () {
         if ( checkManagerData() ){
             submitManagerData();
@@ -118,6 +144,11 @@
             window.myui.dialog.showToastDialog({title:'提示',content:'邮箱格式不正确'});
             return false;
         }
+        if ( $('#role option:selected').text() == "请选择" ){
+            window.myui.dialog.showToastDialog({title:'提示',content:'请选择角色'});
+            return false;
+        }
+
         if ( window.check.isEmpty($('#pwd').val()) ){
             window.myui.dialog.showToastDialog({title:'提示',content:'请填写密码'});
             return false;
@@ -144,7 +175,31 @@
     }
     
     var submitManagerData = function () {
-        alert('Todo submit');
+        window.http.request({
+            url:'Manager/insertManager.do',
+            data:{
+                name:$('#login-name').val(),
+                phone:$('#phone').val(),
+                email:$('#email').val(),
+                role:$('#role option:selected').text(),
+                pwd:$('#pwd').val(),
+                confirmPwd:$('#confirm-pwd').val()
+            },
+            success:function (data) {
+                if ( data.responseId == 0 ){
+                    window.myui.dialog.showToastDialog({
+                        title:'提示',
+                        content:'添加成功',
+                        success:true
+                    });
+                } else {
+                    window.myui.dialog.showToastDialog({
+                        title:'提示',
+                        content:data.desc
+                    });
+                }
+            }
+        })
     }
 
   </script>
