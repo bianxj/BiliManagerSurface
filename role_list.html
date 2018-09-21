@@ -22,16 +22,23 @@
   <link rel="stylesheet" href="css/myui_dialog.css">
 
   <style type="text/css">
-    html body{
-      width: 100%;
+    html,body{
+      margin-left: 20px;
+      margin-right: 20px;
     }
-    .control{
-      margin-left: 100px;
-      margin-top: 30px;
+    .operate-container{
+      margin-top: 20px;
+      padding: 5px;
+      border-radius: 2px;
+      background-color: #F2F2F2;
     }
     .table-container{
-      margin: 30px 100px;
-      color: black;
+      width: 100%;
+      margin-top: 15px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
   </style>
 
@@ -43,7 +50,7 @@
   <![endif]-->
 
   <div>
-      <div class="control">
+      <div class="operate-container">
         <button id="add" class="myui-btn myui-btn-green">新增</button>
         <button id="batch-del" class="myui-btn myui-btn-orange">批量删除</button>
       </div>
@@ -60,53 +67,98 @@
 
 
   <script type="text/javascript">
+    $(document).ready(init);
+
+    function init(){
+        searchRoles()
+        $('#add').on('click', addClick);
+        $('#batch-del').on('click', batchDeleteClick);
+    }
+
+    function searchRoles(){
+        window.http.request({
+            url:"Manager/searchRoles.do",
+            data:{},
+            success:searchRolesSuccess,
+            error:searchRolesError
+        });
+    }
+
     var table;
-    $(document).ready(function () {
-        table = new window.myui.Table(
-            $('.table-container'),
-            {
-                pageSize:10,
-                cur:1
-            },
-            {
-                page: 1,
-                lines: 39,
-                option:{count:9},
-                getTitle: function () {
-                    return $('#title').tmpl();
-                },
-                getView: function (index, view) {
-                    var html = $('#row').tmpl({
-                        id:index,
-                        role: 'role'+index,
-                        createTime: 'createTime'+index
-                    });
-                    return html;
-                },
-                addListener:function () {
-                    $('.myui-checkbox').off();
-                    $('.column-opertor .edit').off();
-                    $('.column-opertor .delete').off()
-                    $('.myui-checkbox').on('click',checkBoxClick);
-                    $('.column-opertor .edit').on('click',editClick);
-                    $('.column-opertor .delete').on('click',deleteClick);
+    var roles;
+    var curPage = 1;
+    function searchRolesSuccess(data){
+        if ( data.responseId == 0 ){
+            roles = data.roles;
+            table = new window.myui.Table(
+                $('.table-container'),
+                {},
+                {
+                    page:curPage,
+                    lines:roles.length,
+                    option:{count:9},
+                    getTitle: function () {
+                        return $('#title').tmpl();
+                    },
+                    getView: function (index, view) {
+                        var html = $('#row').tmpl({
+                            id:index,
+                            role: roles[index].role,
+                            createTime: roles[index].createTime
+                        });
+                        return html;
+                    },
+                    addListener:function () {
+                        $('.myui-checkbox').off();
+                        $('.column-opertor .edit').off();
+                        $('.column-opertor .delete').off()
+                        $('.myui-checkbox').on('click',checkBoxClick);
+                        $('.column-opertor .edit').on('click',editClick);
+                        $('.column-opertor .delete').on('click',deleteClick);
+                    }
                 }
-            }
-        );
-        $('#add').on('click',addClick);
-        $('#batch-del').on('click',batchDeleteClick);
-    });
+            )
+        } else {
+            window.myui.dialog.showToastDialog({title:"提示",content:data.desc});
+        }
+    }
+
+    function searchRolesError(){
+        //TODO
+    }
 
     var editClick = function () {
+        var index = $(this).parents("tr").find(".column-id cite").text();
         window.myui.dialog.showFrameDialog({
             title:'修改',
-            url:'./role_add.html',
-            area:{width:400,height:600}
+            url:'./role_edit.html',
+            area:{width:400,height:600},
+            data:{roleId:roles[index].id},
+            callback:function (action) {
+                if ( 'close' == action ){
+                    searchRoles();
+                }
+            }
         })
     }
 
     var deleteClick = function () {
-        alert('delete');
+        var index = $(this).parents('tr').find('.column-id cite').text();
+        http.request({
+            url:'Manager/removeRole.do',
+            data:{roleId:roles[index].id},
+            success:function (data) {
+                if ( data.responseId == 0 ){
+                    window.myui.dialog.showToastDialog({title:'提示',content:'删除成功',success:true});
+                    searchRoles();
+                } else {
+                    window.myui.dialog.showToastDialog({title:'提示',content:data.desc});
+                }
+            },
+            error:function () {
+                
+            }
+        })
     }
     
     var batchDeleteClick = function () {
@@ -117,7 +169,12 @@
         window.myui.dialog.showFrameDialog({
             title:'新增',
             url:'./role_add.html',
-            area:{width:400,height:600}
+            area:{width:400,height:600},
+            callback:function (action) {
+                if ( 'close' == action ){
+                    searchRoles();
+                }
+            }
         })
     }
 

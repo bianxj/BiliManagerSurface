@@ -55,7 +55,7 @@
       .myui-select{
         width: 220px;
       }
-      #add{
+      #edit{
         margin-left: 200px;
       }
   </style>
@@ -72,24 +72,20 @@
   <div class="input-container"><label class="input-title"><span>*</span>手机</label><input id="phone" class="myui-input-frame" type="text"></div>
   <div class="input-container"><label class="input-title"><span>*</span>邮箱</label><input id="email" class="myui-input-frame" type="text"></div>
   <div class="input-container"><label class="input-title"><span>*</span>角色</label><select id="role" class="myui-select"></select></div>
-  <div class="input-container"><label class="input-title"><span>*</span>密码</label><input id="pwd" class="myui-input-frame" type="password"><label class="input-desc"><span>*</span>请输入6~16位的数字或英文</label></div>
-  <div class="input-container"><label class="input-title"><span>*</span>确认密码</label><input id="confirm-pwd" class="myui-input-frame" type="password"></div>
-  <div class="input-container"><button id="add" class="myui-btn myui-btn-green">添加</button></div>
+  <!--<div class="input-container"><label class="input-title"><span>*</span>密码</label><input id="pwd" class="myui-input-frame" type="password"><label class="input-desc"><span>*</span>请输入6~16位的数字或英文</label></div>
+  <div class="input-container"><label class="input-title"><span>*</span>确认密码</label><input id="confirm-pwd" class="myui-input-frame" type="password"></div>-->
+  <div class="input-container"><button id="edit" class="myui-btn myui-btn-green">修改</button></div>
 
   <script src="js/vendor/jquery-3.3.1.js"></script>
   <script src="js/plugins.js"></script>
 
   <script type="text/javascript">
+    var manager;
     $(document).ready(function () {
-        $('#add').on('click',addManagerClick);
+        $('#edit').on('click',editManagerClick);
+        manager = window.urlHelper.loadParam(window.location.href).param;
+        // manager = JSON.parse(param);
         searchRoles();
-        // window.myui.pullDownListHelper.showAsDropDown($('#role'),{
-        //     length:10,
-        //     hasBlank:false,
-        //     getView:function (index) {
-        //         return '<p>'+index+'</p>';
-        //     }
-        // })
     });
 
     var roles;
@@ -100,16 +96,18 @@
             success:function (data) {
                 if ( data.responseId == 0 ){
                     roles = data.roles;
-                    initRoleSelect();
+                    initRoleSelect(manager.roleId);
+                    initManagerData();
                 }
             }
         })
     }
 
-    var initRoleSelect = function(){
+    var initRoleSelect = function(selected){
         window.myui.pullDownListHelper.showAsDropDown($('select'),{
             length:roles.length,
             hasBlank:true,
+            selected:selected,
             getValue:function (index) {
                 return roles[index].id;
             },
@@ -118,8 +116,14 @@
             }
         });
     }
-
-    var addManagerClick = function () {
+    
+    var initManagerData = function () {
+        $('#login-name').val(manager.name);
+        $('#phone').val(manager.phone);
+        $('#email').val(manager.email);
+    }
+    
+    var editManagerClick = function () {
         if ( checkManagerData() ){
             submitManagerData();
         }
@@ -146,31 +150,8 @@
             window.myui.dialog.showToastDialog({title:'提示',content:'邮箱格式不正确'});
             return false;
         }
-        if ( $('#role option:selected').text() == "请选择" ){
+        if ( $('#role option:selected').val() == -1 ){
             window.myui.dialog.showToastDialog({title:'提示',content:'请选择角色'});
-            return false;
-        }
-
-        if ( window.check.isEmpty($('#pwd').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'请填写密码'});
-            return false;
-        }
-        if ( !window.check.isPwd($('#pwd').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'密码格式不正确'});
-            return false;
-        }
-        if ( window.check.isEmpty($('#confirm-pwd').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'请填写确认密码'});
-            return false;
-        }
-        if ( !window.check.isPwd($('#confirm-pwd').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'确认密码格式不正确'});
-            return false;
-        }
-        var pwd = $('#pwd').val();
-        var confirm = $('#confirm-pwd').val();
-        if ( pwd != confirm ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'两次输入的密码不一致'});
             return false;
         }
         return true;
@@ -178,19 +159,19 @@
     
     var submitManagerData = function () {
         window.http.request({
-            url:'Manager/insertManager.do',
+            url:'Manager/updateManager.do',
             data:{
+                id:manager.id,
                 name:$('#login-name').val(),
                 phone:$('#phone').val(),
                 email:$('#email').val(),
-                roleId:$('#role option:selected').val(),
-                pwd:$('#pwd').val(),
+                roleId:$('#role option:selected').val()
             },
             success:function (data) {
                 if ( data.responseId == 0 ){
                     window.myui.dialog.showToastDialog({
                         title:'提示',
-                        content:'添加成功',
+                        content:'修改成功',
                         success:true
                     });
                 } else {

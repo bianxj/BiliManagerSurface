@@ -51,23 +51,8 @@
   </div>
 
   <div class="table-container">
-    <!--<table class="myui-table">-->
-      <!--<thead>-->
-      <!--</thead>-->
-      <!--<tbody>-->
-      <!--</tbody>-->
-    <!--</table>-->
-    <!--<div class="myui-table-operator">-->
-      <!--<button id="prev" class="btn"><<</button>-->
-      <!--<div id="middle">-->
-      <!--</div>-->
-      <!--<button id="next" class="btn">>></button>-->
-    <!--</div>-->
   </div>
 
-<!--  <script src="js/vendor/modernizr-{{MODERNIZR_VERSION}}.min.js"></script>
-  <script src="https://code.jquery.com/jquery-{{JQUERY_VERSION}}.min.js" integrity="{{JQUERY_SRI_HASH}}" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="js/vendor/jquery-{{JQUERY_VERSION}}.min.js"><\/script>')</script>-->
   <script src="js/vendor/jquery-3.3.1.js"></script>
   <script src="js/vendor/jquery.tmpl.js"></script>
   <script src="js/plugins.js"></script>
@@ -86,70 +71,6 @@
         searchManagers({});
         searchRoles();
 
-        // table = new window.myui.Table($('.table-container'),
-        //     {
-        //         pageSize:10,
-        //         cur:1
-        //     },
-        //     {
-        //         page: 1, lines: 198,
-        //         getTitle: function () {
-        //             return $('#title').tmpl();
-        //         },
-        //         getView: function (index, view) {
-        //             var html = $('#row').tmpl({
-        //                 id: index,
-        //                 userName: 'test',
-        //                 phone:'18911111111',
-        //                 email:'1122@2233.com',
-        //                 role: 'ttt',
-        //                 createTime: 'cccc'
-        //             });
-        //             return html;
-        //         },
-        //         addListener:function () {
-        //             $('.myui-checkbox').off();
-        //             $('.column-opertor .edit').off();
-        //             $('.column-opertor .delete').off()
-        //             $('.myui-checkbox').on('click',checkBoxClick);
-        //             $('.column-opertor .edit').on('click',editClick);
-        //             $('.column-opertor .delete').on('click',deleteClick);
-        //         }
-        //     }
-        // );
-
-        // window.myui.table.initTable(
-        //     {
-        //         page: 1, lines: 198,
-        //         getTitle: function () {
-        //             return $('#title').tmpl();
-        //         },
-        //         getView: function (index, view) {
-        //             var html = $('#row').tmpl({
-        //                 id: index,
-        //                 userName: 'test',
-        //                 phone:'18911111111',
-        //                 email:'1122@2233.com',
-        //                 role: 'ttt',
-        //                 createTime: 'cccc'
-        //             });
-        //             return html;
-        //         }
-        //     });
-
-
-
-        // window.myui.pullDownListHelper.showAsDropDown($('select'),{
-        //     length:10,
-        //     hasBlank:true,
-        //     getView:function (index) {
-        //         var html = '<p>'+index+'</p>';
-        //         return html;
-        //     }
-        // });
-
-/*        $('#role').on('click',function () {
-        });*/
         $('#begintime').dcalendarpicker({
             format:'yyyy-mm-dd'
         });
@@ -179,9 +100,11 @@
         window.myui.pullDownListHelper.showAsDropDown($('select'),{
             length:roles.length,
             hasBlank:true,
-            getView:function (index) {
-                var html = roles[index];
-                return html;
+            getValue:function (index) {
+                return roles[index].id;
+            },
+            getContent:function (index) {
+                return roles[index].role;
             }
         });
     }
@@ -194,23 +117,24 @@
             success:function (data) {
               if ( data.responseId == 0 ){
                   managers = data.managers;
-                  initTable()
+                  freshTable()
               }
             }
         })
     }
 
-    var initTable = function () {
-        // if ( window.check.isEmpty(managers) || !window.check.isArr(managers) || managers.length <=0 ){
-        //     return;
-        // }
+    var curPage = 1;
+    var freshTable = function () {
+        if ( (curPage-1) > (managers.length/10) ){
+            curPage = managers.length/10 + 1;
+        }
+
         table = new window.myui.Table($('.table-container'),
             {
-                pageSize:10,
-                cur:1
+                pageSize:10
             },
             {
-                page: 1, lines: managers.length,
+                page: curPage, lines: managers.length,
                 getTitle: function () {
                     return $('#title').tmpl();
                 },
@@ -233,6 +157,9 @@
                     $('.myui-checkbox').on('click',checkBoxClick);
                     $('.column-opertor .edit').on('click',editClick);
                     $('.column-opertor .delete').on('click',deleteClick);
+                },
+                onPageChange:function (page) {
+                    curPage = page;
                 }
             }
         );
@@ -253,26 +180,35 @@
     }
     
     var deleteClick = function () {
-        var tr = $(this).parent('tr');
-        var name = tr.find('cite.name').text();
-        deleteManager(name);
+        var tr = $(this).parents('tr');
+        var id = tr.find('.column-id cite').text();
+        var manager = managers[id];
+        deleteManager(manager.id);
     }
 
-    var deleteManager = function (name) {
+    var deleteManager = function (id) {
         window.http.request({
             url:'Manager/deleteManager.do',
-            data:{name:name},
+            data:{id:id},
             success:function () {
-                window.myui.dialog.showToastDialog({title:'提示',content:'用户删除成功'});
+                window.myui.dialog.showToastDialog({title:'提示',content:'用户删除成功',success:true});
+                searchManagers({});
             }
         })
     }
     
     var editClick = function () {
+        var id = $(this).parents('tr').find(".column-id cite").text();
+        var manager = managers[id];
         window.myui.dialog.showFrameDialog({
             title:'修改',
-            url:'manager_add.html',
-            data:{}
+            url:'manager_edit.html',
+            data:manager,
+            callback:function (event) {
+                if ( event == "close" ){
+                    searchManagers({});
+                }
+            }
         })
     }
 
@@ -282,8 +218,8 @@
             url:'manager_batch_add.html',
             data:{
                 targetUrl:'Manager/batchInsertManager.do',
-                accept:'.csv',
-                uploadUrl:''
+                accept:'.xls',
+                templateUrl:'Manager/managerTemplate.file'
             }
         })
     }
@@ -322,8 +258,10 @@
             title:'新增',
             url:'manager_add.html',
             data:{},
-            callback:function () {
-
+            callback:function (event) {
+                if ( event == "close" ){
+                    searchManagers({});
+                }
             }
         });
     }

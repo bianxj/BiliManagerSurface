@@ -24,8 +24,42 @@
 
 // Place any jQuery/helper plugins in here.
 
-(
-    function () {
+(function () {
+   var application = (window.application = window.application || {});
+   //TODO
+    
+    application.saveSessionId = function (sessionId) {
+        storage.saveToLocal('session',sessionId);
+    }
+    application.loadSessionId =function () {
+        return storage.loadFromLocal('session');
+    }
+    application.saveManager = function (manager) {
+        storage.saveToLocal('manager',JSON.stringify(manager));
+    }
+    application.loadManager = function () {
+        var str = storage.loadFromLocal('manager');
+        return JSON.parse(str);
+    }
+}())
+
+(function () {
+   var storage = (window.storage = window.storage || {});
+   storage.saveToLocal = function (key,val) {
+       localStorage.setItem(key,val);
+   }
+   storage.saveToSession = function (key,val) {
+       sessionStorage.setItem(key,val);
+   }
+   storage.loadFromLocal = function (key) {
+       return localStorage.getItem(key);
+   }
+   storage.loadFromSession = function (key) {
+       return sessionStorage.getItem(key);
+   }
+}())
+
+(function () {
        var storage = (window.storage = window.storage || {});
 
        storage.saveSessionId = function (sessionId) {
@@ -48,24 +82,22 @@
            return null;
        }
        
-       var saveToLocal = function (key,val) {
+       var saveToLocal = function saveToLocal(key,val) {
            localStorage.setItem(key,val);
        };
-       var saveToSession = function (key,val) {
+       var saveToSession = function saveToSession(key,val) {
            sessionStorage.setItem(key,val);
        };
-       var loadFromLocal = function (key) {
+       var loadFromLocal = function loadFromLocal(key) {
            return localStorage.getItem(key);
        };
-       var loadFromSession = function (key) {
+       var loadFromSession = function loadFromSession(key) {
            var session = sessionStorage;
            return sessionStorage.getItem(key);
        };
-    }()
-);
+}());
 
-(
-    function () {
+(function () {
         var PATTERN_MOBILE = /^1\d{10}$/;
         var PATTERN_EMAIL = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
         var PATTERN_PWD = /^[A-Za-z0-9]{6,16}$/;
@@ -89,11 +121,45 @@
         check.isArr = function (arr) {
             return Array.isArray(arr);
         }
-    }()
-);
+}());
 
-(
-    function () {
+(function ($) {
+    var passer = (window.passer = window.passer || {});
+    passer.mergeToUrl = function (url,obj) {
+        var result = url;
+        if ( typeof obj === Object ){
+            result += '?'
+            var param = JSON.stringify(obj);
+            result+=result+'param='+param;
+        }
+        return result;
+    }
+    passer.loadFromUrl = function (url) {
+        var arr = url.split('?');
+        if ( arr.length > 0 ){
+            var str = arr[1].split('=')[1];
+            return JSON.parse(str);
+        } else {
+            return {};
+        }
+    }
+    
+    passer.saveToStorage = function (key,obj) {
+        storage.saveToSession(key,obj);
+    }
+    passer.loadFromStorage = function (key) {
+        return storage.loadFromSession(key)
+    }
+    
+    passer.saveToCookie = function (key,obj) {
+        //TODO
+    }
+    passer.loadFromCookie = function (key) {
+        //TODO
+    }
+}(jQuery))
+
+(function () {
         var urlHelper = (window.urlHelper = window.urlHelper || {});
         urlHelper.mergeParam = function (url, map) {
             if (map) {
@@ -114,16 +180,102 @@
                 var array = params.split('&');
                 for (var index in array) {
                     var set = array[index].split('=')
-                    result[set[0]] = decodeURI(set[1]);
+                    try {
+                        result[set[0]] = JSON.parse(decodeURI(set[1]));
+                    } catch (err) {
+                        return {};
+                    }
                 }
             }
             return result;
         }
-    }()
-);
+}());
 
-(
-    function ($) {
+(function ($) {
+    var base = 'http://localhost:8080/bili/';
+    var http = (window.http = window.http || {});
+    
+    var filter = function (data,type) {
+        //TODO
+        return data;
+    }
+
+    var _action404 = function () {
+        window.location.href = '404.html';
+    }
+
+    var _topWindow = function (window) {
+        window.parent != window ? _topWindow(window.parent) : window;
+    }
+
+    var _request = function (def,request) {
+        $.extend(def,request);
+        def.url = base + def.url;
+        def.success = _buildSuccessBack(request.url,request.success);
+        $.ajax(def);
+    }
+
+    http.upload = function (request) {
+        if ( typeof request !== Object ){
+            //TODO
+        }
+        var def = _buildDefUpload();
+        _request(def,request);
+    }
+
+    http.request = function (request) {
+        if ( typeof request !== Object ){
+            //TODO
+        }
+        var def = _buildDefRequest();
+        _request(def,request);
+    }
+    
+    var _buildSuccessBack = function (url,success) {
+        return function (data, textStatus, response) {
+            if ( data.responseId == 101 && url != "Manager/checkLogin.do" ){
+                _topWindow(window).location.href = 'login.html';
+            } else {
+                success(data, textStatus, response);
+            }
+        }
+    }
+
+    var _buildDefRequest = function () {
+        return {
+            type:'post',
+            contentType:'application/json;charset=utf-8',
+            dataType:'json',
+            beforeSend:function (req) {
+                req.setRequestHeader('sessionId',window.storage.loadSessionId());
+            },
+            timeout:60 * 1000,
+            statusCode:{
+                404:_action404
+            },
+            dataFilter:filter
+        };
+    }
+
+    var _buildDefUpload = function () {
+        return {
+            type:'post',
+            cache:false,
+            processData: false,
+            contentType: false,
+            dataType:"json",
+            beforeSend:function (req) {
+                req.setRequestHeader('sessionId',window.storage.loadSessionId());
+            },
+            statusCode:{
+                404:_action404
+            }
+        }
+    }
+    
+}(jQuery))
+
+(function ($) {
         var baseUrl = 'http://localhost:8080/bili/';
         var http = (window.http = window.http || {});
 
@@ -134,6 +286,7 @@
 
         var dispose404 = function () {
             //TODO
+            window.location.href = '404.html';
         }
 
         var getTopWindow = function (window) {
@@ -143,6 +296,37 @@
             return window;
         }
 
+        http.getBaseUrl = function () {
+            return baseUrl;
+        }
+
+        http.uploadFile = function (request) {
+            var def = {
+                type:'post',
+                cache:false,
+                processData: false,
+                contentType: false,
+                dataType:"json",
+                beforeSend:function (req) {
+                    req.setRequestHeader('sessionId',window.storage.loadSessionId());
+                },
+                statusCode:{
+                    404:dispose404
+                }
+            };
+            $.extend(def,request);
+            def.url = baseUrl + def.url;
+
+            def.success = function (data, textStatus, response) {
+                if ( data.responseId == 101 && request.url != "Manager/checkLogin.do" ){
+                    getTopWindow(window).location.href = 'login.html';
+                } else {
+                    request.success(data, textStatus, response);
+                }
+            }
+            $.ajax(def);
+        }
+        
         http.request = function (request) {
             var def = {
                 type:'post',
@@ -170,8 +354,223 @@
             }
             $.ajax(def);
         }
-    }(jQuery)
-);
+}(jQuery));
+
+(function ($) {
+    var dialog = (window.dialog = window.dialog || {});
+
+    /**
+     * @Param {title:'title',url:'url',area:{width:100,height:100}} obj
+     * */
+    dialog.showFrameDialog = function (obj) {
+        var builder = _frameDialog(obj);
+        _showDialog(builder);
+    }
+
+    var _frameDialog = (function () {
+        var shared = {};
+        var object;
+        var className = 'frame';
+        //object = {title:'title',url:'url',area:{width:100,height:100}}
+        var height;
+        var width;
+        var dlg;
+        var body;
+
+        shared.getBuilder = function (obj) {
+            object = obj;
+            return {
+                className: className,
+                buildTitle: buildTitle,
+                buildContent: buildContent,
+                getArea: getArea,
+                addListener: addListener
+            }
+        }
+
+        var buildTitle = function (title) {
+            var html = '    <cite>' + object.title + '</cite>\n' +
+                '    <div class="myui-dialog-oprator">\n' +
+                '        <i class="iconfont ' + className + ' minimize">&#xe600;</i>\n' +
+                '        <i class="iconfont ' + className + ' maximize">&#xe61b;</i>\n' +
+                '        <i class="iconfont hide ' + className + ' resize">&#xe602;</i>\n' +
+                '        <i class="iconfont ' + className + ' close">&#xe647;</i>\n' +
+                '        </div>';
+            title.append(html);
+        }
+
+        var buildContent = function (content) {
+            var html = '<iframe frameborder="0" scrolling="yes"></iframe>';
+            content.append(html);
+        }
+
+        var closeDialog = function () {
+            dlg.remove();
+            dlg = undefined;
+        }
+
+        // var showCenter = function () {
+        //     var maxWidth = window.innerWidth;
+        //     var maxHeight = window.innerHeight;
+        //     var top = (maxHeight - height) / 2;
+        //     var left = (maxWidth - width) / 2;
+        //
+        //     body.height(height);
+        //     body.width(width);
+        //     body[0].style.top = top + 'px';
+        //     body[0].style.bottom = 'auto';
+        //     body[0].style.left = left + 'px';
+        //     body[0].style.right = 'auto';
+        // }
+
+        var getArea = function () {
+            var maxWidth = window.innerWidth;
+            var maxHeight = window.innerHeight;
+
+            var area = object.area;
+            if (area && area.width && area.width < maxWidth) {
+                width = area.width;
+            } else {
+                width = maxWidth * 0.8;
+            }
+            if (area && area.height && area.height < maxHeight) {
+                height = area.height;
+            } else {
+                height = maxHeight * 0.8;
+            }
+            return {width: width, height: height};
+        }
+
+        var addListener = function (dialog) {
+            if (object.data) {
+                var url = passer.mergeToUrl(object.url,object.data);
+                dialog.find('iframe').attr('src', url);
+            } else {
+                dialog.find('iframe').attr('src', object.url);
+            }
+            dlg = dialog;
+            body = dialog.find('.myui-dialog-body');
+            dialog.on('click', onOutSide);
+            dialog.find('.minimize').on('click', onMinimize);
+            dialog.find('.maximize').on('click', onMaximize);
+            dialog.find('.resize').on('click', onResize);
+            dialog.find('.close').on('click', onClose);
+            body.on('click', function () {
+                return false;
+            })
+        }
+
+        var onOutSide = function () {
+            closeDialog();
+            if (typeof object.callback === "function" ) { object.callback("outside") };
+        }
+
+        var onMinimize = function () {
+            clearOpratorStatus();
+            body.height(50);
+            body.width('auto');
+
+            body[0].style.top = 'auto';
+            body[0].style.bottom = '0px';
+            body[0].style.left = '0px';
+            body[0].style.right = 'auto';
+            body.find('.minimize').addClass('hide');
+            if (typeof object.callback === "function" ) { object.callback("minimize") };
+        };
+
+        var onMaximize = function () {
+            clearOpratorStatus();
+            body.height(window.innerHeight);
+            body.width(window.innerWidth);
+            body[0].style.top = '0px';
+            body[0].style.left = '0px';
+            body.find('.maximize').addClass('hide');
+            if (typeof object.callback === "function" ) { object.callback("maxmize") };
+        };
+
+        var onResize = function () {
+            clearOpratorStatus();
+            _showCenter(body, height, width);
+            // showCenter();
+            body.find('.resize').addClass('hide');
+            if (typeof object.callback === "function" ) { object.callback("resize") };
+        };
+
+        var clearOpratorStatus = function () {
+            dlg.find('.minimize').removeClass('hide');
+            dlg.find('.maximize').removeClass('hide');
+            dlg.find('.resize').removeClass('hide');
+        }
+
+        var onClose = function () {
+            closeDialog();
+            if (typeof object.callback === "function" ) { object.callback("close") };
+        };
+        return shared;
+    })();
+
+
+    dialog.showToastDialog = function () {
+
+    }
+
+    dialog.showPromptDialog = function () {
+
+    }
+
+    var _showDialog = function (builder) {
+        var temp = _template(builder.className);
+        var title = temp.find('.myui-dialog-title');
+        builder.buildTitle(title);
+        var content = temp.find('.myui-dialog-content');
+        builder.buildContent(content);
+
+        $('body').append(temp);
+        var area = builder.getArea(temp);
+        if (!area) {
+            area = {width: window.innerWidth * 0.8, height: window.innerHeight * 0.8}
+        } else if (!area.width) {
+            area.width = window.innerWidth * 0.8;
+        } else if (!area.height) {
+            area.height = window.innerHeight * 0.8;
+        }
+
+        var body = temp.find('.myui-dialog-body');
+        _showCenter(body, area.height, area.width);
+
+        temp.addClass('show');
+        var body = temp.find('.myui-dialog-body');
+        body.addClass('myui-m-anim-scale');
+        // body[0].addEventListener('transitionend',transition);
+        builder.addListener(temp);
+    }
+
+    var _template = function (className) {
+        var html = '        <div class="myui-dialog ${customer}">\n' +
+            '            <div class="myui-dialog-body ${customer}">\n' +
+            '                <div class="myui-dialog-title ${customer}"></div>\n' +
+            '                <div class="myui-dialog-content ${customer}"></div>\n' +
+            '            </div>\n' +
+            '        </div>';
+        html = html.replace(/\${customer}/g, className);
+
+        return $(html);
+    }
+
+    var _showCenter = function (body, height, width) {
+        var maxWidth = window.innerWidth;
+        var maxHeight = window.innerHeight;
+        var top = (maxHeight - height) / 2;
+        var left = (maxWidth - width) / 2;
+
+        body.height(height);
+        body.width(width);
+        body[0].style.top = top + 'px';
+        body[0].style.bottom = 'auto';
+        body[0].style.left = left + 'px';
+        body[0].style.right = 'auto';
+    }
+}(jQuery))
 
 (
 // if (typeof jQuery === 'undefined') { throw new Error('DCalendar.Picker: This plugin requires jQuery'); }
@@ -275,6 +674,7 @@
 
                 var onOutSide = function () {
                     closeDialog();
+                    if (typeof object.callback === "function" ) { object.callback("outside") };
                 }
 
                 var onMinimize = function () {
@@ -287,6 +687,7 @@
                     body[0].style.left = '0px';
                     body[0].style.right = 'auto';
                     body.find('.minimize').addClass('hide');
+                    if (typeof object.callback === "function" ) { object.callback("minimize") };
                 };
 
                 var onMaximize = function () {
@@ -298,12 +699,14 @@
                     body[0].style.top = '0px';
                     body[0].style.left = '0px';
                     body.find('.maximize').addClass('hide');
+                    if (typeof object.callback === "function" ) { object.callback("maxmize") };
                 };
 
                 var onResize = function () {
                     clearOpratorStatus();
                     showCenter();
                     body.find('.resize').addClass('hide');
+                    if (typeof object.callback === "function" ) { object.callback("resize") };
                 };
 
                 var clearOpratorStatus = function () {
@@ -314,6 +717,7 @@
 
                 var onClose = function () {
                     closeDialog();
+                    if (typeof object.callback === "function" ) { object.callback("close") };
                 };
                 return shared;
             })();
@@ -341,12 +745,13 @@
                     if (!obj.success) {
                         html += '        <i class="iconfont">&#xe615;</i>\n';
                     } else {
-                        html += '        <i class="iconfont">&#xe603;</i>\n';
+                        html += '        <i class="iconfont success">&#xe603;</i>\n';
                     }
                     html += '        <cite class="content">' + obj.content + '</cite>\n' +
                         '    </div>';
                     content.append(html);
                 }
+
                 var getArea = function (dialog) {
                     var width = 0;
                     var children = dialog.find('.myui-dialog-content div').children();
@@ -431,16 +836,26 @@
                 return shared;
             })();
 
+            /**
+            * @param {title:'title',url:'url',area:{width:100,height:100}}
+            * */
             shared.showFrameDialog = function (obj) {
                 // frameDialog.build(obj);
                 var builder = frameDialog.getBuilder(obj);
                 showDialog(builder);
             }
 
+            /**
+             * @Param {content:'',success:false}
+             * */
             shared.showToastDialog = function (obj) {
                 var builder = toastDialog.getBuilder(obj);
                 showDialog(builder);
             }
+
+            /**
+             * @Param {title:'',content:''}
+             * */
             shared.showPromptDialog = function (obj) {
                 var builder = promptDialog.getBuilder(obj);
                 showDialog(builder);
@@ -505,7 +920,18 @@
             return shared;
         })(jQuery);
 
-        // new Table();
+        /**
+         * @param {jquery} container
+         * @param {pageSize:一页显示条数} option
+         * @param {
+         *      page:当前页数，
+         *      lines:数据条数,
+         *      getTitle:function,
+         *      getView:function,
+         *      addListener:function,
+         *      onPageChange:function
+         * }
+         * */
         var Table = function (container, option, data) {
             var local = {};
             local['container'] = container;
@@ -575,7 +1001,8 @@
                         local['table'].find('tbody').append(view);
                     }
                 }
-                if (typeof local['data'].addListener === "function"){local['data'].addListener()}
+                if (typeof local['data'].onPageChange === "function"){local['data'].onPageChange(page)};
+                if (typeof local['data'].addListener === "function"){local['data'].addListener()};
             };
             var refreshTableTitle = function () {
                 var title = local['data'].getTitle();
@@ -734,231 +1161,6 @@
             return shared;
         }
 
-
-        // var tableHelper = (function (option) {
-        //     var opt = {pageSize: 10};
-        //     if (option) {
-        //         opt = option;
-        //     }
-        //
-        //     var obj;
-        //     var shared = {};
-        //     var operObj = {};
-        //
-        //     // var views = new Array();
-        //
-        //     function Table(object, option) {
-        //         var opt = {pageSize: 10};
-        //         if (option) {
-        //             opt = option;
-        //         }
-        //         var obj = object;
-        //         var shared = {};
-        //
-        //         var generateOper = function (object, option) {
-        //             var oper = {};
-        //             oper.cur = obj.page;
-        //             oper.size = Math.ceil(obj.lines / opt.pageSize);
-        //             oper.callback = operCallback;
-        //             refreshTableTitle();
-        //             refreshTableItem(operObj.cur);
-        //         }
-        //
-        //         var operCallback = function (page) {
-        //             obj.page = page;
-        //             refreshTableItem(page);
-        //         }
-        //
-        //         var refreshTableTitle = function () {
-        //             var title = obj.getTitle();
-        //             $('.myui-table thead').append(title);
-        //         }
-        //
-        //         var refreshTableItem = function (page) {
-        //             $('.myui-table tbody').empty();
-        //             var index = 0;
-        //             for (var i = 0; i < opt.pageSize; i++) {
-        //                 index = (page - 1) * opt.pageSize + i;
-        //                 if (index < obj.lines) {
-        //                     var view = obj.getView(index);
-        //                     $('.myui-table tbody').append(view);
-        //                 }
-        //             }
-        //         }
-        //
-        //         shared.refreshTable = function (object, option) {
-        //
-        //         }
-        //
-        //         shared.getCurrentPage = function () {
-        //             return obj.page;
-        //         }
-        //         return shared;
-        //     }
-        //
-        //     shared.initTable = function (object, option) {
-        //         // obj = object;
-        //         // operObj.cur = obj.page;
-        //         // operObj.size = Math.ceil(obj.lines / opt.pageSize);
-        //         // operObj.callback = operCallback;
-        //         // tableOper.initOper(operObj);
-        //         // refreshTableTitle();
-        //         // refreshTableItem(operObj.cur);
-        //         return new Table(object, option);
-        //     }
-        //
-        //     // shared.getCurrentPage = function () {
-        //     //     return obj.page;
-        //     // }
-        //     //
-        //     // var operCallback = function (page) {
-        //     //     obj.page = page;
-        //     //     refreshTableItem(page);
-        //     // }
-        //     //
-        //     // var refreshTableTitle = function () {
-        //     //     var title = obj.getTitle();
-        //     //     $('.myui-table thead').append(title);
-        //     // }
-        //     //
-        //     // var refreshTableItem = function (page) {
-        //     //     $('.myui-table tbody').empty();
-        //     //     var index = 0;
-        //     //     for (var i = 0; i < opt.pageSize; i++) {
-        //     //         index = (page - 1) * opt.pageSize + i;
-        //     //         if (index < obj.lines) {
-        //     //             var view = obj.getView(index);
-        //     //             $('.myui-table tbody').append(view);
-        //     //         }
-        //     //     }
-        //     // }
-        //
-        //     return shared;
-        // })();
-        // var tableOper = (function (option) {
-        //     var opt = {count: 9, ellipsis: '...'};
-        //     if (option) {
-        //         opt = option;
-        //     }
-        //     var obj;
-        //     var shared = {};
-        //     var selectClass = 'selected';
-        //     var ellipsisClass = 'ellipsis';
-        //
-        //     shared.initOper = function (object, option) {
-        //         obj = object;
-        //         if (option) {
-        //             opt = option;
-        //         }
-        //         var count = obj.size < opt.count ? obj.size : opt.count;
-        //         var middle = $('#middle');
-        //         var size = obj.size;
-        //         var cur = obj.cur;
-        //
-        //         middle.empty();
-        //         if (size <= opt.count) {
-        //             for (var i = 1; i <= count; i++)
-        //                 middle.append(createTabOper(i, i == cur));
-        //         } else {
-        //             var contents = getOpersContent(cur, size);
-        //             for (var index in contents) {
-        //                 middle.append(createTabOper(contents[index], contents[index] == cur));
-        //             }
-        //         }
-        //         $('.myui-table-operator .btn').on('click', operClick);
-        //     }
-        //     shared.getCurrentPage = function () {
-        //         return obj.cur;
-        //     }
-        //
-        //     var createTabOper = function (content, selected) {
-        //         var html = '<button class="btn';
-        //         if (opt.ellipsis == content) {
-        //             html += ' ' + ellipsisClass;
-        //         }
-        //         if (selected) {
-        //             html += ' ' + selectClass;
-        //         }
-        //         html += '">' + content + '</button>';
-        //         return html;
-        //     }
-        //
-        //     var operClick = function () {
-        //         var btn = $(this).html();
-        //         var cur = obj.cur;
-        //         var page;
-        //         if ("&lt;&lt;" == btn) {
-        //             page = cur - 1;
-        //         } else if ("&gt;&gt;" == btn) {
-        //             page = cur + 1;
-        //         } else {
-        //             page = parseInt(btn);
-        //         }
-        //         if (page < 1 || page > obj.size) {
-        //             return;
-        //         }
-        //         refreshTabOper(page);
-        //         obj.callback(page);
-        //     }
-        //
-        //     var refreshTabOper = function (page) {
-        //         var opers = $('.myui-table-operator #middle .btn');
-        //
-        //         if (obj.size > opt.count) {
-        //             var size = obj.size;
-        //             var cur = page;
-        //             var contents = getOpersContent(cur, size);
-        //             for (var i = 0; i < opt.count; i++) {
-        //                 $(opers[i]).html(contents[i]);
-        //             }
-        //         }
-        //
-        //         opers.each(function () {
-        //             var content = $(this).html();
-        //             if (content == page) {
-        //                 $(this).addClass(selectClass);
-        //                 $(this).removeClass(ellipsisClass);
-        //             } else if (content == opt.ellipsis) {
-        //                 $(this).removeClass(selectClass);
-        //                 $(this).addClass(ellipsisClass);
-        //             } else {
-        //                 $(this).removeClass(selectClass);
-        //                 $(this).removeClass(ellipsisClass);
-        //             }
-        //         })
-        //
-        //         obj.cur = page;
-        //     }
-        //
-        //     var getOpersContent = function (cur, size) {
-        //         var contents = new Array(opt.count);
-        //         contents[0] = 1;
-        //         contents[opt.count - 1] = size;
-        //         var center = Math.ceil(opt.count / 2.0);
-        //         if (cur <= center) {
-        //             for (var i = 0; i < opt.count - 3; i++) {
-        //                 contents[i + 1] = 2 + i;
-        //             }
-        //             contents[opt.count - 2] = opt.ellipsis;
-        //         } else if ((size - cur) <= center) {
-        //             contents[1] = opt.ellipsis;
-        //             for (var i = 0; i < opt.count - 3; i++) {
-        //                 contents[i + 2] = size - opt.count + 3 + i;
-        //             }
-        //         } else {
-        //             contents[1] = opt.ellipsis;
-        //             contents[opt.count - 2] = opt.ellipsis;
-        //             for (var i = 0; i < opt.count - 4; i++) {
-        //                 contents[2 + i] = cur - 2 + i;
-        //             }
-        //         }
-        //         return contents;
-        //     }
-        //
-        //     return shared;
-        // })();
-
-
         var pullDownListHelper = (function () {
             var shared = {};
             var opt;
@@ -975,9 +1177,13 @@
                     selecter.append(line);
                 }
                 for (var i = 0; i < opt.length; i++) {
+                    var value = opt.getValue(i);
                     var line = $('<option></option>');
-                    line.append(opt.getView(i));
-                    line.attr('value', i);
+                    line.append(opt.getContent(i));
+                    line.attr('value', value);
+                    if ( value == opt.selected ) {
+                        line.attr('selected', 'selected');
+                    }
                     selecter.append(line);
                 }
             }

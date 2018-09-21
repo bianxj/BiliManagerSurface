@@ -71,31 +71,29 @@
   <script src="js/main.js"></script>
 
   <script type="text/javascript">
+    var role;
     $(document).ready(function () {
+        role = window.urlHelper.loadParam(window.location.href).param;
         searchDirs();
         // initTree();
     });
 
     var searchDirs = function () {
-        http.request({
-            url:'Manager/searchAllDir.do',
-            data:{},
-            success:searchDirsSuccess,
-            error:searchDirsError
-        })
+        window.http.request({
+            url:'Manager/searchDirByRoleId.do',
+            data:{roleId:role.roleId},
+            success:searchDirsSuccess
+        });
     }
 
     var searchDirsSuccess = function (data) {
         if ( data.responseId == 0 ){
+            $('#role-name').val(data.role.role);
             initTree(data.dirs);
             $("#save").on('click',saveClick);
         } else {
             myui.dialog.showToastDialog({title:'提示',content:data.desc});
         }
-    }
-
-    var searchDirsError = function () {
-
     }
 
     var zTreeObj;
@@ -119,7 +117,11 @@
             node.pId = dirs[index].pid;
             node.name = dirs[index].name;
             node.open = true;
-            node.checked = false;
+            if ( dirs[index].effect == 1 ){
+                node.checked = true;
+            } else {
+                node.checked = false;
+            }
         }
         zTreeObj = $.fn.zTree.init($('#role-tree'),settings,zNodes);
     }
@@ -141,12 +143,13 @@
     var addRole = function () {
         var nodes = zTreeObj.getNodes();
         var data = {};
+        data.id = role.roleId;
         data.name = $('#role-name').val();
         var dirs = data.dirIds = [];
         traversalNode(dirs,nodes);
 
         window.http.request({
-            url:'Manager/addRole.do',
+            url:'Manager/updateRole.do',
             data:data,
             success:addRoleSuccess
         })
@@ -167,7 +170,7 @@
 
     var addRoleSuccess = function (data) {
         if ( data.responseId == 0 ){
-            myui.dialog.showToastDialog({title:'提示',content:'添加成功',success:true});
+            myui.dialog.showToastDialog({title:'提示',content:'修改成功',success:true});
         } else {
             myui.dialog.showToastDialog({title:'提示',content:data.desc});
         }
