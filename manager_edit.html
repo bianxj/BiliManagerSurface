@@ -83,7 +83,8 @@
     var manager;
     $(document).ready(function () {
         $('#edit').on('click',editManagerClick);
-        manager = window.urlHelper.loadParam(window.location.href).param;
+        manager = window.passer.loadFromUrl(window.location.href);
+        // manager = window.urlHelper.loadParam(window.location.href).param;
         // manager = JSON.parse(param);
         searchRoles();
     });
@@ -104,7 +105,7 @@
     }
 
     var initRoleSelect = function(selected){
-        window.myui.pullDownListHelper.showAsDropDown($('select'),{
+        window.pullDown.init($('select'),{
             length:roles.length,
             hasBlank:true,
             selected:selected,
@@ -131,27 +132,27 @@
     
     var checkManagerData = function () {
         if ( window.check.isEmpty($('#login-name').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'请填写用户名'});
+            window.dialog.showToastDialog({title:'提示',content:'请填写用户名'});
             return false;
         }
         if ( window.check.isEmpty($('#phone').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'请填写手机号码'});
+            window.dialog.showToastDialog({title:'提示',content:'请填写手机号码'});
             return false;
         }
         if ( !window.check.isPhone($('#phone').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'手机号码格式不正确'});
+            window.dialog.showToastDialog({title:'提示',content:'手机号码格式不正确'});
             return false;
         }
         if ( window.check.isEmpty($('#email').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'请填写邮箱'});
+            window.dialog.showToastDialog({title:'提示',content:'请填写邮箱'});
             return false;
         }
         if ( !window.check.isEmail($('#email').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'邮箱格式不正确'});
+            window.dialog.showToastDialog({title:'提示',content:'邮箱格式不正确'});
             return false;
         }
         if ( $('#role option:selected').val() == -1 ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'请选择角色'});
+            window.dialog.showToastDialog({title:'提示',content:'请选择角色'});
             return false;
         }
         return true;
@@ -169,13 +170,13 @@
             },
             success:function (data) {
                 if ( data.responseId == 0 ){
-                    window.myui.dialog.showToastDialog({
+                    window.dialog.showToastDialog({
                         title:'提示',
                         content:'修改成功',
                         success:true
                     });
                 } else {
-                    window.myui.dialog.showToastDialog({
+                    window.dialog.showToastDialog({
                         title:'提示',
                         content:data.desc
                     });

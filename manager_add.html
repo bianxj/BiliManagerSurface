@@ -107,7 +107,7 @@
     }
 
     var initRoleSelect = function(){
-        window.myui.pullDownListHelper.showAsDropDown($('select'),{
+        window.pullDown.init($('select'),{
             length:roles.length,
             hasBlank:true,
             getValue:function (index) {
@@ -127,19 +127,19 @@
     
     var checkManagerData = function () {
         if ( window.check.isEmpty($('#login-name').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'请填写用户名'});
+            window.dialog.showToastDialog({title:'提示',content:'请填写用户名'});
             return false;
         }
         if ( window.check.isEmpty($('#phone').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'请填写手机号码'});
+            window.dialog.showToastDialog({title:'提示',content:'请填写手机号码'});
             return false;
         }
         if ( !window.check.isPhone($('#phone').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'手机号码格式不正确'});
+            window.dialog.showToastDialog({title:'提示',content:'手机号码格式不正确'});
             return false;
         }
         if ( window.check.isEmpty($('#email').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'请填写邮箱'});
+            window.dialog.showToastDialog({title:'提示',content:'请填写邮箱'});
             return false;
         }
         if ( !window.check.isEmail($('#email').val()) ){
@@ -147,30 +147,30 @@
             return false;
         }
         if ( $('#role option:selected').text() == "请选择" ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'请选择角色'});
+            window.dialog.showToastDialog({title:'提示',content:'请选择角色'});
             return false;
         }
 
         if ( window.check.isEmpty($('#pwd').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'请填写密码'});
+            window.dialog.showToastDialog({title:'提示',content:'请填写密码'});
             return false;
         }
         if ( !window.check.isPwd($('#pwd').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'密码格式不正确'});
+            window.dialog.showToastDialog({title:'提示',content:'密码格式不正确'});
             return false;
         }
         if ( window.check.isEmpty($('#confirm-pwd').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'请填写确认密码'});
+            window.dialog.showToastDialog({title:'提示',content:'请填写确认密码'});
             return false;
         }
         if ( !window.check.isPwd($('#confirm-pwd').val()) ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'确认密码格式不正确'});
+            window.dialog.showToastDialog({title:'提示',content:'确认密码格式不正确'});
             return false;
         }
         var pwd = $('#pwd').val();
         var confirm = $('#confirm-pwd').val();
         if ( pwd != confirm ){
-            window.myui.dialog.showToastDialog({title:'提示',content:'两次输入的密码不一致'});
+            window.dialog.showToastDialog({title:'提示',content:'两次输入的密码不一致'});
             return false;
         }
         return true;
@@ -188,13 +188,13 @@
             },
             success:function (data) {
                 if ( data.responseId == 0 ){
-                    window.myui.dialog.showToastDialog({
+                    window.dialog.showToastDialog({
                         title:'提示',
                         content:'添加成功',
                         success:true
                     });
                 } else {
-                    window.myui.dialog.showToastDialog({
+                    window.dialog.showToastDialog({
                         title:'提示',
                         content:data.desc
                     });

@@ -145,6 +145,42 @@
         $(".nav a").on('click',navItemClick);
     });
 
+    var searchUserDir = function () {
+        window.http.request({
+            url:'Manager/searchDir.do',
+            data:{},
+            success:function (data) {
+                if ( data.responseId == 0 ){
+                    var dirs = data.dirs;
+                    var temp = [];
+                    for (var index in dirs){
+                        var dir = dirs[index];
+                        temp[dir.id] = {
+                            tag:dir.tagName,
+                            content:dir.name,
+                            icBe4:dir.icon,
+                            href:dir.href,
+                            children:[]
+                        };
+                    }
+                    for (var index in dirs){
+                        var dir = dirs[index];
+                        if ( dir.pid != 0 ){
+                            temp[dir.pid].children.push(temp[dir.id]);
+                            temp.remove(dir.id);
+                        }
+                    }
+
+                } else {
+
+                }
+            },
+            error:function () {
+                
+            }
+        });
+    }
+    
     var refreshEvent = function () {
     }
 

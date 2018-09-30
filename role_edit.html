@@ -73,7 +73,8 @@
   <script type="text/javascript">
     var role;
     $(document).ready(function () {
-        role = window.urlHelper.loadParam(window.location.href).param;
+        role = window.passer.loadFromUrl(window.location.href);
+        // role = window.urlHelper.loadParam(window.location.href).param;
         searchDirs();
         // initTree();
     });
@@ -92,7 +93,7 @@
             initTree(data.dirs);
             $("#save").on('click',saveClick);
         } else {
-            myui.dialog.showToastDialog({title:'提示',content:data.desc});
+            window.dialog.showToastDialog({title:'提示',content:data.desc});
         }
     }
 
@@ -134,7 +135,7 @@
 
     var checkAddRole = function () {
         if ( check.isEmpty($('#role-name').val()) ){
-            myui.dialog.showToastDialog("请填写角色名称");
+            window.dialog.showToastDialog("请填写角色名称");
             return false;
         }
         return true;
@@ -170,9 +171,9 @@
 
     var addRoleSuccess = function (data) {
         if ( data.responseId == 0 ){
-            myui.dialog.showToastDialog({title:'提示',content:'修改成功',success:true});
+            window.dialog.showToastDialog({title:'提示',content:'修改成功',success:true});
         } else {
-            myui.dialog.showToastDialog({title:'提示',content:data.desc});
+            window.dialog.showToastDialog({title:'提示',content:data.desc});
         }
     }
     

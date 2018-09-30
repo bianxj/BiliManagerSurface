@@ -64,7 +64,7 @@
   <link rel="import" href="template/tmpl_myui_dialog.html">
 
   <script type="text/javascript">
-    var table;
+    var _table;
     $(document).ready(function () {
         $('#add').on('click',addClick);
 
@@ -97,7 +97,7 @@
     }
 
     var initRoleSelect = function(){
-        window.myui.pullDownListHelper.showAsDropDown($('select'),{
+        window.pullDown.init($('select'),{
             length:roles.length,
             hasBlank:true,
             getValue:function (index) {
@@ -129,7 +129,7 @@
             curPage = managers.length/10 + 1;
         }
 
-        table = new window.myui.Table($('.table-container'),
+        _table = window.table.init($('.table-container'),
             {
                 pageSize:10
             },
@@ -191,7 +191,7 @@
             url:'Manager/deleteManager.do',
             data:{id:id},
             success:function () {
-                window.myui.dialog.showToastDialog({title:'提示',content:'用户删除成功',success:true});
+                window.dialog.showToastDialog({title:'提示',content:'用户删除成功',success:true});
                 searchManagers({});
             }
         })
@@ -200,7 +200,7 @@
     var editClick = function () {
         var id = $(this).parents('tr').find(".column-id cite").text();
         var manager = managers[id];
-        window.myui.dialog.showFrameDialog({
+        window.dialog.showFrameDialog({
             title:'修改',
             url:'manager_edit.html',
             data:manager,
@@ -213,7 +213,7 @@
     }
 
     var batchAddClick = function () {
-        window.myui.dialog.showFrameDialog({
+        window.dialog.showFrameDialog({
             title:'批量导入',
             url:'manager_batch_add.html',
             data:{
@@ -225,11 +225,33 @@
     }
 
     var batchDelClick = function () {
-        window.myui.dialog.showPromptDialog({
+        window.dialog.showPromptDialog({
             title:'提示',
             content:'确认删除以下条目',
             sureCallback:function () {
-                alert('Todo sure');
+                var selecteds = $(".myui-checkbox.checked");
+                var ids = [];
+
+                selecteds.each(function () {
+                    var num = $(this).parents('tr').find('.column-id cite').text();
+                    ids.push(managers[num].id);
+                })
+
+                window.http.request({
+                    url:'Manager/batchDeleteManager.do',
+                    data:{ids:ids},
+                    success:function (data) {
+                        if ( data.responseId == 0 ){
+                            window.dialog.showToastDialog({title:'提示',content:'用户删除成功',success:true});
+                            searchManagers({});
+                        } else {
+                            window.dialog.showToastDialog({title:'提示',content:'用户删除失败',success:true});
+                        }
+                    },
+                    error:function () {
+                        
+                    }
+                });
             },
             cancelCallback:function () {
                 alert('Todo cancel');
@@ -254,7 +276,7 @@
 
     var addClick = function () {
       // showPageDialog();
-        window.myui.dialog.showFrameDialog({
+        window.dialog.showFrameDialog({
             title:'新增',
             url:'manager_add.html',
             data:{},

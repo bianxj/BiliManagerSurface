@@ -90,7 +90,7 @@
             initTree(data.dirs);
             $("#save").on('click',saveClick);
         } else {
-            myui.dialog.showToastDialog({title:'提示',content:data.desc});
+            window.dialog.showToastDialog({title:'提示',content:data.desc});
         }
     }
 
@@ -167,9 +167,9 @@
 
     var addRoleSuccess = function (data) {
         if ( data.responseId == 0 ){
-            myui.dialog.showToastDialog({title:'提示',content:'添加成功',success:true});
+            window.dialog.showToastDialog({title:'提示',content:'添加成功',success:true});
         } else {
-            myui.dialog.showToastDialog({title:'提示',content:data.desc});
+            window.dialog.showToastDialog({title:'提示',content:data.desc});
         }
     }
     

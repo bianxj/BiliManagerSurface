@@ -94,7 +94,8 @@
   <script type="text/javascript">
     var param;
     $(document).ready(function () {
-        param = urlHelper.loadParam(window.location.href).param;
+        param = window.passer(window.location.href);
+        // param = urlHelper.loadParam(window.location.href).param;
         if ( param ){
             //TODO
         }
@@ -115,7 +116,7 @@
     }
     
     var upload = function () {
-        window.http.uploadFile({
+        window.http.upload({
             url:'Manager/batchInsertManager.do',
             data:new FormData($('#form')[0]),
             success:function () {

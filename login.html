@@ -102,7 +102,6 @@
     var checkLogin = function () {
         window.http.request({
             url:'Manager/checkLogin.do',
-            data:{sessionId:window.storage.loadSessionId()},
             success:function (data) {
                 if ( data.responseId == 0 ){
                     if ( data.isLogin ){
@@ -113,8 +112,8 @@
             error:function () {
 
             }
-        })
-        var manager = window.storage.loadManager();
+        });
+        var manager = window.application.loadManager();
         return manager;
     }
     
@@ -145,8 +144,8 @@
                 success: function (data) {
                     if ( data ){
                         if ( data.responseId == 0 ){
-                            storage.saveSessionId(data.sessionId);
-                            storage.saveManager(data.manager);
+                            window.application.saveSessionId(data.sessionId);
+                            window.application.saveManager(data.manager);
                             gotoIndex();
                         } else {
                             $('#toast').text(data.desc)

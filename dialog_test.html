@@ -205,21 +205,22 @@
     <script src="js/vendor/jquery-3.3.1.js"></script>
 
     <script type="text/javascript">
-        var param;
         $(document).ready(function () {
+            var arr = [];
+            arr[0] = {title:'0',children:[]};
+            arr[1] = {title:'1',children:[]};
             $('#frame').on('click',function () {
-               param = JSON.stringify(
-                   {
-                       targetUrl:'Manager/batchInsertManager.do',
-                       accept:'.csv',
-                       uploadUrl:''
-                   }
-               )
+                arr[0].children.push(arr[1]);
+                alert(JSON.stringify(arr));
             });
             $('#toast').on('click',function () {
-                var data = JSON.parse(param);
-                alert(data.targetUrl);
+                arr[1].children.push({title:'test'});
+                alert(JSON.stringify(arr));
             });
+            $('#prompt').on('click',function () {
+                arr.remove(1);
+                alert(JSON.stringify(arr));
+            })
         });
     </script>
 

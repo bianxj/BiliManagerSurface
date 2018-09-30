@@ -84,13 +84,13 @@
         });
     }
 
-    var table;
+    var _table;
     var roles;
     var curPage = 1;
     function searchRolesSuccess(data){
         if ( data.responseId == 0 ){
             roles = data.roles;
-            table = new window.myui.Table(
+            _table = window.table.init(
                 $('.table-container'),
                 {},
                 {
@@ -119,7 +119,7 @@
                 }
             )
         } else {
-            window.myui.dialog.showToastDialog({title:"提示",content:data.desc});
+            window.dialog.showToastDialog({title:"提示",content:data.desc});
         }
     }
 
@@ -129,7 +129,7 @@
 
     var editClick = function () {
         var index = $(this).parents("tr").find(".column-id cite").text();
-        window.myui.dialog.showFrameDialog({
+        window.dialog.showFrameDialog({
             title:'修改',
             url:'./role_edit.html',
             area:{width:400,height:600},
@@ -149,10 +149,10 @@
             data:{roleId:roles[index].id},
             success:function (data) {
                 if ( data.responseId == 0 ){
-                    window.myui.dialog.showToastDialog({title:'提示',content:'删除成功',success:true});
+                    window.dialog.showToastDialog({title:'提示',content:'删除成功',success:true});
                     searchRoles();
                 } else {
-                    window.myui.dialog.showToastDialog({title:'提示',content:data.desc});
+                    window.dialog.showToastDialog({title:'提示',content:data.desc});
                 }
             },
             error:function () {
@@ -162,11 +162,44 @@
     }
     
     var batchDeleteClick = function () {
-        alert('batchDelete');
+        window.dialog.showPromptDialog({
+            title:'提示',
+            content:'是否删除选中条目?',
+            sureCallback:function () {
+                batchDelete();
+            },
+            cancelCallback:function () {
+                //TODO
+            }
+        })
+    }
+
+    var batchDelete = function () {
+        var selecteds = $('.myui-checkbox.checked');
+        var ids = [];
+        selecteds.each(function () {
+            var num = $(this).parents('tr').find('.column-id cite').text();
+            ids.push(roles[num].id);
+        })
+        window.http.request({
+            url:'Manager/batchDeleteRole.do',
+            data:{ids:ids},
+            success:function (data) {
+                if ( data.responseId == 0 ){
+                    window.dialog.showToastDialog({title:'提示',content:'删除成功',success:true});
+                    searchRoles();
+                } else {
+                    window.dialog.showToastDialog({title:'提示',content:'删除失败',success:false});
+                }
+            },
+            error:function () {
+                window.dialog.showToastDialog({title:'提示',content:'请求失败',success:false});
+            }
+        });
     }
 
     var addClick = function () {
-        window.myui.dialog.showFrameDialog({
+        window.dialog.showFrameDialog({
             title:'新增',
             url:'./role_add.html',
             area:{width:400,height:600},
